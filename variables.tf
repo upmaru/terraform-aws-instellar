@@ -3,13 +3,13 @@ variable "region" {
   default     = "us-west-2"
 }
 
-# variable "access_key" {
-#   description = "AWS Access Key"
-# }
+variable "access_key" {
+  description = "AWS Access Key"
+}
 
-# variable "secret_key" {
-#   description = "AWS Secret Key"
-# }
+variable "secret_key" {
+  description = "AWS Secret Key"
+}
 
 variable "cluster_name" {
   description = "Name of your cluster"
