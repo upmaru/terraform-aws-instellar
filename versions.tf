@@ -5,9 +5,9 @@ terraform {
     ssh = {
       source = "loafoe/ssh"
     }
-    
+
     aws = {
-      source = "hashicorp/aws"
+      source  = "hashicorp/aws"
       version = "4.66.1"
     }
 
