@@ -1,19 +1,20 @@
 # Terraform AWS Module for Instellar
 
+This module automatically forms LXD cluster on amazon AWS.
 
-## Credentials
+## Access
 
-- [ ] Key Pairs
+- [x] Key Pairs
 
 ## Networking
 
 - [x] VPC
-- [x] Multi AZ Subnets
+- [x] Multi AZ Public Subnets
 - [x] Internet Gateway
-- [ ] Route Table
+- [x] Route Table
 
 ## Instances
 
 - [x] Bastion
-- [ ] Boostrap Node
-- [ ] Nodes
+- [x] Boostrap Node
+- [x] Nodes (scalable)
