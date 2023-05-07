@@ -1,21 +1,43 @@
 # Create a VPC
 resource "aws_vpc" "cluster_vpc" {
-  cidr_block = var.vpc_ip_range
+  cidr_block           = var.vpc_ip_range
+  enable_dns_hostnames = true
 }
 
 resource "aws_internet_gateway" "cluster_gw" {
   vpc_id = aws_vpc.cluster_vpc.id
 
   tags = {
-    Name = var.cluster_name
+    Name = "${var.cluster_name}-gateway"
   }
 }
 
-resource "aws_subnet" "public_subnet" {
+resource "aws_route_table" "public" {
+  vpc_id = aws_vpc.cluster_vpc.id
+
+  route {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = aws_internet_gateway.cluster_gw.id
+  }
+
+  tags = {
+    Name = "${var.cluster_name}-public-route-table"
+  }
+}
+
+resource "aws_route_table_association" "public_subnet_assoc" {
+  count          = length(var.public_subnet_cidrs)
+  subnet_id      = element(aws_subnet.public_subnets[*].id, count.index)
+  route_table_id = aws_route_table.public.id
+}
+
+resource "aws_subnet" "public_subnets" {
   count             = length(var.public_subnet_cidrs)
   vpc_id            = aws_vpc.cluster_vpc.id
   cidr_block        = element(var.public_subnet_cidrs, count.index)
   availability_zone = element(var.availability_zones, count.index)
+
+  map_public_ip_on_launch = true
 
   tags = {
     Name = "${var.cluster_name}-public-${count.index + 1}"
@@ -107,7 +129,7 @@ resource "aws_security_group" "nodes_firewall" {
   }
 
   ingress {
-    description = "Full Cross Nod UDP"
+    description = "Full Cross Node UDP"
     from_port   = 1
     to_port     = 65535
     protocol    = "udp"

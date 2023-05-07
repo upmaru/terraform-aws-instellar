@@ -3,13 +3,13 @@ variable "region" {
   default     = "us-west-2"
 }
 
-variable "access_key" {
-  description = "AWS Access Key"
-}
+# variable "access_key" {
+#   description = "AWS Access Key"
+# }
 
-variable "secret_key" {
-  description = "AWS Secret Key"
-}
+# variable "secret_key" {
+#   description = "AWS Secret Key"
+# }
 
 variable "cluster_name" {
   description = "Name of your cluster"
@@ -39,4 +39,20 @@ variable "node_size" {
 variable "vpc_ip_range" {
   description = "VPC ip range"
   default     = "10.0.0.0/16"
+}
+
+variable "storage_size" {
+  description = "How much storage on your nodes?"
+  default     = 40
+}
+
+variable "cluster_size" {
+  description = "How many nodes do you want in your cluster?"
+  default     = 0
+}
+
+variable "ssh_keys" {
+  type        = list(string)
+  description = "List of ssh key names"
+  default     = []
 }
