@@ -54,7 +54,7 @@ resource "ssh_resource" "cluster_join_token" {
     "lxc cluster add ${var.cluster_name}-node-${format("%02d", count.index + 1)} | sed '1d; /^$/d'"
   ]
 }
-resource "aws_instance" "boostrap_node" {
+resource "aws_instance" "bootstrap_node" {
   ami                    = data.aws_ami.ubuntu.id
   instance_type          = var.node_size
   subnet_id              = aws_subnet.public_subnets[1].id
@@ -156,7 +156,7 @@ resource "terraform_data" "removal" {
     node_name                   = aws_instance.nodes[count.index].tags.Name
     bastion_private_key         = tls_private_key.bastion_key.private_key_openssh
     bastion_public_ip           = aws_instance.bastion.public_ip
-    bootstrap_node_private_ip   = aws_instance.boostrap_node.private_ip
+    bootstrap_node_private_ip   = aws_instance.bootstrap_node.private_ip
     terraform_cloud_private_key = tls_private_key.terraform_cloud.private_key_openssh
   }
 
