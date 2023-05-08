@@ -151,14 +151,26 @@ resource "aws_instance" "nodes" {
 
 resource "terraform_data" "removal" {
   count = var.cluster_size
+
   input = {
+    node_name                   = aws_instance.nodes[count.index].tags.Name
     bastion_private_key         = tls_private_key.bastion_key.private_key_openssh
     bastion_public_ip           = aws_instance.bastion.public_ip
     bootstrap_node_private_ip   = aws_instance.boostrap_node.private_ip
     terraform_cloud_private_key = tls_private_key.terraform_cloud.private_key_openssh
   }
 
-  triggers_replace = aws_instance.nodes[count.index].tags.Name
+  depends_on = [ 
+    aws_instance.bastion, 
+    aws_instance.boostrap_node, 
+    aws_subnet.public_subnets, 
+    aws_vpc.cluster_vpc,
+    aws_internet_gateway.cluster_gw,
+    aws_security_group.nodes_firewall,
+    aws_security_group.bastion_firewall,
+    aws_route_table.public,
+    aws_route_table_association.public_subnet_assoc
+  ]
 
   connection {
     type                = "ssh"
@@ -168,12 +180,15 @@ resource "terraform_data" "removal" {
     bastion_user        = "ubuntu"
     bastion_host        = self.input.bastion_public_ip
     bastion_private_key = self.input.terraform_cloud_private_key
+    timeout             = "10s"
   }
 
   provisioner "remote-exec" {
-    when = destroy
+    when       = destroy
+    on_failure = continue
     inline = [
-      "lxc cluster remove ${self.triggers_replace}"
+      "lxc cluster evac --force ${self.input.node_name}",
+      "lxc cluster remove ${self.input.node_name}"
     ]
   }
 }

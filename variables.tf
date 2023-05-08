@@ -48,7 +48,12 @@ variable "storage_size" {
 
 variable "cluster_size" {
   description = "How many nodes do you want in your cluster?"
-  default     = 0
+  default     = 1
+
+  validation {
+    condition = var.cluster_size >= 1
+    error_message = "Minimum cluster size is 1, 2 is recommended for production."
+  }
 }
 
 variable "ssh_keys" {
