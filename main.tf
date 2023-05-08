@@ -1,5 +1,5 @@
 provider "aws" {
-  region = var.region
+  region     = var.region
   access_key = var.access_key
   secret_key = var.secret_key
 }
@@ -146,6 +146,35 @@ resource "aws_instance" "nodes" {
 
   tags = {
     Name = "${var.cluster_name}-node-${format("%02d", count.index + 1)}"
+  }
+}
+
+resource "terraform_data" "removal" {
+  count = var.cluster_size
+  input = {
+    bastion_private_key         = tls_private_key.bastion_key.private_key_openssh
+    bastion_public_ip           = aws_instance.bastion.public_ip
+    bootstrap_node_private_ip   = aws_instance.boostrap_node.private_ip
+    terraform_cloud_private_key = tls_private_key.terraform_cloud.private_key_openssh
+  }
+
+  triggers_replace = aws_instance.nodes[count.index].tags.Name
+
+  connection {
+    type                = "ssh"
+    user                = "ubuntu"
+    host                = self.input.bootstrap_node_private_ip
+    private_key         = self.input.bastion_private_key
+    bastion_user        = "ubuntu"
+    bastion_host        = self.input.bastion_public_ip
+    bastion_private_key = self.input.terraform_cloud_private_key
+  }
+
+  provisioner "remote-exec" {
+    when = destroy
+    inline = [
+      "lxc cluster remove ${self.triggers_replace}"
+    ]
   }
 }
 
