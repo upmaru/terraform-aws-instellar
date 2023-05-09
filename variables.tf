@@ -3,16 +3,28 @@ variable "region" {
   default     = "us-west-2"
 }
 
-# variable "access_key" {
-#   description = "AWS Access Key"
-# }
+variable "access_key" {
+  description = "AWS Access Key"
+  type        = string
+  required    = true
+}
 
-# variable "secret_key" {
-#   description = "AWS Secret Key"
-# }
+variable "secret_key" {
+  description = "AWS Secret Key"
+  type        = string
+  required    = true
+}
+
+variable "protect_leader" {
+  type        = bool
+  description = "Protect the database leader node"
+  default     = true
+}
 
 variable "cluster_name" {
   description = "Name of your cluster"
+  type        = string
+  required    = true
 }
 
 variable "public_subnet_cidrs" {
@@ -22,6 +34,7 @@ variable "public_subnet_cidrs" {
 }
 
 variable "availability_zones" {
+  type        = list(string)
   description = "Availability Zones"
   default     = ["us-west-2a", "us-west-2b", "us-west-2c"]
 }
@@ -46,9 +59,14 @@ variable "storage_size" {
   default     = 40
 }
 
-variable "cluster_size" {
+variable "cluster_topology" {
+  type = list(object({
+    id   = number
+    name = string
+    size = optional(string, "t3.medium")
+  }))
   description = "How many nodes do you want in your cluster?"
-  default     = 0
+  default     = []
 }
 
 variable "ssh_keys" {
