@@ -3,6 +3,7 @@
 This module automatically forms LXD cluster on amazon AWS. This terraform module will do the following:
 
 - [x] Setup networking
+- [x] Setup multi az public subnet
 - [x] Setup bastion node
 - [x] Setup compute instances
 - [x] Setup Private Key access
