@@ -6,13 +6,11 @@ variable "region" {
 variable "access_key" {
   description = "AWS Access Key"
   type        = string
-  required    = true
 }
 
 variable "secret_key" {
   description = "AWS Secret Key"
   type        = string
-  required    = true
 }
 
 variable "protect_leader" {
@@ -24,7 +22,6 @@ variable "protect_leader" {
 variable "cluster_name" {
   description = "Name of your cluster"
   type        = string
-  required    = true
 }
 
 variable "public_subnet_cidrs" {
