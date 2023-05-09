@@ -39,6 +39,7 @@ aws_secret_key = "<your secret key>"
 Simply run
 
 ```shell
+terraform init
 terraform plan
 terraform apply
 ```
