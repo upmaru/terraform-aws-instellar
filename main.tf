@@ -4,6 +4,14 @@ provider "aws" {
   secret_key = var.secret_key
 }
 
+locals {
+  user = "ubuntu"
+  topology = {
+    for index, node in var.cluster_topology :
+    node.name => merge(node, { subnet = node.id % length(var.public_subnet_cidrs) })
+  }
+}
+
 data "aws_ami" "ubuntu" {
   most_recent = true
 
@@ -40,18 +48,19 @@ data "cloudinit_config" "node" {
 }
 
 resource "ssh_resource" "cluster_join_token" {
-  count        = var.cluster_size
-  host         = aws_instance.boostrap_node.private_ip
+  for_each = local.topology
+
+  host         = aws_instance.bootstrap_node.private_ip
   bastion_host = aws_instance.bastion.public_ip
 
-  user         = "ubuntu"
-  bastion_user = "ubuntu"
+  user         = local.user
+  bastion_user = local.user
 
   private_key         = tls_private_key.bastion_key.private_key_openssh
   bastion_private_key = tls_private_key.terraform_cloud.private_key_openssh
 
   commands = [
-    "lxc cluster add ${var.cluster_name}-node-${format("%02d", count.index + 1)} | sed '1d; /^$/d'"
+    "lxc cluster add ${var.cluster_name}-node-${each.key} | sed '1d; /^$/d'"
   ]
 }
 resource "aws_instance" "bootstrap_node" {
@@ -102,10 +111,11 @@ resource "aws_instance" "bootstrap_node" {
 }
 
 resource "aws_instance" "nodes" {
-  count                  = var.cluster_size
+  for_each = local.topology
+
   ami                    = data.aws_ami.ubuntu.id
-  instance_type          = var.node_size
-  subnet_id              = aws_subnet.public_subnets[count.index].id
+  instance_type          = each.value.size
+  subnet_id              = aws_subnet.public_subnets[each.value.subnet].id
   vpc_security_group_ids = [aws_security_group.nodes_firewall.id]
   placement_group        = aws_placement_group.nodes.id
   ebs_optimized          = true
@@ -118,10 +128,10 @@ resource "aws_instance" "nodes" {
 
   connection {
     type                = "ssh"
-    user                = "ubuntu"
+    user                = local.user
     host                = self.private_ip
     private_key         = tls_private_key.bastion_key.private_key_openssh
-    bastion_user        = "ubuntu"
+    bastion_user        = local.user
     bastion_host        = aws_instance.bastion.public_ip
     bastion_private_key = tls_private_key.terraform_cloud.private_key_openssh
   }
@@ -129,7 +139,7 @@ resource "aws_instance" "nodes" {
   provisioner "file" {
     content = templatefile("${path.module}/templates/lxd-join.yml.tpl", {
       ip_address   = self.private_ip
-      join_token   = ssh_resource.cluster_join_token[count.index].result
+      join_token   = ssh_resource.cluster_join_token[each.key].result
       storage_size = "${var.storage_size - 10}"
     })
 
@@ -139,57 +149,109 @@ resource "aws_instance" "nodes" {
   provisioner "remote-exec" {
     inline = [
       "cloud-init status --wait",
-      "lxd init --preseed < /tmp/lxd-join.yml",
-      "sudo shutdown -r +1"
+      "lxd init --preseed < /tmp/lxd-join.yml"
     ]
   }
 
   tags = {
-    Name = "${var.cluster_name}-node-${format("%02d", count.index + 1)}"
+    Name = "${var.cluster_name}-node-${each.key}"
   }
 }
 
-resource "terraform_data" "removal" {
-  count = var.cluster_size
+resource "ssh_resource" "node_detail" {
+  for_each = local.topology
 
-  input = {
-    node_name                   = aws_instance.nodes[count.index].tags.Name
-    bastion_private_key         = tls_private_key.bastion_key.private_key_openssh
-    bastion_public_ip           = aws_instance.bastion.public_ip
-    bootstrap_node_private_ip   = aws_instance.bootstrap_node.private_ip
-    terraform_cloud_private_key = tls_private_key.terraform_cloud.private_key_openssh
+  triggers = {
+    always_run = "${timestamp()}"
   }
 
-  depends_on = [ 
-    aws_instance.bastion, 
-    aws_instance.boostrap_node, 
-    aws_subnet.public_subnets, 
-    aws_vpc.cluster_vpc,
-    aws_internet_gateway.cluster_gw,
-    aws_security_group.nodes_firewall,
-    aws_security_group.bastion_firewall,
-    aws_route_table.public,
-    aws_route_table_association.public_subnet_assoc
+  host         = aws_instance.bootstrap_node.private_ip
+  bastion_host = aws_instance.bastion.public_ip
+
+  user         = local.user
+  bastion_user = local.user
+
+  private_key         = tls_private_key.bastion_key.private_key_openssh
+  bastion_private_key = tls_private_key.terraform_cloud.private_key_openssh
+
+  commands = [
+    "lxc cluster show ${aws_instance.nodes[each.key].tags.Name}"
   ]
+}
+
+resource "terraform_data" "reboot" {
+  for_each = local.topology
+
+  input = {
+    user                        = local.user
+    node_name                   = aws_instance.nodes[each.key].tags.Name
+    bastion_private_key         = tls_private_key.bastion_key.private_key_openssh
+    bastion_public_ip           = aws_instance.bastion.public_ip
+    node_private_ip             = aws_instance.nodes[each.key].private_ip
+    terraform_cloud_private_key = tls_private_key.terraform_cloud.private_key_openssh
+    commands = contains(yamldecode(ssh_resource.node_detail[each.key].result).roles, "database-leader") ? ["echo Node is database-leader restarting later", "sudo shutdown -r +2"] : [
+      "sudo shutdown -r +1"
+    ]
+  }
 
   connection {
     type                = "ssh"
-    user                = "ubuntu"
-    host                = self.input.bootstrap_node_private_ip
+    user                = self.input.user
+    host                = self.input.node_private_ip
     private_key         = self.input.bastion_private_key
-    bastion_user        = "ubuntu"
+    bastion_user        = self.input.user
     bastion_host        = self.input.bastion_public_ip
     bastion_private_key = self.input.terraform_cloud_private_key
     timeout             = "10s"
   }
 
   provisioner "remote-exec" {
-    when       = destroy
-    on_failure = continue
-    inline = [
-      "lxc cluster evac --force ${self.input.node_name}",
-      "lxc cluster remove ${self.input.node_name}"
+    inline = self.input.commands
+  }
+}
+
+resource "terraform_data" "removal" {
+  for_each = local.topology
+
+  input = {
+    user                        = local.user
+    node_name                   = aws_instance.nodes[each.key].tags.Name
+    bastion_private_key         = tls_private_key.bastion_key.private_key_openssh
+    bastion_public_ip           = aws_instance.bastion.public_ip
+    bootstrap_node_private_ip   = aws_instance.bootstrap_node.private_ip
+    terraform_cloud_private_key = tls_private_key.terraform_cloud.private_key_openssh
+    commands = contains(yamldecode(ssh_resource.node_detail[each.key].result).roles, "database-leader") ? ["echo ${var.protect_leader ? "Node is database-leader cannot destroy" : "Tearing it all down"}", "exit ${var.protect_leader ? 1 : 0}"] : [
+      "lxc cluster evac --force ${aws_instance.nodes[each.key].tags.Name}",
+      "lxc cluster remove ${aws_instance.nodes[each.key].tags.Name}"
     ]
+  }
+
+  depends_on = [
+    aws_instance.bastion,
+    aws_instance.bootstrap_node,
+    aws_subnet.public_subnets,
+    aws_vpc.cluster_vpc,
+    aws_internet_gateway.cluster_gw,
+    aws_security_group.nodes_firewall,
+    aws_security_group.bastion_firewall,
+    aws_route_table.public,
+    aws_route_table_association.public_subnet_assoc,
+  ]
+
+  connection {
+    type                = "ssh"
+    user                = self.input.user
+    host                = self.input.bootstrap_node_private_ip
+    private_key         = self.input.bastion_private_key
+    bastion_user        = self.input.user
+    bastion_host        = self.input.bastion_public_ip
+    bastion_private_key = self.input.terraform_cloud_private_key
+    timeout             = "10s"
+  }
+
+  provisioner "remote-exec" {
+    when   = destroy
+    inline = self.input.commands
   }
 }
 

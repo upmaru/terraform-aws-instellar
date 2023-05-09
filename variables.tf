@@ -11,6 +11,12 @@ variable "secret_key" {
   description = "AWS Secret Key"
 }
 
+variable "protect_leader" {
+  type        = bool
+  description = "Protect the database leader node"
+  default     = true
+}
+
 variable "cluster_name" {
   description = "Name of your cluster"
 }
@@ -46,14 +52,14 @@ variable "storage_size" {
   default     = 40
 }
 
-variable "cluster_size" {
+variable "cluster_topology" {
+  type = list(object({
+    id   = number
+    name = string
+    size = optional(string, "t3.medium")
+  }))
   description = "How many nodes do you want in your cluster?"
-  default     = 1
-
-  validation {
-    condition = var.cluster_size >= 1
-    error_message = "Minimum cluster size is 1, 2 is recommended for production."
-  }
+  default     = []
 }
 
 variable "ssh_keys" {
