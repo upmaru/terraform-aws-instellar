@@ -15,7 +15,7 @@ These functionality come together to enable the user to fully manage LXD cluster
 
 ## How to Use
 
-Create a terraform script with the following:
+Create a terraform script `main.tf` with the following:
 
 ```hcl
 variable "aws_access_key" {}
