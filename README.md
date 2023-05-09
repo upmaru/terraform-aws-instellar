@@ -96,7 +96,6 @@ cluster_topology = [
 ```
 
 <!-- BEGIN_TF_DOCS -->
-<!-- BEGIN_TF_DOCS -->
 ## Requirements
 
 | Name | Version |
