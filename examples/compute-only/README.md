@@ -8,7 +8,7 @@ variable "aws_secret_key" {}
 
 module "instellar" {
   source = "upmaru/instellar/aws"
-  version = "0.3.0"
+  version = "0.3.4"
 
   access_key   = var.aws_access_key
   secret_key   = var.aws_secret_key
