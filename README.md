@@ -74,6 +74,7 @@ No modules.
 | <a name="input_bastion_size"></a> [bastion\_size](#input\_bastion\_size) | Bastion instance type? | `string` | `"t2.micro"` | no |
 | <a name="input_cluster_name"></a> [cluster\_name](#input\_cluster\_name) | Name of your cluster | `string` | n/a | yes |
 | <a name="input_cluster_topology"></a> [cluster\_topology](#input\_cluster\_topology) | How many nodes do you want in your cluster? | <pre>list(object({<br>    id   = number<br>    name = string<br>    size = optional(string, "t3.medium")<br>  }))</pre> | `[]` | no |
+| <a name="input_node_monitoring"></a> [node\_monitoring](#input\_node\_monitoring) | Enable / Disable detailed monitoring | `bool` | `false` | no |
 | <a name="input_node_size"></a> [node\_size](#input\_node\_size) | Which instance type? | `string` | `"t3.medium"` | no |
 | <a name="input_protect_leader"></a> [protect\_leader](#input\_protect\_leader) | Protect the database leader node | `bool` | `true` | no |
 | <a name="input_public_subnet_cidrs"></a> [public\_subnet\_cidrs](#input\_public\_subnet\_cidrs) | Public Subnet CIDR values | `list(string)` | <pre>[<br>  "10.0.1.0/24",<br>  "10.0.2.0/24",<br>  "10.0.3.0/24"<br>]</pre> | no |
