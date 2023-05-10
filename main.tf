@@ -70,7 +70,7 @@ resource "aws_instance" "bootstrap_node" {
   vpc_security_group_ids = [aws_security_group.nodes_firewall.id]
   placement_group        = aws_placement_group.nodes.id
   ebs_optimized          = true
-  monitoring             = true
+  monitoring             = var.node_monitoring
   user_data_base64       = data.cloudinit_config.node.rendered
 
   root_block_device {
@@ -119,7 +119,7 @@ resource "aws_instance" "nodes" {
   vpc_security_group_ids = [aws_security_group.nodes_firewall.id]
   placement_group        = aws_placement_group.nodes.id
   ebs_optimized          = true
-  monitoring             = true
+  monitoring             = var.node_monitoring
   user_data_base64       = data.cloudinit_config.node.rendered
 
   root_block_device {

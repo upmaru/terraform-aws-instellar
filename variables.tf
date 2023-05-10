@@ -46,6 +46,11 @@ variable "node_size" {
   default     = "t3.medium"
 }
 
+variable "node_monitoring" {
+  description = "Enable / Disable detailed monitoring"
+  default     = false
+}
+
 variable "vpc_ip_range" {
   description = "VPC ip range"
   default     = "10.0.0.0/16"
