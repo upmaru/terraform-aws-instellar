@@ -82,6 +82,7 @@ No modules.
 | <a name="input_secret_key"></a> [secret\_key](#input\_secret\_key) | AWS Secret Key | `string` | n/a | yes |
 | <a name="input_ssh_keys"></a> [ssh\_keys](#input\_ssh\_keys) | List of ssh key names | `list(string)` | `[]` | no |
 | <a name="input_storage_size"></a> [storage\_size](#input\_storage\_size) | How much storage on your nodes? | `number` | `40` | no |
+| <a name="input_volume_type"></a> [volume\_type](#input\_volume\_type) | Type of EBS Volume to use | `string` | `"gp3"` | no |
 | <a name="input_vpc_ip_range"></a> [vpc\_ip\_range](#input\_vpc\_ip\_range) | VPC ip range | `string` | `"10.0.0.0/16"` | no |
 
 ## Outputs
