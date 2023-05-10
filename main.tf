@@ -124,6 +124,7 @@ resource "aws_instance" "nodes" {
 
   root_block_device {
     volume_size = var.storage_size
+    volume_type = var.volume_type
   }
 
   connection {

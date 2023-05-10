@@ -61,6 +61,11 @@ variable "storage_size" {
   default     = 40
 }
 
+variable "volume_type" {
+  description = "Type of EBS Volume to use"
+  default     = "gp3"
+}
+
 variable "cluster_topology" {
   type = list(object({
     id   = number
