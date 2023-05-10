@@ -56,7 +56,7 @@ cluster_topology = [
 ]
 ```
 
-Then run `terraform apply` it will automatically scale your cluster up and add `orange` to the cluster. You can also selectively remove a node from the cluster.
+Then run `terraform apply` it will automatically scale your cluster up and add `orange` to the cluster. You can also selectively remove a node from the cluster. Once you've bootstrapped your cluster do not change the `id` since it is used to compute assignments to subnets, if you don't want your nodes replaced don't change the `id`.
 
 ```diff
 cluster_topology = [

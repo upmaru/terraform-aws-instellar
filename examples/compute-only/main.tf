@@ -6,10 +6,10 @@ module "instellar" {
 
   access_key   = var.aws_access_key
   secret_key   = var.aws_secret_key
-  cluster_name = "orion-exp"
+  cluster_name = "fruits"
   cluster_topology = [
     {id = 1, name = "apple"},
-    {id = 3, name = "watermelon"}
+    {id = 2, name = "watermelon"}
   ]
   storage_size = 40
   ssh_keys = [
