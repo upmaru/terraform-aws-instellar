@@ -56,6 +56,7 @@ No modules.
 | [aws_vpc.cluster_vpc](https://registry.terraform.io/providers/hashicorp/aws/4.66.1/docs/resources/vpc) | resource |
 | [ssh_resource.cluster_join_token](https://registry.terraform.io/providers/loafoe/ssh/latest/docs/resources/resource) | resource |
 | [ssh_resource.node_detail](https://registry.terraform.io/providers/loafoe/ssh/latest/docs/resources/resource) | resource |
+| [ssh_resource.trust_token](https://registry.terraform.io/providers/loafoe/ssh/latest/docs/resources/resource) | resource |
 | [terraform_data.reboot](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/resources/data) | resource |
 | [terraform_data.removal](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/resources/data) | resource |
 | [tls_private_key.bastion_key](https://registry.terraform.io/providers/hashicorp/tls/4.0.4/docs/resources/private_key) | resource |
@@ -87,6 +88,9 @@ No modules.
 
 ## Outputs
 
-No outputs.
+| Name | Description |
+|------|-------------|
+| <a name="output_cluster_address"></a> [cluster\_address](#output\_cluster\_address) | n/a |
+| <a name="output_trust_token"></a> [trust\_token](#output\_trust\_token) | n/a |
 <!-- END_TF_DOCS -->
 
