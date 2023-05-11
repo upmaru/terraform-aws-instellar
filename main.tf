@@ -47,6 +47,21 @@ data "cloudinit_config" "node" {
   }
 }
 
+resource "ssh_resource" "trust_token" {
+  host         = aws_instance.bootstrap_node.private_ip
+  bastion_host = aws_instance.bastion.public_ip
+
+  user         = local.user
+  bastion_user = local.user
+
+  private_key         = tls_private_key.bastion_key.private_key_openssh
+  bastion_private_key = tls_private_key.terraform_cloud.private_key_openssh
+
+  commands = [
+    "lxc config trust add --name instellar | sed '1d; /^$/d'"
+  ]
+}
+
 resource "ssh_resource" "cluster_join_token" {
   for_each = local.topology
 

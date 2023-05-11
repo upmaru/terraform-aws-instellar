@@ -14,8 +14,8 @@ module "instellar" {
   secret_key   = var.aws_secret_key
   cluster_name = "orion-exp"
   cluster_topology = [
-    {id = 1, name = "apple"},
-    {id = 2, name = "watermelon"}
+    {id = 1, name = "apple", size = "c5a.large"},
+    {id = 2, name = "watermelon", size = "c5a.large"}
   ]
   
   storage_size = 40
@@ -26,6 +26,14 @@ module "instellar" {
     "zack-studio",
     "zack-one-eight"
   ]
+}
+
+output "trust_token" {
+  value = module.instellar.trust_token
+}
+
+output "cluster_address" {
+  value = module.instellar.cluster_address
 }
 ```
 
@@ -50,9 +58,9 @@ If you wish to add a node into the cluster you can modify the `cluster_topology`
 
 ```diff
 cluster_topology = [
-  {id = 1, name = "apple"},
-  {id = 2, name = "watermelon"},
-+ {id = 3, name = "orange"}
+  {id = 1, name = "apple", size = "c5a.large"},
+  {id = 2, name = "watermelon", size = "c5a.large"},
++ {id = 3, name = "orange", size = "t3.large"}
 ]
 ```
 
@@ -60,9 +68,9 @@ Then run `terraform apply` it will automatically scale your cluster up and add `
 
 ```diff
 cluster_topology = [
-  {id = 1, name = "apple"},
-- {id = 2, name = "watermelon"},
-  {id = 3, name = "orange"}
+  {id = 1, name = "apple", size = "c5a.large"},
+- {id = 2, name = "watermelon", size = "c5a.large"},
+  {id = 3, name = "orange", size = "t3.large"}
 ]
 ```
 

@@ -19,3 +19,11 @@ module "instellar" {
     "zack-one-eight"
   ]
 }
+
+output "trust_token" {
+  value = module.instellar.trust_token
+}
+
+output "cluster_address" {
+  value = module.instellar.cluster_address
+}
