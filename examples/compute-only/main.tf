@@ -1,7 +1,5 @@
 variable "aws_access_key" {}
 variable "aws_secret_key" {}
-variable "cluster_name" {}
-variable "node_size" {}
 
 module "instellar" {
   source = "../.."
