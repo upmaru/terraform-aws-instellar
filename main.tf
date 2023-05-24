@@ -4,11 +4,6 @@ provider "aws" {
   secret_key = var.secret_key
 }
 
-provider "instellar" {
-  host       = "https://staging-web.instellar.app"
-  auth_token = var.instellar_auth_token
-}
-
 locals {
   user = "ubuntu"
   topology = {
@@ -276,15 +271,6 @@ resource "terraform_data" "removal" {
   }
 }
 
-resource "instellar_cluster" "main" {
-  count = var.provision_instellar_cluster ? 1 : 0
-
-  name           = var.cluster_name
-  endpoint       = "${aws_instance.bootstrap_node.public_ip}:8443"
-  provider_name  = "aws"
-  region         = var.region
-  password_token = ssh_resource.trust_token.result
-}
 
 
 

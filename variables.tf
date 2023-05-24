@@ -24,17 +24,6 @@ variable "cluster_name" {
   type        = string
 }
 
-variable "instellar_auth_token" {
-  description = "Instellar auth token"
-  type        = string
-}
-
-variable "provision_instellar_cluster" {
-  type        = bool
-  description = "Whether to automatically setup cluster on instellar"
-  default     = true
-}
-
 variable "public_subnet_cidrs" {
   type        = list(string)
   description = "Public Subnet CIDR values"
