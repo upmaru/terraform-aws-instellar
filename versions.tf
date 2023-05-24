@@ -6,6 +6,11 @@ terraform {
       source = "loafoe/ssh"
     }
 
+    instellar = {
+      source  = "upmaru/instellar"
+      version = "0.1.0"
+    }
+
     aws = {
       source  = "hashicorp/aws"
       version = "4.66.1"

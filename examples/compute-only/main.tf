@@ -1,11 +1,13 @@
 variable "aws_access_key" {}
 variable "aws_secret_key" {}
+variable "instellar_auth_token" {}
 
 module "instellar" {
   source = "../.."
 
   access_key   = var.aws_access_key
   secret_key   = var.aws_secret_key
+  instellar_auth_token = var.instellar_auth_token
   cluster_name = "pizza"
   node_size    = "t3a.medium"
   cluster_topology = [
@@ -18,12 +20,4 @@ module "instellar" {
     "zack-studio",
     "zack-one-eight"
   ]
-}
-
-output "trust_token" {
-  value = module.instellar.trust_token
-}
-
-output "cluster_address" {
-  value = module.instellar.cluster_address
 }
