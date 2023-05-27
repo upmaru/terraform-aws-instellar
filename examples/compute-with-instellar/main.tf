@@ -25,10 +25,9 @@ module "compute" {
 }
 
 variable "instellar_auth_token" {}
-
-module "instellar_cluster" {
+module "instellar" {
   source  = "upmaru/bootstrap/instellar"
-  version = "0.1.0"
+  version = "0.2.2"
 
   host            = "https://staging-web.instellar.app"
   auth_token      = var.instellar_auth_token
@@ -37,4 +36,6 @@ module "instellar_cluster" {
   provider_name   = "aws"
   cluster_address = module.compute.cluster_address
   password_token  = module.compute.trust_token
+
+  uplink_channel = "develop"
 }
