@@ -238,7 +238,7 @@ resource "terraform_data" "removal" {
     terraform_cloud_private_key = tls_private_key.terraform_cloud.private_key_openssh
     commands = contains(yamldecode(ssh_resource.node_detail[each.key].result).roles, "database-leader") ? ["echo ${var.protect_leader ? "Node is database-leader cannot destroy" : "Tearing it all down"}", "exit ${var.protect_leader ? 1 : 0}"] : [
       "lxc cluster evac --force ${aws_instance.nodes[each.key].tags.Name}",
-      "lxc cluster remove ${aws_instance.nodes[each.key].tags.Name}"
+      "lxc cluster remove --force --yes ${aws_instance.nodes[each.key].tags.Name}"
     ]
   }
 
