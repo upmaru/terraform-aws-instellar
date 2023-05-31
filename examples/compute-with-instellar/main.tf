@@ -27,7 +27,7 @@ module "compute" {
 variable "instellar_auth_token" {}
 module "instellar" {
   source  = "upmaru/bootstrap/instellar"
-  version = "0.2.2"
+  version = "0.3.1"
 
   host            = "https://staging-web.instellar.app"
   auth_token      = var.instellar_auth_token
@@ -38,4 +38,7 @@ module "instellar" {
   password_token  = module.compute.trust_token
 
   uplink_channel = "develop"
+
+  bootstrap_node = module.compute.bootstrap_node
+  nodes          = module.compute.nodes
 }
