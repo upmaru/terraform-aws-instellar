@@ -4,6 +4,7 @@ variable "aws_secret_key" {}
 locals {
   // replace with your cluster name
   cluster_name = "pizza"
+  provider_name = "aws"
 }
 
 module "compute" {
@@ -36,7 +37,7 @@ module "instellar" {
   auth_token      = var.instellar_auth_token
   cluster_name    = local.cluster_name
   region          = module.compute.region
-  provider_name   = "aws"
+  provider_name   = local.provider_name
   cluster_address = module.compute.cluster_address
   password_token  = module.compute.trust_token
 

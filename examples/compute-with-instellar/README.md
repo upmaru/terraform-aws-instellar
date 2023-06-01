@@ -9,10 +9,11 @@ variable "aws_secret_key" {}
 locals {
   // replace with your cluster name
   cluster_name = "pizza"
+  provider_name = "aws"
 }
 
 module "compute" {
-  source = "upmaru/instellar/aws"
+  source = "upmaru/instellar/${local.provider_name}"
   version = "0.4.3"
 
   access_key   = var.aws_access_key
@@ -39,15 +40,12 @@ module "instellar" {
   source  = "upmaru/bootstrap/instellar"
   version = "0.3.1"
 
-  host            = "https://staging-web.instellar.app"
   auth_token      = var.instellar_auth_token
   cluster_name    = local.cluster_name
   region          = module.compute.region
-  provider_name   = "aws"
+  provider_name   = local.provider_name
   cluster_address = module.compute.cluster_address
   password_token  = module.compute.trust_token
-
-  uplink_channel = "develop"
 
   bootstrap_node = module.compute.bootstrap_node
   nodes          = module.compute.nodes
