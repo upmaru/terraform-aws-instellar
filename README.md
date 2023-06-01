@@ -90,7 +90,10 @@ No modules.
 
 | Name | Description |
 |------|-------------|
+| <a name="output_bootstrap_node"></a> [bootstrap\_node](#output\_bootstrap\_node) | n/a |
 | <a name="output_cluster_address"></a> [cluster\_address](#output\_cluster\_address) | n/a |
+| <a name="output_nodes"></a> [nodes](#output\_nodes) | n/a |
+| <a name="output_region"></a> [region](#output\_region) | n/a |
 | <a name="output_trust_token"></a> [trust\_token](#output\_trust\_token) | n/a |
 <!-- END_TF_DOCS -->
 
