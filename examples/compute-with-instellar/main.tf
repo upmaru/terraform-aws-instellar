@@ -2,6 +2,7 @@ variable "aws_access_key" {}
 variable "aws_secret_key" {}
 
 locals {
+  // replace with your cluster name
   cluster_name = "pizza"
 }
 
@@ -13,6 +14,8 @@ module "compute" {
   cluster_name = local.cluster_name
   node_size    = "t3a.medium"
   cluster_topology = [
+    // replace name of node with anything you like
+    // you can use 01, 02 also to keep it simple.
     { id = 1, name = "ham", size = "t3a.medium" },
     { id = 2, name = "bacon", size = "t3a.medium" },
   ]
