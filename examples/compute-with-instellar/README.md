@@ -13,7 +13,7 @@ locals {
 
 module "compute" {
   source = "upmaru/instellar/aws"
-  version = "0.4.2"
+  version = "0.4.3"
 
   access_key   = var.aws_access_key
   secret_key   = var.aws_secret_key
@@ -108,5 +108,5 @@ cluster_topology = [
   {id = 2, name = "watermelon", size = "c5a.large"},
   {id = 3, name = "orange", size = "t3.large"}
 ]
-
+```
 
