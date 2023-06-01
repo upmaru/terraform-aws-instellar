@@ -13,7 +13,7 @@ locals {
 
 module "compute" {
   source = "upmaru/instellar/aws"
-  version = "0.4.2"
+  version = "0.4.3"
 
   access_key   = var.aws_access_key
   secret_key   = var.aws_secret_key
