@@ -205,8 +205,8 @@ resource "terraform_data" "reboot" {
     bastion_public_ip           = aws_instance.bastion.public_ip
     node_private_ip             = aws_instance.nodes[each.key].private_ip
     terraform_cloud_private_key = tls_private_key.terraform_cloud.private_key_openssh
-    commands = contains(yamldecode(ssh_resource.node_detail[each.key].result).roles, "database-leader") ? ["echo Node is database-leader restarting later", "sudo shutdown -r +2"] : [
-      "sudo shutdown -r +1"
+    commands = contains(yamldecode(ssh_resource.node_detail[each.key].result).roles, "database-leader") ? ["echo Node is database-leader restarting later", "sudo shutdown -r +1"] : [
+      "sudo reboot"
     ]
   }
 
@@ -222,7 +222,8 @@ resource "terraform_data" "reboot" {
   }
 
   provisioner "remote-exec" {
-    inline = self.input.commands
+    on_failure = continue
+    inline     = self.input.commands
   }
 }
 
@@ -237,8 +238,7 @@ resource "terraform_data" "removal" {
     bootstrap_node_private_ip   = aws_instance.bootstrap_node.private_ip
     terraform_cloud_private_key = tls_private_key.terraform_cloud.private_key_openssh
     commands = contains(yamldecode(ssh_resource.node_detail[each.key].result).roles, "database-leader") ? ["echo ${var.protect_leader ? "Node is database-leader cannot destroy" : "Tearing it all down"}", "exit ${var.protect_leader ? 1 : 0}"] : [
-      "lxc cluster evac --force ${aws_instance.nodes[each.key].tags.Name}",
-      "lxc cluster remove ${aws_instance.nodes[each.key].tags.Name}"
+      "lxc cluster remove --force --yes ${aws_instance.nodes[each.key].tags.Name}"
     ]
   }
 
@@ -270,6 +270,7 @@ resource "terraform_data" "removal" {
     inline = self.input.commands
   }
 }
+
 
 
 
