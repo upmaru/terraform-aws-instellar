@@ -108,5 +108,5 @@ cluster_topology = [
   {id = 2, name = "watermelon", size = "c5a.large"},
   {id = 3, name = "orange", size = "t3.large"}
 ]
-
+```
 
