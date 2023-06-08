@@ -17,8 +17,8 @@ module "compute" {
   cluster_topology = [
     // replace name of node with anything you like
     // you can use 01, 02 also to keep it simple.
-    { id = 1, name = "ham", size = "t3a.medium" },
-    { id = 2, name = "bacon", size = "t3a.medium" },
+    { id = 1, name = "01", size = "t3a.medium" },
+    { id = 2, name = "02", size = "t3a.medium" },
   ]
   volume_type  = "gp3"
   storage_size = 40
@@ -31,7 +31,7 @@ module "compute" {
 variable "instellar_auth_token" {}
 module "instellar" {
   source  = "upmaru/bootstrap/instellar"
-  version = "0.3.1"
+  version = "~> 0.3"
 
   host            = "https://staging-web.instellar.app"
   auth_token      = var.instellar_auth_token
