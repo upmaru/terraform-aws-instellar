@@ -31,6 +31,7 @@ resource "aws_route_table_association" "public_subnet_assoc" {
   route_table_id = aws_route_table.public.id
 }
 
+#tfsec:ignore:aws-ec2-no-public-ip-subnet
 resource "aws_subnet" "public_subnets" {
   count             = length(var.public_subnet_cidrs)
   vpc_id            = aws_vpc.cluster_vpc.id
@@ -49,6 +50,7 @@ resource "aws_security_group" "bastion_firewall" {
   description = "Instellar Bastion Configuration"
   vpc_id      = aws_vpc.cluster_vpc.id
 
+  #tfsec:ignore:aws-vpc-no-public-ingress-sgr[from_port=22]
   ingress {
     description      = "SSH"
     from_port        = 22
@@ -58,7 +60,9 @@ resource "aws_security_group" "bastion_firewall" {
     ipv6_cidr_blocks = ["::/0"]
   }
 
+  #tfsec:ignore:aws-ec2-no-public-egress-sgr
   egress {
+    description      = "Egress to everywhere"
     from_port        = 0
     to_port          = 0
     protocol         = "-1"
@@ -70,12 +74,12 @@ resource "aws_security_group" "bastion_firewall" {
     Name = "${var.cluster_name}-instellar"
   }
 }
-
 resource "aws_security_group" "nodes_firewall" {
   name        = "${var.cluster_name}-instellar-nodes"
   description = "Instellar Nodes Configuration"
   vpc_id      = aws_vpc.cluster_vpc.id
 
+  #tfsec:ignore:aws-vpc-no-public-ingress-sgr[from_port=80]
   ingress {
     description      = "HTTP"
     from_port        = 80
@@ -85,6 +89,7 @@ resource "aws_security_group" "nodes_firewall" {
     ipv6_cidr_blocks = ["::/0"]
   }
 
+  #tfsec:ignore:aws-ec2-no-public-ingress-sgr[from_port=443]
   ingress {
     description      = "HTTPS"
     from_port        = 443
@@ -94,6 +99,7 @@ resource "aws_security_group" "nodes_firewall" {
     ipv6_cidr_blocks = ["::/0"]
   }
 
+  #tfsec:ignore:aws-vpc-no-public-ingress-sgr[from_port=8443]
   ingress {
     description      = "LXD"
     from_port        = 8443
@@ -103,6 +109,7 @@ resource "aws_security_group" "nodes_firewall" {
     ipv6_cidr_blocks = ["::/0"]
   }
 
+  #tfsec:ignore:aws-vpc-no-public-ingress-sgr[from_port=49152]
   ingress {
     description      = "Uplink"
     from_port        = 49152
@@ -136,7 +143,9 @@ resource "aws_security_group" "nodes_firewall" {
     self        = true
   }
 
+  #tfsec:ignore:aws-ec2-no-public-egress-sgr
   egress {
+    description      = "Egress to everywhere"
     from_port        = 0
     to_port          = 0
     protocol         = "-1"

@@ -88,8 +88,14 @@ resource "aws_instance" "bootstrap_node" {
   monitoring             = var.node_monitoring
   user_data_base64       = data.cloudinit_config.node.rendered
 
+  metadata_options {
+    http_tokens = "required"
+  }
+
   root_block_device {
     volume_size = var.storage_size
+    volume_type = var.volume_type
+    encrypted   = true
   }
 
   connection {
@@ -137,9 +143,14 @@ resource "aws_instance" "nodes" {
   monitoring             = var.node_monitoring
   user_data_base64       = data.cloudinit_config.node.rendered
 
+  metadata_options {
+    http_tokens = "required"
+  }
+
   root_block_device {
     volume_size = var.storage_size
     volume_type = var.volume_type
+    encrypted   = true
   }
 
   connection {

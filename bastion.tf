@@ -25,6 +25,14 @@ resource "aws_instance" "bastion" {
   vpc_security_group_ids = [aws_security_group.bastion_firewall.id]
   user_data_base64       = data.cloudinit_config.bastion.rendered
 
+  metadata_options {
+    http_tokens = "required"
+  }
+
+  root_block_device {
+    encrypted = true
+  }
+
   connection {
     type        = "ssh"
     user        = "ubuntu"
