@@ -11,6 +11,7 @@ variable "access_key" {
 variable "secret_key" {
   description = "AWS Secret Key"
   type        = string
+  sensitive   = true
 }
 
 variable "protect_leader" {

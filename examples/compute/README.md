@@ -6,7 +6,7 @@ Create a terraform script `main.tf` with the following:
 variable "aws_access_key" {}
 variable "aws_secret_key" {}
 
-module "instellar" {
+module "compute" {
   source = "upmaru/instellar/aws"
   version = "0.4.1"
 
