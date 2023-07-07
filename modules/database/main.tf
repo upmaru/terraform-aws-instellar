@@ -18,7 +18,9 @@ resource "aws_db_instance" "this" {
   max_allocated_storage = var.max_storage_size
 
   db_subnet_group_name = aws_db_subnet_group.this.name
+  vpc_security_group_ids = [aws_security_group.database.id]
 
-  publically_accessible = var.publically_accessible
+  publicly_accessible = var.publicly_accessible
   deletion_protection = var.deletion_protection
+  skip_final_snapshot = var.skip_final_snapshot
 }

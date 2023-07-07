@@ -1,19 +1,20 @@
+variable "aws_region" {}
 variable "aws_access_key" {}
 variable "aws_secret_key" {}
 
 provider "aws" {
-  region     = var.region
+  region     = var.aws_region
   access_key = var.aws_access_key
   secret_key = var.aws_secret_key
 }
 
 locals {
   // replace with your cluster name
-  cluster_name = "pizza"
+  cluster_name  = "pizza"
   provider_name = "aws"
 }
 
-module "compute" {
+module "primary_compute" {
   source = "../.."
 
   cluster_name = local.cluster_name
@@ -32,36 +33,62 @@ module "compute" {
   ]
 }
 
-module "database" {
+module "postgresql" {
   source = "../../modules/database"
-  
-  identifier     = "${local.cluster_name}-postgres-db"
+
+  identifier = "${local.cluster_name}-postgres-db"
 
   db_size        = "db.t3.small"
   db_name        = "instellardb"
   engine         = "postgres"
   engine_version = "15"
 
-  db_username        = "instellar"
-  
-  subnet_ids         = module.compute.public_subnet_ids
-  security_group_ids = module.compute.node_security_group_ids
-  vpc_id             = module.compute.vpc_id
+  db_username = "instellar"
+
+  subnet_ids         = module.primary_compute.public_subnet_ids
+  security_group_ids = [module.primary_compute.nodes_security_group_id]
+  vpc_id             = module.primary_compute.vpc_id
+  deletion_protection = false
+  skip_final_snapshot = true
 }
 
+variable "instellar_host" {}
 variable "instellar_auth_token" {}
 
-module "instellar" {
+provider "instellar" {
+  host       = var.instellar_host
+  auth_token = var.instellar_auth_token
+}
+module "bootstrap" {
   source  = "upmaru/bootstrap/instellar"
-  version = "0.3.1"
+  version = "~> 0.4"
 
-  auth_token      = var.instellar_auth_token
   cluster_name    = local.cluster_name
-  region          = module.compute.region
+  region          = var.aws_region
   provider_name   = local.provider_name
-  cluster_address = module.compute.cluster_address
-  password_token  = module.compute.trust_token
+  uplink_channel =  "develop"
+  cluster_address = module.primary_compute.cluster_address
+  password_token  = module.primary_compute.trust_token
 
-  bootstrap_node = module.compute.bootstrap_node
-  nodes          = module.compute.nodes
+  bootstrap_node = module.primary_compute.bootstrap_node
+  nodes          = module.primary_compute.nodes
+}
+
+module "postgresql_service" {
+  source  = "upmaru/bootstrap/instellar//modules/service"
+  version = "~> 0.4"
+
+  slug           = module.postgresql.identifier
+  provider_name  = local.provider_name
+  driver         = "database/postgresql"
+  driver_version = "15"
+  cluster_ids    = [module.bootstrap.cluster_id]
+  channels       = ["develop", "master"]
+  credential = {
+    username = module.postgresql.username
+    password = module.postgresql.password
+    database = module.postgresql.db_name
+    host     = module.postgresql.address
+    port     = module.postgresql.port
+  }
 }

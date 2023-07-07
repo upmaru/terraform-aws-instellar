@@ -1,20 +1,10 @@
-variable "region" {
-  description = "The AWS region you want to use"
-  default     = "us-west-2"
-}
-
-variable "access_key" {
-  description = "AWS Access Key"
-  type        = string
-}
-
-variable "secret_key" {
-  description = "AWS Secret Key"
-  type        = string
-}
-
 variable "identifier" {
   description = "Database instance name"
+  type        = string
+}
+
+variable "db_size" {
+  description = "Database instance size"
   type        = string
 }
 
@@ -58,7 +48,7 @@ variable "storage_type" {
   type        = string
 }
 
-variable "publically_accessible" {
+variable "publicly_accessible" {
   description = "Database publically accessible"
   default     = false
   type        = bool
@@ -68,6 +58,17 @@ variable "deletion_protection" {
   description = "Database deletion protection"
   default     = true
   type        = bool
+}
+
+variable "skip_final_snapshot" {
+  description = "Database skip final snapshot"
+  default     = false
+  type        = bool
+}
+
+variable "subnet_ids" {
+  description = "Database subnet ids"
+  type        = list(string)
 }
 
 variable "security_group_ids" {

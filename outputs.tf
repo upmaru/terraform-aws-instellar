@@ -6,10 +6,6 @@ output "trust_token" {
   value = ssh_resource.trust_token.result
 }
 
-output "region" {
-  value = var.region
-}
-
 output "bootstrap_node" {
   value = {
     slug      = aws_instance.bootstrap_node.tags.Name
@@ -36,5 +32,5 @@ output "public_subnet_ids" {
 }
 
 output "vpc_id" {
-  value = aws_vpc.vpc.id
+  value = aws_vpc.cluster_vpc.id
 }

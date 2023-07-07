@@ -1,29 +1,39 @@
+output "identifier" {
+  description = "The database identifier"
+  value       = aws_db_instance.this.identifier
+}
+
 output "address" {
   description = "The database address"
-  value       = aws_db_instance.database.address
+  value       = aws_db_instance.this.address
 }
 
 output "endpoint" {
   description = "The database endpoint"
-  value       = aws_db_instance.database.endpoint
+  value       = aws_db_instance.this.endpoint
 }
 
 output "db_name" {
   description = "The database name"
-  value       = aws_db_instance.database.db_name
+  value       = aws_db_instance.this.db_name
 }
 
 output "username" {
   description = "The database master username"
-  value       = aws_db_instance.database.username
+  value       = aws_db_instance.this.username
 }
 
 output "password" {
   description = "The database master password"
-  value       = aws_db_instance.database.password
+  value       = aws_db_instance.this.password
+}
+
+output "port" {
+  description = "The database port"
+  value       = aws_db_instance.this.port
 }
 
 output "engine_version" {
   description = "The database engine version"
-  value       = aws_db_instance.database.engine_version_actual
+  value       = aws_db_instance.this.engine_version_actual
 }
