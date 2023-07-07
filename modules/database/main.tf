@@ -1,9 +1,3 @@
-provider "aws" {
-  region     = var.region
-  access_key = var.access_key
-  secret_key = var.secret_key
-}
-
 resource "random_password" "password" {
   length           = 16
   special          = true
@@ -22,4 +16,9 @@ resource "aws_db_instance" "this" {
 
   allocated_storage     = var.storage_size
   max_allocated_storage = var.max_storage_size
+
+  db_subnet_group_name = aws_db_subnet_group.this.name
+
+  publically_accessible = var.publically_accessible
+  deletion_protection = var.deletion_protection
 }

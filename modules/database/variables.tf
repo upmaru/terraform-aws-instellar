@@ -11,7 +11,6 @@ variable "access_key" {
 variable "secret_key" {
   description = "AWS Secret Key"
   type        = string
-  sensitive   = true
 }
 
 variable "identifier" {
@@ -21,6 +20,7 @@ variable "identifier" {
 
 variable "db_name" {
   description = "Database name to create"
+  default     = "instellar"
   type        = string
 }
 
@@ -36,23 +36,46 @@ variable "engine_version" {
 
 variable "db_username" {
   description = "Database username"
-  type        = string
   default     = "instellar"
+  type        = string
 }
 
 variable "storage_size" {
   description = "Database storage size"
   default     = 20
+  type        = number
 }
 
 variable "max_storage_size" {
   description = "Database max storage size"
   default     = 100
+  type        = number
+}
+
+variable "storage_type" {
+  description = "Database storage type"
+  default     = "gp3"
+  type        = string
 }
 
 variable "publically_accessible" {
   description = "Database publically accessible"
-  type        = bool
   default     = false
+  type        = bool
 }
 
+variable "deletion_protection" {
+  description = "Database deletion protection"
+  default     = true
+  type        = bool
+}
+
+variable "security_group_ids" {
+  description = "Database security group ids"
+  type        = list(string)
+}
+
+variable "vpc_id" {
+  description = "Database VPC id"
+  type        = string
+}

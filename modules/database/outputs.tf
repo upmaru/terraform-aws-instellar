@@ -9,7 +9,7 @@ output "endpoint" {
 }
 
 output "db_name" {
-  description = "The default database name"
+  description = "The database name"
   value       = aws_db_instance.database.db_name
 }
 
@@ -21,4 +21,9 @@ output "username" {
 output "password" {
   description = "The database master password"
   value       = aws_db_instance.database.password
+}
+
+output "engine_version" {
+  description = "The database engine version"
+  value       = aws_db_instance.database.engine_version_actual
 }

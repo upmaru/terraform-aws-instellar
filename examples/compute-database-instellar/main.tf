@@ -1,6 +1,12 @@
 variable "aws_access_key" {}
 variable "aws_secret_key" {}
 
+provider "aws" {
+  region     = var.region
+  access_key = var.aws_access_key
+  secret_key = var.aws_secret_key
+}
+
 locals {
   // replace with your cluster name
   cluster_name = "pizza"
@@ -8,11 +14,8 @@ locals {
 }
 
 module "compute" {
-  source = "upmaru/instellar/aws"
-  version = "0.4.3"
+  source = "../.."
 
-  access_key   = var.aws_access_key
-  secret_key   = var.aws_secret_key
   cluster_name = local.cluster_name
   node_size    = "t3a.medium"
   cluster_topology = [
@@ -30,19 +33,20 @@ module "compute" {
 }
 
 module "database" {
-  source = "upmaru/instellar/aws/modules/database"
-  version = "0.4.3"
-
-  access_key     = var.aws_access_key
-  secret_key     = var.aws_secret_key
-
+  source = "../../modules/database"
+  
   identifier     = "${local.cluster_name}-postgres-db"
 
-  db_name        = "postgres"
-  engine         = "postgresql"
+  db_size        = "db.t3.small"
+  db_name        = "instellardb"
+  engine         = "postgres"
   engine_version = "15"
 
-  username       = "instellar"
+  db_username        = "instellar"
+  
+  subnet_ids         = module.compute.public_subnet_ids
+  security_group_ids = module.compute.node_security_group_ids
+  vpc_id             = module.compute.vpc_id
 }
 
 variable "instellar_auth_token" {}
