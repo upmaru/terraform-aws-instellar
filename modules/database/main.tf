@@ -13,6 +13,7 @@ resource "aws_db_instance" "this" {
   instance_class = var.db_size
   username       = var.db_username
   password       = random_password.password.result
+  port           = var.port
 
   allocated_storage     = var.storage_size
   max_allocated_storage = var.max_storage_size

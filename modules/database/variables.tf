@@ -14,6 +14,11 @@ variable "db_name" {
   type        = string
 }
 
+variable "port" {
+  description = "Database port"
+  type        = number
+}
+
 variable "engine" {
   description = "Database engine"
   type        = string

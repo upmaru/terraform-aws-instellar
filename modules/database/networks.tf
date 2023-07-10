@@ -11,8 +11,8 @@ resource "aws_security_group" "database" {
 
   ingress {
     description     = "${var.engine} database access"
-    from_port       = aws_db_instance.this.port
-    to_port         = aws_db_instance.this.port
+    from_port       = var.port
+    to_port         = var.port
     protocol        = "tcp"
     security_groups = var.security_group_ids
   }
