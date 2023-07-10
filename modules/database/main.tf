@@ -4,6 +4,7 @@ resource "random_password" "password" {
   override_special = "!#$%&*()-_=+[]{}<>:?"
 }
 
+# tfsec:ignore:aws-rds-enable-iam-auth
 resource "aws_db_instance" "this" {
   identifier = var.identifier
 
@@ -20,6 +21,11 @@ resource "aws_db_instance" "this" {
 
   db_subnet_group_name = aws_db_subnet_group.this.name
   vpc_security_group_ids = [aws_security_group.database.id]
+
+  performance_insights_enabled = var.enable_performance_insight
+
+  storage_encrypted  = true
+  backup_retention_period = 5
 
   publicly_accessible = var.publicly_accessible
   deletion_protection = var.deletion_protection
