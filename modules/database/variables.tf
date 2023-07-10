@@ -41,6 +41,11 @@ variable "storage_size" {
   type        = number
 }
 
+variable "enable_performance_insight" {
+  description = "Enable performance insight"
+  default = false
+}
+
 variable "max_storage_size" {
   description = "Database max storage size"
   default     = 100
