@@ -1,18 +1,3 @@
-variable "region" {
-  description = "The AWS region you want to use"
-  default     = "us-west-2"
-}
-
-variable "access_key" {
-  description = "AWS Access Key"
-  type        = string
-}
-
-variable "secret_key" {
-  description = "AWS Secret Key"
-  type        = string
-}
-
 variable "protect_leader" {
   type        = bool
   description = "Protect the database leader node"
