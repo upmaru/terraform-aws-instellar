@@ -1,3 +1,5 @@
+variable "identifier" {}
+
 variable "aws_region" {}
 variable "aws_access_key" {}
 variable "aws_secret_key" {}
@@ -10,21 +12,47 @@ provider "aws" {
 
 locals {
   // replace with your cluster name
-  cluster_name  = "pizza"
   provider_name = "aws"
 }
 
 module "bucket" {
   source = "../../modules/storage"
 
-  bucket_name = local.cluster_name
+  bucket_name = var.identifier
 }
 
-module "primary_compute" {
+module "foundation_primary" {
   source = "../.."
 
-  cluster_name = local.cluster_name
-  node_size    = "t3a.medium"
+  identifier = var.identifier
+
+  block_type = "foundation"
+  
+  node_size  = "t3a.medium"
+  cluster_topology = [
+    // replace name of node with anything you like
+    // you can use 01, 02 also to keep it simple.
+    { id = 1, name = "ham", size = "t3a.medium" },
+    { id = 2, name = "bacon", size = "t3a.medium" },
+  ]
+  volume_type  = "gp3"
+  storage_size = 40
+  ssh_keys = [
+    "zack-studio",
+    "zack-one-eight"
+  ]
+}
+
+module "compute_secondary" {
+  source = "../.."
+
+  identifier = "milkyway"
+
+  block_type        = "compute"
+  vpc_id            = module.foundation_primary.vpc_id
+  public_subnet_ids = module.foundation_primary.public_subnet_ids
+
+  node_size = "t3a.medium"
   cluster_topology = [
     // replace name of node with anything you like
     // you can use 01, 02 also to keep it simple.
@@ -42,7 +70,7 @@ module "primary_compute" {
 module "postgresql" {
   source = "../../modules/database"
 
-  identifier = "${local.cluster_name}-postgres-db"
+  identifier = "${var.identifier}-postgres-db"
 
   db_size        = "db.t3.small"
   db_name        = "instellardb"
@@ -52,9 +80,9 @@ module "postgresql" {
 
   db_username = "instellar"
 
-  subnet_ids          = module.primary_compute.public_subnet_ids
-  security_group_ids  = [module.primary_compute.nodes_security_group_id]
-  vpc_id              = module.primary_compute.vpc_id
+  subnet_ids          = module.foundation_primary.public_subnet_ids
+  security_group_ids  = [module.foundation_primary.nodes_security_group_id]
+  vpc_id              = module.foundation_primary.vpc_id
   deletion_protection = false
   skip_final_snapshot = true
 }
@@ -79,19 +107,34 @@ module "storage" {
   secret_key = module.bucket.secret_access_key
 }
 
-module "compute_cluster" {
+module "primary_cluster" {
   source  = "upmaru/bootstrap/instellar"
   version = "~> 0.4"
 
-  cluster_name    = local.cluster_name
+  cluster_name    = module.foundation_primary.identifier
   region          = var.aws_region
   provider_name   = local.provider_name
   uplink_channel  = "develop"
-  cluster_address = module.primary_compute.cluster_address
-  password_token  = module.primary_compute.trust_token
+  cluster_address = module.foundation_primary.cluster_address
+  password_token  = module.foundation_primary.trust_token
 
-  bootstrap_node = module.primary_compute.bootstrap_node
-  nodes          = module.primary_compute.nodes
+  bootstrap_node = module.foundation_primary.bootstrap_node
+  nodes          = module.foundation_primary.nodes
+}
+
+module "secondary_cluster" {
+  source  = "upmaru/bootstrap/instellar"
+  version = "~> 0.4"
+
+  cluster_name    = module.compute_secondary.identifier
+  region          = var.aws_region
+  provider_name   = local.provider_name
+  uplink_channel  = "develop"
+  cluster_address = module.compute_secondary.cluster_address
+  password_token  = module.compute_secondary.trust_token
+
+  bootstrap_node = module.compute_secondary.bootstrap_node
+  nodes          = module.compute_secondary.nodes
 }
 
 module "postgresql_service" {
@@ -102,13 +145,19 @@ module "postgresql_service" {
   provider_name  = local.provider_name
   driver         = "database/postgresql"
   driver_version = "15"
-  cluster_ids    = [module.compute_cluster.cluster_id]
+
+  cluster_ids    = [
+    module.primary_cluster.cluster_id,
+    module.secondary_cluster.cluster_id
+  ]
+  
   channels       = ["develop", "master"]
   credential = {
     username = module.postgresql.username
     password = module.postgresql.password
-    database = module.postgresql.db_name
+    resource = module.postgresql.db_name
     host     = module.postgresql.address
     port     = module.postgresql.port
+    secure   = true
   }
 }

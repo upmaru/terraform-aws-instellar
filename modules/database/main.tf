@@ -6,7 +6,7 @@ resource "random_password" "password" {
 
 # tfsec:ignore:aws-rds-enable-iam-auth
 resource "aws_db_instance" "this" {
-  identifier = var.identifier
+  identifier = "${var.identifier}-${var.engine}"
 
   db_name        = var.db_name
   engine         = var.engine

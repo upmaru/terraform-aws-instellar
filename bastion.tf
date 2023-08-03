@@ -21,7 +21,7 @@ data "cloudinit_config" "bastion" {
 resource "aws_instance" "bastion" {
   ami                    = data.aws_ami.ubuntu.id
   instance_type          = var.bastion_size
-  subnet_id              = aws_subnet.public_subnets[0].id
+  subnet_id              = local.public_subnet_ids[0]
   vpc_security_group_ids = [aws_security_group.bastion_firewall.id]
   user_data_base64       = data.cloudinit_config.bastion.rendered
 
@@ -52,6 +52,36 @@ resource "aws_instance" "bastion" {
   }
 
   tags = {
-    Name = "${var.cluster_name}-bastion"
+    Name = "${var.identifier}-bastion"
+  }
+}
+
+resource "aws_security_group" "bastion_firewall" {
+  name        = "${var.identifier}-instellar-bastion"
+  description = "Instellar Bastion Configuration"
+  vpc_id      = local.vpc_id
+
+  #tfsec:ignore:aws-vpc-no-public-ingress-sgr[from_port=22]
+  ingress {
+    description      = "SSH"
+    from_port        = 22
+    to_port          = 22
+    protocol         = "tcp"
+    cidr_blocks      = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+  }
+
+  #tfsec:ignore:aws-ec2-no-public-egress-sgr
+  egress {
+    description      = "Egress to everywhere"
+    from_port        = 0
+    to_port          = 0
+    protocol         = "-1"
+    cidr_blocks      = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+  }
+
+  tags = {
+    Name = "${var.identifier}-instellar"
   }
 }

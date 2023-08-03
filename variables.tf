@@ -4,9 +4,34 @@ variable "protect_leader" {
   default     = true
 }
 
-variable "cluster_name" {
+variable "identifier" {
   description = "Name of your cluster"
   type        = string
+}
+
+variable "vpc_id" {
+  description = "vpc id to pass in if block type is compute"
+  type        = string
+  nullable    = true
+  default     = null
+}
+
+variable "public_subnet_ids" {
+  description = "Public subnet ids to pass in if block type is compute"
+  type        = list(string)
+  nullable    = true
+  default     = null
+}
+
+variable "block_type" {
+  description = "Create a new network vpc?"
+  type        = string
+  default     = "foundation"
+
+  validation {
+    condition     = can(regex("^(foundation|compute)$", var.block_type))
+    error_message = "value must be either foundation or compute"
+  }
 }
 
 variable "public_subnet_cidrs" {

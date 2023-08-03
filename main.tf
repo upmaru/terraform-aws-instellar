@@ -4,6 +4,11 @@ locals {
     for index, node in var.cluster_topology :
     node.name => merge(node, { subnet = node.id % length(var.public_subnet_cidrs) })
   }
+
+  is_foundation = var.block_type == "foundation"
+
+  vpc_id             = local.is_foundation ? aws_vpc.this[0].id : var.vpc_id
+  public_subnet_ids = local.is_foundation ? aws_subnet.public_subnets[*].id : var.public_subnet_ids
 }
 
 data "aws_ami" "ubuntu" {
@@ -23,7 +28,7 @@ data "aws_ami" "ubuntu" {
 }
 
 resource "aws_placement_group" "nodes" {
-  name     = "${var.cluster_name}-nodes-placement"
+  name     = "${var.identifier}-nodes-placement"
   strategy = "spread"
 }
 
@@ -69,13 +74,13 @@ resource "ssh_resource" "cluster_join_token" {
   bastion_private_key = tls_private_key.terraform_cloud.private_key_openssh
 
   commands = [
-    "lxc cluster add ${var.cluster_name}-node-${each.key} | sed '1d; /^$/d'"
+    "lxc cluster add ${var.identifier}-node-${each.key} | sed '1d; /^$/d'"
   ]
 }
 resource "aws_instance" "bootstrap_node" {
   ami                    = data.aws_ami.ubuntu.id
   instance_type          = var.node_size
-  subnet_id              = aws_subnet.public_subnets[1].id
+  subnet_id              = local.public_subnet_ids[1]
   vpc_security_group_ids = [aws_security_group.nodes_firewall.id]
   placement_group        = aws_placement_group.nodes.id
   ebs_optimized          = true
@@ -105,7 +110,7 @@ resource "aws_instance" "bootstrap_node" {
   provisioner "file" {
     content = templatefile("${path.module}/templates/lxd-init.yml.tpl", {
       ip_address   = self.private_ip
-      server_name  = "${var.cluster_name}-bootstrap-node"
+      server_name  = "${var.identifier}-bootstrap-node"
       storage_size = "${var.storage_size - 10}"
       vpc_ip_range = var.vpc_ip_range
     })
@@ -121,7 +126,7 @@ resource "aws_instance" "bootstrap_node" {
   }
 
   tags = {
-    Name = "${var.cluster_name}-bootstrap-node"
+    Name = "${var.identifier}-bootstrap-node"
   }
 }
 
@@ -130,7 +135,7 @@ resource "aws_instance" "nodes" {
 
   ami                    = data.aws_ami.ubuntu.id
   instance_type          = each.value.size
-  subnet_id              = aws_subnet.public_subnets[each.value.subnet].id
+  subnet_id              = local.public_subnet_ids[each.value.subnet]
   vpc_security_group_ids = [aws_security_group.nodes_firewall.id]
   placement_group        = aws_placement_group.nodes.id
   ebs_optimized          = true
@@ -175,7 +180,7 @@ resource "aws_instance" "nodes" {
   }
 
   tags = {
-    Name = "${var.cluster_name}-node-${each.key}"
+    Name = "${var.identifier}-node-${each.key}"
   }
 }
 
@@ -251,8 +256,8 @@ resource "terraform_data" "removal" {
     aws_instance.bastion,
     aws_instance.bootstrap_node,
     aws_subnet.public_subnets,
-    aws_vpc.cluster_vpc,
-    aws_internet_gateway.cluster_gw,
+    aws_vpc.this[0],
+    aws_internet_gateway.this[0],
     aws_security_group.nodes_firewall,
     aws_security_group.bastion_firewall,
     aws_route_table.public,
@@ -276,6 +281,89 @@ resource "terraform_data" "removal" {
   }
 }
 
+resource "aws_security_group" "nodes_firewall" {
+  name        = "${var.identifier}-instellar-nodes"
+  description = "Instellar Nodes Configuration"
+  vpc_id      = local.vpc_id
+
+  #tfsec:ignore:aws-vpc-no-public-ingress-sgr[from_port=80]
+  ingress {
+    description      = "HTTP"
+    from_port        = 80
+    to_port          = 80
+    protocol         = "tcp"
+    cidr_blocks      = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+  }
+
+  #tfsec:ignore:aws-ec2-no-public-ingress-sgr[from_port=443]
+  ingress {
+    description      = "HTTPS"
+    from_port        = 443
+    to_port          = 443
+    protocol         = "tcp"
+    cidr_blocks      = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+  }
+
+  #tfsec:ignore:aws-vpc-no-public-ingress-sgr[from_port=8443]
+  ingress {
+    description      = "LXD"
+    from_port        = 8443
+    to_port          = 8443
+    protocol         = "tcp"
+    cidr_blocks      = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+  }
+
+  #tfsec:ignore:aws-vpc-no-public-ingress-sgr[from_port=49152]
+  ingress {
+    description      = "Uplink"
+    from_port        = 49152
+    to_port          = 49152
+    protocol         = "tcp"
+    cidr_blocks      = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+  }
+
+  ingress {
+    description     = "From Bastion"
+    from_port       = 22
+    to_port         = 22
+    protocol        = "tcp"
+    security_groups = [aws_security_group.bastion_firewall.id]
+  }
+
+  ingress {
+    description = "Full Cross Node TCP"
+    from_port   = 1
+    to_port     = 65535
+    protocol    = "tcp"
+    self        = true
+  }
+
+  ingress {
+    description = "Full Cross Node UDP"
+    from_port   = 1
+    to_port     = 65535
+    protocol    = "udp"
+    self        = true
+  }
+
+  #tfsec:ignore:aws-ec2-no-public-egress-sgr
+  egress {
+    description      = "Egress to everywhere"
+    from_port        = 0
+    to_port          = 0
+    protocol         = "-1"
+    cidr_blocks      = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+  }
+
+  tags = {
+    Name = "${var.identifier}-instellar"
+  }
+}
 
 
 

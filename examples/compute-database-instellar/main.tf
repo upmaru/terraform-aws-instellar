@@ -45,9 +45,9 @@ module "postgresql" {
 
   db_username = "instellar"
 
-  subnet_ids         = module.primary_compute.public_subnet_ids
-  security_group_ids = [module.primary_compute.nodes_security_group_id]
-  vpc_id             = module.primary_compute.vpc_id
+  subnet_ids          = module.primary_compute.public_subnet_ids
+  security_group_ids  = [module.primary_compute.nodes_security_group_id]
+  vpc_id              = module.primary_compute.vpc_id
   deletion_protection = false
   skip_final_snapshot = true
 }
@@ -66,7 +66,7 @@ module "bootstrap" {
   cluster_name    = local.cluster_name
   region          = var.aws_region
   provider_name   = local.provider_name
-  uplink_channel =  "develop"
+  uplink_channel  = "develop"
   cluster_address = module.primary_compute.cluster_address
   password_token  = module.primary_compute.trust_token
 
