@@ -81,7 +81,12 @@ module "postgresql" {
   db_username = "instellar"
 
   subnet_ids          = module.foundation_primary.public_subnet_ids
-  security_group_ids  = [module.foundation_primary.nodes_security_group_id]
+
+  security_group_ids  = [
+    module.foundation_primary.nodes_security_group_id,
+    module.compute_secondary.nodes_security_group_id
+  ]
+  
   vpc_id              = module.foundation_primary.vpc_id
   deletion_protection = false
   skip_final_snapshot = true
@@ -150,7 +155,7 @@ module "postgresql_service" {
     module.primary_cluster.cluster_id,
     module.secondary_cluster.cluster_id
   ]
-  
+
   channels       = ["develop", "master"]
   credential = {
     username = module.postgresql.username
