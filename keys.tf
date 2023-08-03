@@ -7,11 +7,11 @@ resource "tls_private_key" "bastion_key" {
 }
 
 resource "aws_key_pair" "terraform_cloud" {
-  key_name   = "${var.cluster_name}-terraform-cloud"
+  key_name   = "${var.identifier}-terraform-cloud"
   public_key = tls_private_key.terraform_cloud.public_key_openssh
 }
 
 resource "aws_key_pair" "bastion" {
-  key_name   = "${var.cluster_name}-bastion"
+  key_name   = "${var.identifier}-bastion"
   public_key = tls_private_key.bastion_key.public_key_openssh
 }

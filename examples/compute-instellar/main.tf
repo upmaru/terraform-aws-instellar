@@ -3,7 +3,7 @@ variable "aws_secret_key" {}
 
 locals {
   // replace with your cluster name
-  cluster_name = "pizza"
+  cluster_name  = "pizza"
   provider_name = "aws"
 }
 
