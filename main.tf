@@ -7,7 +7,7 @@ locals {
 
   is_foundation = var.block_type == "foundation"
 
-  vpc_id             = local.is_foundation ? aws_vpc.this[0].id : var.vpc_id
+  vpc_id            = local.is_foundation ? aws_vpc.this[0].id : var.vpc_id
   public_subnet_ids = local.is_foundation ? aws_subnet.public_subnets[*].id : var.public_subnet_ids
 }
 
