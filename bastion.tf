@@ -21,7 +21,7 @@ data "cloudinit_config" "bastion" {
 resource "aws_instance" "bastion" {
   ami                    = data.aws_ami.ubuntu.id
   instance_type          = var.bastion_size
-  subnet_id              = local.public_subnet_ids[0]
+  subnet_id              = var.public_subnet_ids[0]
   vpc_security_group_ids = [aws_security_group.bastion_firewall.id]
   user_data_base64       = data.cloudinit_config.bastion.rendered
 
@@ -59,7 +59,7 @@ resource "aws_instance" "bastion" {
 resource "aws_security_group" "bastion_firewall" {
   name        = "${var.identifier}-instellar-bastion"
   description = "Instellar Bastion Configuration"
-  vpc_id      = local.vpc_id
+  vpc_id      = var.vpc_id
 
   #tfsec:ignore:aws-vpc-no-public-ingress-sgr[from_port=22]
   ingress {
