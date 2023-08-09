@@ -20,7 +20,7 @@ These functionality come together to enable the user to fully manage LXD cluster
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.0.0 |
-| <a name="requirement_aws"></a> [aws](#requirement\_aws) | 4.66.1 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | ~> 5.0 |
 | <a name="requirement_tls"></a> [tls](#requirement\_tls) | 4.0.4 |
 
 ## Providers
@@ -41,19 +41,14 @@ No modules.
 
 | Name | Type |
 |------|------|
-| [aws_instance.bastion](https://registry.terraform.io/providers/hashicorp/aws/4.66.1/docs/resources/instance) | resource |
-| [aws_instance.bootstrap_node](https://registry.terraform.io/providers/hashicorp/aws/4.66.1/docs/resources/instance) | resource |
-| [aws_instance.nodes](https://registry.terraform.io/providers/hashicorp/aws/4.66.1/docs/resources/instance) | resource |
-| [aws_internet_gateway.cluster_gw](https://registry.terraform.io/providers/hashicorp/aws/4.66.1/docs/resources/internet_gateway) | resource |
-| [aws_key_pair.bastion](https://registry.terraform.io/providers/hashicorp/aws/4.66.1/docs/resources/key_pair) | resource |
-| [aws_key_pair.terraform_cloud](https://registry.terraform.io/providers/hashicorp/aws/4.66.1/docs/resources/key_pair) | resource |
-| [aws_placement_group.nodes](https://registry.terraform.io/providers/hashicorp/aws/4.66.1/docs/resources/placement_group) | resource |
-| [aws_route_table.public](https://registry.terraform.io/providers/hashicorp/aws/4.66.1/docs/resources/route_table) | resource |
-| [aws_route_table_association.public_subnet_assoc](https://registry.terraform.io/providers/hashicorp/aws/4.66.1/docs/resources/route_table_association) | resource |
-| [aws_security_group.bastion_firewall](https://registry.terraform.io/providers/hashicorp/aws/4.66.1/docs/resources/security_group) | resource |
-| [aws_security_group.nodes_firewall](https://registry.terraform.io/providers/hashicorp/aws/4.66.1/docs/resources/security_group) | resource |
-| [aws_subnet.public_subnets](https://registry.terraform.io/providers/hashicorp/aws/4.66.1/docs/resources/subnet) | resource |
-| [aws_vpc.cluster_vpc](https://registry.terraform.io/providers/hashicorp/aws/4.66.1/docs/resources/vpc) | resource |
+| [aws_instance.bastion](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/instance) | resource |
+| [aws_instance.bootstrap_node](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/instance) | resource |
+| [aws_instance.nodes](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/instance) | resource |
+| [aws_key_pair.bastion](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/key_pair) | resource |
+| [aws_key_pair.terraform_cloud](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/key_pair) | resource |
+| [aws_placement_group.nodes](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/placement_group) | resource |
+| [aws_security_group.bastion_firewall](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group) | resource |
+| [aws_security_group.nodes_firewall](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group) | resource |
 | [ssh_resource.cluster_join_token](https://registry.terraform.io/providers/loafoe/ssh/latest/docs/resources/resource) | resource |
 | [ssh_resource.node_detail](https://registry.terraform.io/providers/loafoe/ssh/latest/docs/resources/resource) | resource |
 | [ssh_resource.trust_token](https://registry.terraform.io/providers/loafoe/ssh/latest/docs/resources/resource) | resource |
@@ -61,8 +56,8 @@ No modules.
 | [terraform_data.removal](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/resources/data) | resource |
 | [tls_private_key.bastion_key](https://registry.terraform.io/providers/hashicorp/tls/4.0.4/docs/resources/private_key) | resource |
 | [tls_private_key.terraform_cloud](https://registry.terraform.io/providers/hashicorp/tls/4.0.4/docs/resources/private_key) | resource |
-| [aws_ami.ubuntu](https://registry.terraform.io/providers/hashicorp/aws/4.66.1/docs/data-sources/ami) | data source |
-| [aws_key_pair.terminal](https://registry.terraform.io/providers/hashicorp/aws/4.66.1/docs/data-sources/key_pair) | data source |
+| [aws_ami.ubuntu](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/ami) | data source |
+| [aws_key_pair.terminal](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/key_pair) | data source |
 | [cloudinit_config.bastion](https://registry.terraform.io/providers/hashicorp/cloudinit/latest/docs/data-sources/config) | data source |
 | [cloudinit_config.node](https://registry.terraform.io/providers/hashicorp/cloudinit/latest/docs/data-sources/config) | data source |
 
@@ -70,21 +65,19 @@ No modules.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_access_key"></a> [access\_key](#input\_access\_key) | AWS Access Key | `string` | n/a | yes |
-| <a name="input_availability_zones"></a> [availability\_zones](#input\_availability\_zones) | Availability Zones | `list(string)` | <pre>[<br>  "us-west-2a",<br>  "us-west-2b",<br>  "us-west-2c"<br>]</pre> | no |
 | <a name="input_bastion_size"></a> [bastion\_size](#input\_bastion\_size) | Bastion instance type? | `string` | `"t2.micro"` | no |
-| <a name="input_cluster_name"></a> [cluster\_name](#input\_cluster\_name) | Name of your cluster | `string` | n/a | yes |
 | <a name="input_cluster_topology"></a> [cluster\_topology](#input\_cluster\_topology) | How many nodes do you want in your cluster? | <pre>list(object({<br>    id   = number<br>    name = string<br>    size = optional(string, "t3.medium")<br>  }))</pre> | `[]` | no |
+| <a name="input_identifier"></a> [identifier](#input\_identifier) | Name of your cluster | `string` | n/a | yes |
+| <a name="input_network_dependencies"></a> [network\_dependencies](#input\_network\_dependencies) | value | `list` | `[]` | no |
 | <a name="input_node_monitoring"></a> [node\_monitoring](#input\_node\_monitoring) | Enable / Disable detailed monitoring | `bool` | `false` | no |
 | <a name="input_node_size"></a> [node\_size](#input\_node\_size) | Which instance type? | `string` | `"t3.medium"` | no |
 | <a name="input_protect_leader"></a> [protect\_leader](#input\_protect\_leader) | Protect the database leader node | `bool` | `true` | no |
-| <a name="input_public_subnet_cidrs"></a> [public\_subnet\_cidrs](#input\_public\_subnet\_cidrs) | Public Subnet CIDR values | `list(string)` | <pre>[<br>  "10.0.1.0/24",<br>  "10.0.2.0/24",<br>  "10.0.3.0/24"<br>]</pre> | no |
-| <a name="input_region"></a> [region](#input\_region) | The AWS region you want to use | `string` | `"us-west-2"` | no |
-| <a name="input_secret_key"></a> [secret\_key](#input\_secret\_key) | AWS Secret Key | `string` | n/a | yes |
+| <a name="input_public_subnet_ids"></a> [public\_subnet\_ids](#input\_public\_subnet\_ids) | Public subnet ids to pass in if block type is compute | `list(string)` | n/a | yes |
 | <a name="input_ssh_keys"></a> [ssh\_keys](#input\_ssh\_keys) | List of ssh key names | `list(string)` | `[]` | no |
 | <a name="input_storage_size"></a> [storage\_size](#input\_storage\_size) | How much storage on your nodes? | `number` | `40` | no |
 | <a name="input_volume_type"></a> [volume\_type](#input\_volume\_type) | Type of EBS Volume to use | `string` | `"gp3"` | no |
-| <a name="input_vpc_ip_range"></a> [vpc\_ip\_range](#input\_vpc\_ip\_range) | VPC ip range | `string` | `"10.0.0.0/16"` | no |
+| <a name="input_vpc_id"></a> [vpc\_id](#input\_vpc\_id) | vpc id to pass in if block type is compute | `string` | n/a | yes |
+| <a name="input_vpc_ip_range"></a> [vpc\_ip\_range](#input\_vpc\_ip\_range) | VPC ip range | `string` | n/a | yes |
 
 ## Outputs
 
@@ -92,8 +85,9 @@ No modules.
 |------|-------------|
 | <a name="output_bootstrap_node"></a> [bootstrap\_node](#output\_bootstrap\_node) | n/a |
 | <a name="output_cluster_address"></a> [cluster\_address](#output\_cluster\_address) | n/a |
+| <a name="output_identifier"></a> [identifier](#output\_identifier) | n/a |
 | <a name="output_nodes"></a> [nodes](#output\_nodes) | n/a |
-| <a name="output_region"></a> [region](#output\_region) | n/a |
+| <a name="output_nodes_security_group_id"></a> [nodes\_security\_group\_id](#output\_nodes\_security\_group\_id) | n/a |
 | <a name="output_trust_token"></a> [trust\_token](#output\_trust\_token) | n/a |
 <!-- END_TF_DOCS -->
 
