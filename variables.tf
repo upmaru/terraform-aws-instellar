@@ -9,41 +9,24 @@ variable "identifier" {
   type        = string
 }
 
+variable "vpc_ip_range" {
+  description = "VPC ip range"
+  type        = string
+}
+
+variable "network_dependencies" {
+  description = "value"
+  default = []
+}
+
 variable "vpc_id" {
   description = "vpc id to pass in if block type is compute"
   type        = string
-  nullable    = true
-  default     = null
 }
 
 variable "public_subnet_ids" {
   description = "Public subnet ids to pass in if block type is compute"
   type        = list(string)
-  nullable    = true
-  default     = null
-}
-
-variable "block_type" {
-  description = "Create a new network vpc?"
-  type        = string
-  default     = "foundation"
-
-  validation {
-    condition     = can(regex("^(foundation|compute)$", var.block_type))
-    error_message = "value must be either foundation or compute"
-  }
-}
-
-variable "public_subnet_cidrs" {
-  type        = list(string)
-  description = "Public Subnet CIDR values"
-  default     = ["10.0.1.0/24", "10.0.2.0/24", "10.0.3.0/24"]
-}
-
-variable "availability_zones" {
-  type        = list(string)
-  description = "Availability Zones"
-  default     = ["us-west-2a", "us-west-2b", "us-west-2c"]
 }
 
 variable "bastion_size" {
@@ -59,11 +42,6 @@ variable "node_size" {
 variable "node_monitoring" {
   description = "Enable / Disable detailed monitoring"
   default     = false
-}
-
-variable "vpc_ip_range" {
-  description = "VPC ip range"
-  default     = "10.0.0.0/16"
 }
 
 variable "storage_size" {

@@ -2,13 +2,8 @@ locals {
   user = "ubuntu"
   topology = {
     for index, node in var.cluster_topology :
-    node.name => merge(node, { subnet = node.id % length(var.public_subnet_cidrs) })
+    node.name => merge(node, { subnet = node.id % length(var.public_subnet_ids) })
   }
-
-  is_foundation = var.block_type == "foundation"
-
-  vpc_id            = local.is_foundation ? aws_vpc.this[0].id : var.vpc_id
-  public_subnet_ids = local.is_foundation ? aws_subnet.public_subnets[*].id : var.public_subnet_ids
 }
 
 data "aws_ami" "ubuntu" {
@@ -80,7 +75,7 @@ resource "ssh_resource" "cluster_join_token" {
 resource "aws_instance" "bootstrap_node" {
   ami                    = data.aws_ami.ubuntu.id
   instance_type          = var.node_size
-  subnet_id              = local.public_subnet_ids[1]
+  subnet_id              = var.public_subnet_ids[1]
   vpc_security_group_ids = [aws_security_group.nodes_firewall.id]
   placement_group        = aws_placement_group.nodes.id
   ebs_optimized          = true
@@ -135,7 +130,7 @@ resource "aws_instance" "nodes" {
 
   ami                    = data.aws_ami.ubuntu.id
   instance_type          = each.value.size
-  subnet_id              = local.public_subnet_ids[each.value.subnet]
+  subnet_id              = var.public_subnet_ids[each.value.subnet]
   vpc_security_group_ids = [aws_security_group.nodes_firewall.id]
   placement_group        = aws_placement_group.nodes.id
   ebs_optimized          = true
@@ -255,13 +250,11 @@ resource "terraform_data" "removal" {
   depends_on = [
     aws_instance.bastion,
     aws_instance.bootstrap_node,
-    aws_subnet.public_subnets,
-    aws_vpc.this[0],
-    aws_internet_gateway.this[0],
+    var.public_subnet_ids,
+    var.vpc_id,
+    var.network_dependencies,
     aws_security_group.nodes_firewall,
-    aws_security_group.bastion_firewall,
-    aws_route_table.public,
-    aws_route_table_association.public_subnet_assoc,
+    aws_security_group.bastion_firewall
   ]
 
   connection {
@@ -284,7 +277,7 @@ resource "terraform_data" "removal" {
 resource "aws_security_group" "nodes_firewall" {
   name        = "${var.identifier}-instellar-nodes"
   description = "Instellar Nodes Configuration"
-  vpc_id      = local.vpc_id
+  vpc_id      = var.vpc_id
 
   #tfsec:ignore:aws-vpc-no-public-ingress-sgr[from_port=80]
   ingress {

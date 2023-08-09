@@ -21,19 +21,28 @@ module "bucket" {
   bucket_name = var.identifier
 }
 
-module "foundation_primary" {
-  source = "../.."
+module "foundation_network" {
+  source = "../../modules/network"
 
   identifier = var.identifier
+}
 
-  block_type = "foundation"
-  
-  node_size  = "t3a.medium"
+module "compute_primary" {
+  source = "../.."
+
+  identifier = "${var.identifier}-a"
+
+  vpc_id               = module.foundation_network.vpc_id
+  public_subnet_ids    = module.foundation_network.public_subnet_ids
+  vpc_ip_range         = module.foundation_network.vpc_ip_range
+  network_dependencies = module.foundation_network.dependencies
+
+  node_size = "t3a.medium"
   cluster_topology = [
     // replace name of node with anything you like
     // you can use 01, 02 also to keep it simple.
-    { id = 1, name = "ham", size = "t3a.medium" },
-    { id = 2, name = "bacon", size = "t3a.medium" },
+    { id = 1, name = "01", size = "t3a.medium" },
+    { id = 2, name = "02", size = "t3a.medium" },
   ]
   volume_type  = "gp3"
   storage_size = 40
@@ -46,18 +55,19 @@ module "foundation_primary" {
 module "compute_secondary" {
   source = "../.."
 
-  identifier = "milkyway"
+  identifier = "${var.identifier}-b"
 
-  block_type        = "compute"
-  vpc_id            = module.foundation_primary.vpc_id
-  public_subnet_ids = module.foundation_primary.public_subnet_ids
+  vpc_id               = module.foundation_network.vpc_id
+  public_subnet_ids    = module.foundation_network.public_subnet_ids
+  vpc_ip_range         = module.foundation_network.vpc_ip_range
+  network_dependencies = module.foundation_network.dependencies
 
   node_size = "t3a.medium"
   cluster_topology = [
     // replace name of node with anything you like
     // you can use 01, 02 also to keep it simple.
-    { id = 1, name = "ham", size = "t3a.medium" },
-    { id = 2, name = "bacon", size = "t3a.medium" },
+    { id = 1, name = "01", size = "t3a.medium" },
+    { id = 2, name = "02", size = "t3a.medium" },
   ]
   volume_type  = "gp3"
   storage_size = 40
@@ -80,14 +90,14 @@ module "postgresql" {
 
   db_username = "instellar"
 
-  subnet_ids          = module.foundation_primary.public_subnet_ids
+  subnet_ids = module.foundation_network.public_subnet_ids
 
-  security_group_ids  = [
-    module.foundation_primary.nodes_security_group_id,
+  security_group_ids = [
+    module.compute_primary.nodes_security_group_id,
     module.compute_secondary.nodes_security_group_id
   ]
-  
-  vpc_id              = module.foundation_primary.vpc_id
+
+  vpc_id              = module.foundation_network.vpc_id
   deletion_protection = false
   skip_final_snapshot = true
 }
@@ -116,15 +126,15 @@ module "primary_cluster" {
   source  = "upmaru/bootstrap/instellar"
   version = "~> 0.4"
 
-  cluster_name    = module.foundation_primary.identifier
+  cluster_name    = module.compute_primary.identifier
   region          = var.aws_region
   provider_name   = local.provider_name
   uplink_channel  = "develop"
-  cluster_address = module.foundation_primary.cluster_address
-  password_token  = module.foundation_primary.trust_token
+  cluster_address = module.compute_primary.cluster_address
+  password_token  = module.compute_primary.trust_token
 
-  bootstrap_node = module.foundation_primary.bootstrap_node
-  nodes          = module.foundation_primary.nodes
+  bootstrap_node = module.compute_primary.bootstrap_node
+  nodes          = module.compute_primary.nodes
 }
 
 module "secondary_cluster" {
@@ -151,12 +161,12 @@ module "postgresql_service" {
   driver         = "database/postgresql"
   driver_version = "15"
 
-  cluster_ids    = [
+  cluster_ids = [
     module.primary_cluster.cluster_id,
     module.secondary_cluster.cluster_id
   ]
 
-  channels       = ["develop", "master"]
+  channels = ["develop", "master"]
   credential = {
     username = module.postgresql.username
     password = module.postgresql.password
