@@ -1,3 +1,7 @@
+locals {
+  availability_zones = ["${var.region}a", "${var.region}b", "${var.region}c"]
+}
+
 resource "aws_vpc" "this" {
   cidr_block           = var.vpc_ip_range
   enable_dns_hostnames = true
@@ -39,7 +43,7 @@ resource "aws_subnet" "this" {
   count             = length(var.public_subnet_cidrs)
   vpc_id            = aws_vpc.this.id
   cidr_block        = element(var.public_subnet_cidrs, count.index)
-  availability_zone = element(var.availability_zones, count.index)
+  availability_zone = element(local.availability_zones, count.index)
 
   map_public_ip_on_launch = true
 
