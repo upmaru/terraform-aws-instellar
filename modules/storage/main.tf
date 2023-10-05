@@ -5,6 +5,7 @@ resource "random_string" "this" {
 }
 
 locals {
+  sid = upper(random_string.this.result)
   bucket_name = "${var.bucket_name}-${random_string.this.result}"
   path = "/instellar/"
 }
@@ -17,7 +18,7 @@ resource "aws_iam_policy" "this" {
     "Version" : "2012-10-17",
     "Statement" : [
       {
-        "Sid" : "AllowInstellar${var.bucket_name}Access",
+        "Sid" : "AllowInstellar${sid}Access",
         "Effect" : "Allow",
         "Action" : [
           "s3:PutObject",
