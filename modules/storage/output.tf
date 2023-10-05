@@ -12,5 +12,5 @@ output "secret_access_key" {
 }
 
 output "host" {
-  value = "s3-${aws_s3_bucket.this.region}.amazonaws.com"
+  value = "s3.${aws_s3_bucket.this.region}.amazonaws.com"
 }
