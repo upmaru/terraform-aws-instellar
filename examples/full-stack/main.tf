@@ -21,10 +21,11 @@ module "bucket" {
   bucket_name = var.identifier
 }
 
-module "foundation_network" {
+module "networking_primary" {
   source = "../../modules/network"
 
   identifier = var.identifier
+  region     = var.aws_region
 }
 
 module "compute_primary" {
@@ -32,10 +33,10 @@ module "compute_primary" {
 
   identifier = "${var.identifier}-a"
 
-  vpc_id               = module.foundation_network.vpc_id
-  public_subnet_ids    = module.foundation_network.public_subnet_ids
-  vpc_ip_range         = module.foundation_network.vpc_ip_range
-  network_dependencies = module.foundation_network.dependencies
+  vpc_id               = module.networking_primary.vpc_id
+  public_subnet_ids    = module.networking_primary.public_subnet_ids
+  vpc_ip_range         = module.networking_primary.vpc_ip_range
+  network_dependencies = module.networking_primary.dependencies
 
   node_size = "t3a.medium"
   cluster_topology = [
@@ -57,10 +58,10 @@ module "compute_secondary" {
 
   identifier = "${var.identifier}-b"
 
-  vpc_id               = module.foundation_network.vpc_id
-  public_subnet_ids    = module.foundation_network.public_subnet_ids
-  vpc_ip_range         = module.foundation_network.vpc_ip_range
-  network_dependencies = module.foundation_network.dependencies
+  vpc_id               = module.networking_primary.vpc_id
+  public_subnet_ids    = module.networking_primary.public_subnet_ids
+  vpc_ip_range         = module.networking_primary.vpc_ip_range
+  network_dependencies = module.networking_primary.dependencies
 
   node_size = "t3a.medium"
   cluster_topology = [
@@ -90,14 +91,14 @@ module "postgresql" {
 
   db_username = "instellar"
 
-  subnet_ids = module.foundation_network.public_subnet_ids
+  subnet_ids = module.networking_primary.public_subnet_ids
 
   security_group_ids = [
     module.compute_primary.nodes_security_group_id,
     module.compute_secondary.nodes_security_group_id
   ]
 
-  vpc_id              = module.foundation_network.vpc_id
+  vpc_id              = module.networking_primary.vpc_id
   deletion_protection = false
   skip_final_snapshot = true
 }
@@ -112,7 +113,7 @@ provider "instellar" {
 
 module "storage" {
   source  = "upmaru/bootstrap/instellar//modules/storage"
-  version = "~> 0.4"
+  version = "~> 0.5"
 
   bucket = module.bucket.name
   region = var.aws_region
@@ -124,7 +125,7 @@ module "storage" {
 
 module "primary_cluster" {
   source  = "upmaru/bootstrap/instellar"
-  version = "~> 0.4"
+  version = "~> 0.5"
 
   cluster_name    = module.compute_primary.identifier
   region          = var.aws_region
@@ -139,7 +140,7 @@ module "primary_cluster" {
 
 module "secondary_cluster" {
   source  = "upmaru/bootstrap/instellar"
-  version = "~> 0.4"
+  version = "~> 0.5"
 
   cluster_name    = module.compute_secondary.identifier
   region          = var.aws_region
@@ -154,7 +155,7 @@ module "secondary_cluster" {
 
 module "postgresql_service" {
   source  = "upmaru/bootstrap/instellar//modules/service"
-  version = "~> 0.4"
+  version = "~> 0.5"
 
   slug           = module.postgresql.identifier
   provider_name  = local.provider_name
