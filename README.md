@@ -83,6 +83,7 @@ No modules.
 
 | Name | Description |
 |------|-------------|
+| <a name="output_bastion_security_group_id"></a> [bastion\_security\_group\_id](#output\_bastion\_security\_group\_id) | n/a |
 | <a name="output_bootstrap_node"></a> [bootstrap\_node](#output\_bootstrap\_node) | n/a |
 | <a name="output_cluster_address"></a> [cluster\_address](#output\_cluster\_address) | n/a |
 | <a name="output_identifier"></a> [identifier](#output\_identifier) | n/a |
