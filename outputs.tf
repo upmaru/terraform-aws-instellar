@@ -30,3 +30,7 @@ output "nodes" {
 output "nodes_security_group_id" {
   value = aws_security_group.nodes_firewall.id
 }
+
+output "bastion_security_group_id" {
+  value = aws_security_group.bastion_firewall.id
+}
