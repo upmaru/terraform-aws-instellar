@@ -11,7 +11,7 @@ data "aws_ami" "ubuntu" {
 
   filter {
     name   = "name"
-    values = ["ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-20231030"]
+    values = ["ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-*"]
   }
 
   filter {
@@ -123,6 +123,12 @@ resource "aws_instance" "bootstrap_node" {
   tags = {
     Name = "${var.identifier}-bootstrap-node"
   }
+
+  lifecycle {
+    ignore_changes = [
+      ami
+    ]
+  }
 }
 
 resource "aws_instance" "nodes" {
@@ -176,6 +182,12 @@ resource "aws_instance" "nodes" {
 
   tags = {
     Name = "${var.identifier}-node-${each.key}"
+  }
+  
+  lifecycle {
+    ignore_changes = [
+      ami
+    ]
   }
 }
 

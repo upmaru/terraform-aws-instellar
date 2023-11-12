@@ -54,6 +54,12 @@ resource "aws_instance" "bastion" {
   tags = {
     Name = "${var.identifier}-bastion"
   }
+
+  lifecycle {
+    ignore_changes = [
+      ami
+    ]
+  }
 }
 
 resource "aws_security_group" "bastion_firewall" {
