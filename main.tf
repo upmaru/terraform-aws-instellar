@@ -123,6 +123,12 @@ resource "aws_instance" "bootstrap_node" {
   tags = {
     Name = "${var.identifier}-bootstrap-node"
   }
+
+  lifecycle {
+    ignore_changes = [
+      ami
+    ]
+  }
 }
 
 resource "aws_instance" "nodes" {
@@ -176,6 +182,12 @@ resource "aws_instance" "nodes" {
 
   tags = {
     Name = "${var.identifier}-node-${each.key}"
+  }
+  
+  lifecycle {
+    ignore_changes = [
+      ami
+    ]
   }
 }
 
