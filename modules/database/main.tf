@@ -8,23 +8,24 @@ resource "random_password" "password" {
 resource "aws_db_instance" "this" {
   identifier = "${var.identifier}-${var.engine}"
 
-  db_name        = var.db_name
-  engine         = var.engine
-  engine_version = var.engine_version
-  instance_class = var.db_size
-  username       = var.db_username
-  password       = random_password.password.result
-  port           = var.port
+  db_name            = var.db_name
+  engine             = var.engine
+  engine_version     = var.engine_version
+  instance_class     = var.db_size
+  username           = var.db_username
+  password           = random_password.password.result
+  port               = var.port
+  ca_cert_identifier = "rds-ca-rsa2048-g1"
 
   allocated_storage     = var.storage_size
   max_allocated_storage = var.max_storage_size
 
-  db_subnet_group_name = aws_db_subnet_group.this.name
+  db_subnet_group_name   = aws_db_subnet_group.this.name
   vpc_security_group_ids = [aws_security_group.database.id]
 
   performance_insights_enabled = var.enable_performance_insight
 
-  storage_encrypted  = true
+  storage_encrypted       = true
   backup_retention_period = 5
 
   publicly_accessible = var.publicly_accessible

@@ -72,6 +72,7 @@ resource "ssh_resource" "cluster_join_token" {
     "lxc cluster add ${var.identifier}-node-${each.key} | sed '1d; /^$/d'"
   ]
 }
+
 resource "aws_instance" "bootstrap_node" {
   ami                    = data.aws_ami.ubuntu.id
   instance_type          = var.node_size
@@ -126,7 +127,8 @@ resource "aws_instance" "bootstrap_node" {
 
   lifecycle {
     ignore_changes = [
-      ami
+      ami,
+      user_data_base64
     ]
   }
 }
@@ -183,10 +185,11 @@ resource "aws_instance" "nodes" {
   tags = {
     Name = "${var.identifier}-node-${each.key}"
   }
-  
+
   lifecycle {
     ignore_changes = [
-      ami
+      ami,
+      user_data_base64
     ]
   }
 }
