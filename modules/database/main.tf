@@ -15,7 +15,7 @@ resource "aws_db_instance" "this" {
   username           = var.db_username
   password           = random_password.password.result
   port               = var.port
-  ca_cert_identifier = "rds-ca-rsa2048-g1"
+  ca_cert_identifier = var.ca_cert_identifier
 
   allocated_storage     = var.storage_size
   max_allocated_storage = var.max_storage_size

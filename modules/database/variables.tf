@@ -24,6 +24,11 @@ variable "engine" {
   type        = string
 }
 
+variable "ca_cert_identifier" {
+  description = "CA Cert identifier"
+  default     = "rds-ca-rsa2048-g1"
+}
+
 variable "engine_version" {
   description = "Database engine version"
   type        = string
