@@ -43,7 +43,7 @@ variable "storage_size" {
 
 variable "enable_performance_insight" {
   description = "Enable performance insight"
-  default = false
+  default     = false
 }
 
 variable "max_storage_size" {

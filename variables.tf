@@ -16,7 +16,7 @@ variable "vpc_ip_range" {
 
 variable "network_dependencies" {
   description = "value"
-  default = []
+  default     = []
 }
 
 variable "vpc_id" {
