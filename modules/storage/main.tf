@@ -18,7 +18,7 @@ resource "aws_iam_policy" "this" {
     "Version" = "2012-10-17",
     "Statement" = [
       {
-        "Sid"    = "AllowInstellar${local.sid}Access",
+        "Sid"    = "AllowOpsmaru${local.sid}Access",
         "Effect" = "Allow",
         "Action" = [
           "s3:PutObject",
