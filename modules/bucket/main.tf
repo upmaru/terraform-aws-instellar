@@ -5,20 +5,20 @@ resource "random_string" "this" {
 }
 
 locals {
-  sid = upper(random_string.this.result)
+  sid        = upper(random_string.this.result)
   identifier = "${var.identifier}-${random_string.this.result}"
-  path = "/instellar/"
+  path       = "/instellar/"
 }
 
 resource "aws_iam_policy" "this" {
-  name = "${local.identifier}-policy"
-  path = local.path
+  name        = "${local.identifier}-policy"
+  path        = local.path
   description = "For generatinga application buckets."
   policy = jsonencode({
     "Version" = "2012-10-17",
     "Statement" = [
       {
-        "Sid" = "AllowOpsmaru${local.sid}BucketGeneration",
+        "Sid"    = "AllowOpsmaru${local.sid}BucketGeneration",
         "Effect" = "Allow",
         "Action" = [
           "s3:PutBucketPublicAccessBlock",
@@ -48,6 +48,6 @@ resource "aws_iam_access_key" "this" {
 }
 
 resource "aws_iam_user_policy_attachment" "this" {
-  user = aws_iam_user.this.name
+  user       = aws_iam_user.this.name
   policy_arn = aws_iam_policy.this.arn
 }

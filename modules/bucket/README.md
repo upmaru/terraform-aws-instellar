@@ -38,6 +38,7 @@ No modules.
 | <a name="output_access_key_id"></a> [access\_key\_id](#output\_access\_key\_id) | n/a |
 | <a name="output_host"></a> [host](#output\_host) | n/a |
 | <a name="output_identifier"></a> [identifier](#output\_identifier) | n/a |
+| <a name="output_port"></a> [port](#output\_port) | n/a |
 | <a name="output_region"></a> [region](#output\_region) | n/a |
 | <a name="output_secret_access_key"></a> [secret\_access\_key](#output\_secret\_access\_key) | n/a |
 | <a name="output_version"></a> [version](#output\_version) | n/a |

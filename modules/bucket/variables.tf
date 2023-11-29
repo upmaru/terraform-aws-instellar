@@ -1,9 +1,9 @@
 variable "identifier" {
   description = "Credential identifier"
-  type = string
+  type        = string
 }
 
 variable "region" {
   description = "Region for bucket generation"
-  type = string
+  type        = string
 }
