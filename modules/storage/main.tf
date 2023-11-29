@@ -13,7 +13,7 @@ locals {
 resource "aws_iam_policy" "this" {
   name        = "${var.bucket_name}-policy"
   path        = local.path
-  description = "Allow"
+  description = "Storage layer for OpsMaru."
   policy = jsonencode({
     "Version" = "2012-10-17",
     "Statement" = [
