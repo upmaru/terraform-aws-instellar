@@ -18,3 +18,7 @@ output "region" {
 output "host" {
   value = "s3.${var.region}.amazonaws.com"
 }
+
+output "version" {
+  value = "1"
+}
