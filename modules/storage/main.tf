@@ -5,22 +5,22 @@ resource "random_string" "this" {
 }
 
 locals {
-  sid = upper(random_string.this.result)
+  sid         = upper(random_string.this.result)
   bucket_name = "${var.bucket_name}-${random_string.this.result}"
-  path = "/instellar/"
+  path        = "/instellar/"
 }
 
 resource "aws_iam_policy" "this" {
   name        = "${var.bucket_name}-policy"
   path        = local.path
-  description = "Allow"
+  description = "Storage layer for OpsMaru."
   policy = jsonencode({
-    "Version" : "2012-10-17",
-    "Statement" : [
+    "Version" = "2012-10-17",
+    "Statement" = [
       {
-        "Sid" : "AllowInstellar${local.sid}Access",
-        "Effect" : "Allow",
-        "Action" : [
+        "Sid"    = "AllowOpsmaru${local.sid}Access",
+        "Effect" = "Allow",
+        "Action" = [
           "s3:PutObject",
           "s3:GetObject",
           "s3:ListBucketMultipartUploads",
@@ -31,7 +31,7 @@ resource "aws_iam_policy" "this" {
           "kms:Decrypt",
           "kms:GenerateDataKey"
         ]
-        "Resource" : [
+        "Resource" = [
           "${aws_s3_bucket.this.arn}",
           "${aws_s3_bucket.this.arn}/*",
           "${aws_kms_key.this.arn}"
@@ -76,9 +76,9 @@ resource "aws_s3_bucket" "this" {
 }
 
 resource "aws_kms_key" "this" {
-  description = "${var.bucket_name} Key"
+  description             = "${var.bucket_name} Key"
   deletion_window_in_days = 10
-  enable_key_rotation = true
+  enable_key_rotation     = true
 }
 
 resource "aws_s3_bucket_public_access_block" "this" {

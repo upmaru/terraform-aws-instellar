@@ -257,7 +257,10 @@ resource "terraform_data" "removal" {
     bastion_public_ip           = aws_instance.bastion.public_ip
     bootstrap_node_private_ip   = aws_instance.bootstrap_node.private_ip
     terraform_cloud_private_key = tls_private_key.terraform_cloud.private_key_openssh
-    commands = contains(yamldecode(ssh_resource.node_detail[each.key].result).roles, "database-leader") ? ["echo ${var.protect_leader ? "Node is database-leader cannot destroy" : "Tearing it all down"}", "exit ${var.protect_leader ? 1 : 0}"] : [
+    commands = contains(yamldecode(ssh_resource.node_detail[each.key].result).roles, "database-leader") ? [
+      "echo ${var.protect_leader ? "Node is database-leader cannot destroy" : "Tearing it all down"}",
+      "${var.protect_leader ? "exit 1" : "exit 0"}"
+      ] : [
       "lxc cluster remove --force --yes ${aws_instance.nodes[each.key].tags.Name}"
     ]
   }

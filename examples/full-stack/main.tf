@@ -49,7 +49,7 @@ module "compute_primary" {
   storage_size = 40
   ssh_keys = [
     "zack-studio",
-    "zack-one-eight"
+    "zack-mbp"
   ]
 }
 
@@ -74,7 +74,7 @@ module "compute_secondary" {
   storage_size = 40
   ssh_keys = [
     "zack-studio",
-    "zack-one-eight"
+    "zack-mbp"
   ]
 }
 
@@ -101,6 +101,13 @@ module "postgresql" {
   vpc_id              = module.networking_primary.vpc_id
   deletion_protection = false
   skip_final_snapshot = true
+}
+
+module "bucket_generator" {
+  source = "../../modules/bucket"
+
+  identifier = var.identifier
+  region     = var.aws_region
 }
 
 variable "instellar_host" {}
@@ -174,6 +181,32 @@ module "postgresql_service" {
     resource = module.postgresql.db_name
     host     = module.postgresql.address
     port     = module.postgresql.port
+    secure   = true
+  }
+}
+
+module "bucket_service" {
+  source  = "upmaru/bootstrap/instellar//modules/service"
+  version = "~> 0.5"
+
+  slug           = module.bucket_generator.identifier
+  provider_name  = local.provider_name
+  driver         = "bucket/aws-s3"
+  driver_version = "1"
+
+  cluster_ids = [
+    module.primary_cluster.cluster_id,
+    module.secondary_cluster.cluster_id
+  ]
+
+  channels = ["develop", "master", "main"]
+
+  credential = {
+    username = module.bucket_generator.access_key_id
+    password = module.bucket_generator.secret_access_key
+    resource = module.bucket_generator.region
+    host     = module.bucket_generator.host
+    port     = 443
     secure   = true
   }
 }
