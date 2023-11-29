@@ -40,4 +40,5 @@ No modules.
 | <a name="output_identifier"></a> [identifier](#output\_identifier) | n/a |
 | <a name="output_region"></a> [region](#output\_region) | n/a |
 | <a name="output_secret_access_key"></a> [secret\_access\_key](#output\_secret\_access\_key) | n/a |
+| <a name="output_version"></a> [version](#output\_version) | n/a |
 <!-- END_TF_DOCS -->
