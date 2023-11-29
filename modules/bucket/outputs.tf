@@ -7,7 +7,7 @@ output "access_key_id" {
 }
 
 output "secret_access_key" {
-  value = aws_iam_access_key.this.secret
+  value     = aws_iam_access_key.this.secret
   sensitive = true
 }
 
@@ -17,6 +17,10 @@ output "region" {
 
 output "host" {
   value = "s3.${var.region}.amazonaws.com"
+}
+
+output "port" {
+  value = 443
 }
 
 output "version" {
