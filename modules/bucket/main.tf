@@ -6,14 +6,15 @@ resource "random_string" "this" {
 
 locals {
   sid = upper(random_string.this.result)
+  identifier = "${var.identifier}-${random_string.this.result}"
   path = "/instellar/"
 }
 
 resource "aws_iam_policy" "this" {
-  name = "${var.identifier}-${random_string.this.result}-policy"
+  name = "${local.identifier}-policy"
   path = local.path
   description = "For generatinga application buckets."
-  policy = jsondecide({
+  policy = jsonencode({
     "Version" = "2012-10-17",
     "Statement" = [
       {
@@ -30,14 +31,15 @@ resource "aws_iam_policy" "this" {
           "iam:CreateUser",
           "iam:TagUser",
           "iam:CreateAccessKey"
-        ]
+        ],
+        "Resource" = "*"
       }
     ]
   })
 }
 
 resource "aws_iam_user" "this" {
-  name = "${var.identifier}-${random_string.this.result}-user"
+  name = "${local.identifier}-user"
   path = local.path
 }
 
