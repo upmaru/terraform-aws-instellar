@@ -160,6 +160,7 @@ module "secondary_cluster" {
   nodes          = module.compute_secondary.nodes
 }
 
+
 module "postgresql_service" {
   source  = "upmaru/bootstrap/instellar//modules/service"
   version = "~> 0.5"

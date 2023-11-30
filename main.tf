@@ -375,7 +375,3 @@ resource "aws_security_group" "nodes_firewall" {
     Name = "${var.identifier}-instellar"
   }
 }
-
-
-
-
