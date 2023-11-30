@@ -31,7 +31,7 @@ variable "public_subnet_ids" {
 
 variable "bastion_size" {
   description = "Bastion instance type?"
-  default     = "t2.micro"
+  default     = "t3a.micro"
 }
 
 variable "node_size" {
