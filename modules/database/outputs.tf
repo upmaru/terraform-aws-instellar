@@ -33,6 +33,11 @@ output "port" {
   value       = aws_db_instance.this.port
 }
 
+output "certificate_url" {
+  description = "The certificate url for using with the database."
+  value       = "https://truststore.pki.rds.amazonaws.com/${var.region}/${var.region}-bundle.pem"
+}
+
 output "engine_version" {
   description = "The database engine version"
   value       = aws_db_instance.this.engine_version_actual

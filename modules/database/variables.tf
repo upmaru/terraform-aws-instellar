@@ -3,6 +3,11 @@ variable "identifier" {
   type        = string
 }
 
+variable "region" {
+  description = "Database region"
+  type        = string
+}
+
 variable "db_size" {
   description = "Database instance size"
   type        = string

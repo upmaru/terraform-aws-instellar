@@ -48,8 +48,7 @@ module "compute_primary" {
   volume_type  = "gp3"
   storage_size = 40
   ssh_keys = [
-    "zack-studio",
-    "zack-mbp"
+    "zack-studio"
   ]
 }
 
@@ -73,8 +72,7 @@ module "compute_secondary" {
   volume_type  = "gp3"
   storage_size = 40
   ssh_keys = [
-    "zack-studio",
-    "zack-mbp"
+    "zack-studio"
   ]
 }
 
@@ -82,6 +80,7 @@ module "postgresql" {
   source = "../../modules/database"
 
   identifier = "${var.identifier}-postgres-db"
+  region     = var.aws_region
 
   db_size        = "db.t3.small"
   db_name        = "instellardb"
@@ -175,7 +174,9 @@ module "postgresql_service" {
     module.secondary_cluster.cluster_id
   ]
 
-  channels = ["develop", "master"]
+  channels    = ["develop", "master"]
+  certificate = module.postgresql.certificate_url
+
   credential = {
     username = module.postgresql.username
     password = module.postgresql.password
