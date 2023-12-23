@@ -59,6 +59,10 @@ resource "aws_instance" "bastion" {
     ignore_changes = [
       ami
     ]
+
+    replace_triggered_by = [
+      user_data_base64
+    ]
   }
 }
 
