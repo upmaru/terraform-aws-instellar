@@ -68,11 +68,6 @@ variable "storage_type" {
   type        = string
 }
 
-variable "storage_iops" {
-  description = "IOPS for storage"
-  default     = 3000
-}
-
 variable "publicly_accessible" {
   description = "Database publically accessible"
   default     = false

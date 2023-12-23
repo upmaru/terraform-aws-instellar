@@ -20,7 +20,6 @@ resource "aws_db_instance" "this" {
   allocated_storage     = var.storage_size
   max_allocated_storage = var.max_storage_size
   storage_type          = var.storage_type
-  iops                  = var.storage_iops
 
   db_subnet_group_name   = aws_db_subnet_group.this.name
   vpc_security_group_ids = [aws_security_group.database.id]
