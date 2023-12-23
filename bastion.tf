@@ -61,7 +61,7 @@ resource "aws_instance" "bastion" {
     ]
 
     replace_triggered_by = [
-      user_data_base64
+      data.cloudinit_config.bastion.rendered
     ]
   }
 }
