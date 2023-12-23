@@ -18,6 +18,10 @@ data "cloudinit_config" "bastion" {
   }
 }
 
+resource "terraform_data" "bastion_cloudinit" {
+  input = data.cloudinit_config.bastion.rendered
+}
+
 resource "aws_instance" "bastion" {
   ami                    = data.aws_ami.ubuntu.id
   instance_type          = var.bastion_size
@@ -58,6 +62,10 @@ resource "aws_instance" "bastion" {
   lifecycle {
     ignore_changes = [
       ami
+    ]
+
+    replace_triggered_by = [
+      terraform_data.bastion_cloudinit
     ]
   }
 }
