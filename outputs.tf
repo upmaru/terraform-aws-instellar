@@ -34,3 +34,7 @@ output "nodes_security_group_id" {
 output "bastion_security_group_id" {
   value = aws_security_group.bastion_firewall.id
 }
+
+output "vpc_id" {
+  value = var.vpc_id
+}

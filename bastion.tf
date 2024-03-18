@@ -18,6 +18,10 @@ data "cloudinit_config" "bastion" {
   }
 }
 
+locals {
+  user = "ubuntu"
+}
+
 resource "terraform_data" "bastion_cloudinit" {
   input = data.cloudinit_config.bastion.rendered
 }
@@ -39,7 +43,7 @@ resource "aws_instance" "bastion" {
 
   connection {
     type        = "ssh"
-    user        = "ubuntu"
+    user        = local.user
     host        = self.public_ip
     private_key = tls_private_key.terraform_cloud.private_key_openssh
   }
@@ -56,7 +60,8 @@ resource "aws_instance" "bastion" {
   }
 
   tags = {
-    Name = "${var.identifier}-bastion"
+    Name    = "${var.identifier}-bastion"
+    Project = var.identifier
   }
 
   lifecycle {
@@ -75,27 +80,29 @@ resource "aws_security_group" "bastion_firewall" {
   description = "Instellar Bastion Configuration"
   vpc_id      = var.vpc_id
 
-  #tfsec:ignore:aws-vpc-no-public-ingress-sgr[from_port=22]
-  ingress {
-    description      = "SSH"
-    from_port        = 22
-    to_port          = 22
-    protocol         = "tcp"
-    cidr_blocks      = ["0.0.0.0/0"]
-    ipv6_cidr_blocks = ["::/0"]
-  }
-
-  #tfsec:ignore:aws-ec2-no-public-egress-sgr
-  egress {
-    description      = "Egress to everywhere"
-    from_port        = 0
-    to_port          = 0
-    protocol         = "-1"
-    cidr_blocks      = ["0.0.0.0/0"]
-    ipv6_cidr_blocks = ["::/0"]
-  }
-
   tags = {
     Name = "${var.identifier}-instellar"
   }
+}
+
+resource "aws_vpc_security_group_egress_rule" "allow_outgoing" {
+  security_group_id = aws_security_group.bastion_firewall.id
+  description = "Enable all outgoing traffic"
+  from_port   = 0
+  to_port     = 0
+  ip_protocol = "-1"
+  cidr_ipv4   = ["0.0.0.0/0"]
+  cidr_ipv6   = ["::/0"]
+}
+
+resource "aws_vpc_security_group_ingress_rule" "allow_ssh" {
+  count = var.bastion_ssh ? 1 : 0
+
+  security_group_id = aws_security_group.bastion_firewall.id
+  description = "Enable ssh traffic"
+  from_port   = 22
+  to_port     = 22
+  ip_protocol = "tcp"
+  cidr_ipv4   = ["0.0.0.0/0"]
+  cidr_ipv6   = ["::/0"]
 }
