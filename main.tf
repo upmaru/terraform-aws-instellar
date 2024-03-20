@@ -328,9 +328,8 @@ resource "aws_vpc_security_group_ingress_rule" "cross_nodes" {
   }
 }
 
-
 resource "aws_vpc_security_group_ingress_rule" "nodes_from_bastion" {
-  security_group_id            = aws_security_group.nodes_firewall
+  security_group_id            = aws_security_group.nodes_firewall.id
   description                  = "Connect from Bastion"
   from_port                    = 22
   to_port                      = 22
