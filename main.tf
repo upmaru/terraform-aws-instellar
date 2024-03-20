@@ -76,7 +76,7 @@ resource "ssh_resource" "cluster_join_token" {
 resource "aws_instance" "bootstrap_node" {
   ami                    = data.aws_ami.ubuntu.id
   instance_type          = var.node_size
-  subnet_id              = var.public_subnet_ids[0]
+  subnet_id              = var.public_subnet_ids[1]
   vpc_security_group_ids = [aws_security_group.nodes_firewall.id]
   placement_group        = aws_placement_group.nodes.id
   ebs_optimized          = true
@@ -123,6 +123,7 @@ resource "aws_instance" "bootstrap_node" {
 
   tags = {
     Name = "${var.identifier}-bootstrap-node"
+    Blueprint = var.blueprint
   }
 
   lifecycle {
