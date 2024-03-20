@@ -14,7 +14,7 @@ resource "aws_vpc_security_group_egress_rule" "outgoing" {
   from_port         = 0
   to_port           = 0
   ip_protocol       = "-1"
-  referenced_security_group_id = aws_security_group.this.id
+  referenced_security_group_id = var.nodes_security_group_id
 
   tags = {
     Blueprint = var.blueprint
