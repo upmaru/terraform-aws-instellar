@@ -5,6 +5,10 @@ locals {
   }
 }
 
+resource "terraform_data" "uplink_nodes" {
+  input = var.uplink_nodes
+}
+
 resource "aws_lb" "this" {
   name               = "${var.identifier}-balancer"
   load_balancer_type = "network"
@@ -14,7 +18,7 @@ resource "aws_lb" "this" {
   enable_deletion_protection = var.deletion_protection
 
   tags = {
-    Name      = "${var.identifier}-balancer"
+    Name = "${var.identifier}-balancer"
     Blueprint = var.blueprint
   }
 }
@@ -45,58 +49,38 @@ resource "aws_lb_target_group" "uplink" {
   port     = 49152
   protocol = "TCP"
   vpc_id   = var.vpc_id
+
+  health_check {
+    enabled = true
+    protocol = "HTTPS"
+    matcher = "200-299"
+    path = "/health"
+    port = 49152
+  }
 }
 
 resource "aws_lb_target_group_attachment" "http" {
-  for_each = local.topology
-
-  dynamic "uplink_node" {
-    for_each = contains(toset(var.uplink_nodes), each.key) ? toset(var.uplink_nodes) : []
-
-    content {
-      target_group_arn = aws_lb_target_group.http.arn
-      target_id        = local.topology[uplink_node.key].id
-    }
-  }
+  for_each         = toset(terraform_data.uplink_nodes)
+  target_group_arn = aws_lb_target_group.http.arn
+  target_id        = local.topology[each.key].id
 }
 
 resource "aws_lb_target_group_attachment" "https" {
-  for_each = local.topology
-
-  dynamic "uplink_node" {
-    for_each = contains(toset(var.uplink_nodes), each.key) ? toset(var.uplink_nodes) : []
-
-    content {
-      target_group_arn = aws_lb_target_group.https.arn
-      target_id        = local.topology[uplink_node.key].id
-    }
-  }
+  for_each         = toset(terraform_data.uplink_nodes)
+  target_group_arn = aws_lb_target_group.https.arn
+  target_id        = local.topology[each.key].id
 }
 
 resource "aws_lb_target_group_attachment" "lxd" {
-  for_each = local.topology
-
-  dynamic "uplink_node" {
-    for_each = contains(toset(var.uplink_nodes), each.key) ? toset(var.uplink_nodes) : []
-
-    content {
-      target_group_arn = aws_lb_target_group.lxd.arn
-      target_id        = local.topology[uplink_node.key].id
-    }
-  }
+  for_each         = toset(terraform_data.uplink_nodes)
+  target_group_arn = aws_lb_target_group.lxd.arn
+  target_id        = local.topology[each.key].id
 }
 
 resource "aws_lb_target_group_attachment" "uplink" {
-  for_each = local.topology
-
-  dynamic "uplink_node" {
-    for_each = contains(toset(var.uplink_nodes), each.key) ? toset(var.uplink_nodes) : []
-
-    content {
-      target_group_arn = aws_lb_target_group.uplink.arn
-      target_id        = local.topology[uplink_node.key].id
-    }
-  }
+  for_each         = toset(terraform_data.uplink_nodes)
+  target_group_arn = aws_lb_target_group.uplink.arn
+  target_id        = local.topology[each.key].id
 }
 
 resource "aws_lb_listener" "http" {
