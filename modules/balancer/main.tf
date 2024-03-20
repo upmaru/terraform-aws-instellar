@@ -48,25 +48,25 @@ resource "aws_lb_target_group" "uplink" {
 }
 
 resource "aws_lb_target_group_attachment" "http" {
-  for_each         = local.topology
+  for_each         = { for k, v in local.topology : k => v if contains(toset(var.uplink_nodes), k) }
   target_group_arn = aws_lb_target_group.http.arn
   target_id        = local.topology[each.key].id
 }
 
 resource "aws_lb_target_group_attachment" "https" {
-  for_each         = local.topology
+  for_each         = { for k, v in local.topology : k => v if contains(toset(var.uplink_nodes), k) }
   target_group_arn = aws_lb_target_group.https.arn
   target_id        = local.topology[each.key].id
 }
 
 resource "aws_lb_target_group_attachment" "lxd" {
-  for_each         = local.topology
+  for_each         = { for k, v in local.topology : k => v if contains(toset(var.uplink_nodes), k) }
   target_group_arn = aws_lb_target_group.lxd.arn
   target_id        = local.topology[each.key].id
 }
 
 resource "aws_lb_target_group_attachment" "uplink" {
-  for_each         = local.topology
+  for_each         = { for k, v in local.topology : k => v if contains(toset(var.uplink_nodes), k) }
   target_group_arn = aws_lb_target_group.uplink.arn
   target_id        = local.topology[each.key].id
 }
