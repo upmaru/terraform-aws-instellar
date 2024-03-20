@@ -28,9 +28,9 @@ variable "subnet_ids" {
   type        = list(string)
 }
 
-variable "uplink_id" {
-  description = "Uplink id to pass in if block type is compute"
-  type        = string
+variable "uplink_nodes" {
+  description = "Uplink nodes"
+  type        = list(string)
 }
 
 variable "bootstrap_node" {

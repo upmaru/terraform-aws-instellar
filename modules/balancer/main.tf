@@ -47,36 +47,26 @@ resource "aws_lb_target_group" "uplink" {
   vpc_id   = var.vpc_id
 }
 
-resource "time_sleep" "wait_30_seconds" {
-  create_duration = "30s"
-}
-
-data "instellar_uplink" "this" {
-  id = var.uplink_id
-
-  depends_on = [time_sleep.wait_30_seconds]
-}
-
 resource "aws_lb_target_group_attachment" "http" {
-  for_each         = toset(data.instellar_uplink.this.nodes)
+  for_each         = toset(var.uplink_nodes)
   target_group_arn = aws_lb_target_group.http.arn
   target_id        = local.topology[each.key].id
 }
 
 resource "aws_lb_target_group_attachment" "https" {
-  for_each         = toset(data.instellar_uplink.this.nodes)
+  for_each         = toset(var.uplink_nodes)
   target_group_arn = aws_lb_target_group.https.arn
   target_id        = local.topology[each.key].id
 }
 
 resource "aws_lb_target_group_attachment" "lxd" {
-  for_each         = toset(data.instellar_uplink.this.nodes)
+  for_each         = toset(var.uplink_nodes)
   target_group_arn = aws_lb_target_group.lxd.arn
   target_id        = local.topology[each.key].id
 }
 
 resource "aws_lb_target_group_attachment" "uplink" {
-  for_each         = toset(data.instellar_uplink.this.nodes)
+  for_each         = toset(var.uplink_nodes)
   target_group_arn = aws_lb_target_group.uplink.arn
   target_id        = local.topology[each.key].id
 }
