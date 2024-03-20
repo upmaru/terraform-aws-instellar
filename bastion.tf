@@ -60,8 +60,8 @@ resource "aws_instance" "bastion" {
   }
 
   tags = {
-    Name    = "${var.identifier}-bastion"
-    Project = var.identifier
+    Name      = "${var.identifier}-bastion"
+    Blueprint = var.blueprint
   }
 
   lifecycle {
@@ -81,7 +81,8 @@ resource "aws_security_group" "bastion_firewall" {
   vpc_id      = var.vpc_id
 
   tags = {
-    Name = "${var.identifier}-instellar"
+    Name      = "${var.identifier}-instellar"
+    Blueprint = var.blueprint
   }
 }
 
@@ -93,6 +94,10 @@ resource "aws_vpc_security_group_egress_rule" "allow_outgoing" {
   ip_protocol       = "-1"
   cidr_ipv4         = ["0.0.0.0/0"]
   cidr_ipv6         = ["::/0"]
+
+  tags = {
+    Blueprint = var.blueprint
+  }
 }
 
 resource "aws_vpc_security_group_ingress_rule" "allow_ssh" {
@@ -105,4 +110,8 @@ resource "aws_vpc_security_group_ingress_rule" "allow_ssh" {
   ip_protocol       = "tcp"
   cidr_ipv4         = ["0.0.0.0/0"]
   cidr_ipv6         = ["::/0"]
+
+  tags = {
+    Blueprint = var.blueprint
+  }
 }

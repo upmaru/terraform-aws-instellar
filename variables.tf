@@ -4,6 +4,11 @@ variable "protect_leader" {
   default     = true
 }
 
+variable "blueprint" {
+  description = "Identifier of the blueprint"
+  type        = string
+}
+
 variable "identifier" {
   description = "Name of your cluster"
   type        = string

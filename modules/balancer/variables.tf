@@ -8,8 +8,13 @@ variable "deletion_protection" {
   default     = true
 }
 
+variable "blueprint" {
+  description = "Identifier of the blueprint"
+  type        = string
+}
+
 variable "identifier" {
-  default = "identifier for load balancer"
+  default = "Identifier for load balancer"
   type    = string
 }
 
