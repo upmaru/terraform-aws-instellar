@@ -30,6 +30,10 @@ resource "aws_lb_target_group" "http" {
     protocol = "TCP"
     port     = 80
   }
+
+  tags = {
+    Blueprint = var.blueprint
+  }
 }
 
 resource "aws_lb_target_group" "https" {
@@ -42,6 +46,10 @@ resource "aws_lb_target_group" "https" {
     enabled  = true
     protocol = "TCP"
     port     = 443
+  }
+
+  tags = {
+    Blueprint = var.blueprint
   }
 }
 
@@ -56,6 +64,10 @@ resource "aws_lb_target_group" "lxd" {
     protocol = "TCP"
     port     = 8443
   }
+
+  tags = {
+    Blueprint = var.blueprint
+  }
 }
 
 resource "aws_lb_target_group" "uplink" {
@@ -68,6 +80,10 @@ resource "aws_lb_target_group" "uplink" {
     enabled  = true
     protocol = "TCP"
     port     = 49152
+  }
+
+  tags = {
+    Blueprint = var.blueprint
   }
 }
 
@@ -104,6 +120,10 @@ resource "aws_lb_listener" "http" {
     type             = "forward"
     target_group_arn = aws_lb_target_group.http.arn
   }
+
+  tags = {
+    Blueprint = var.blueprint
+  }
 }
 
 resource "aws_lb_listener" "https" {
@@ -114,6 +134,10 @@ resource "aws_lb_listener" "https" {
   default_action {
     type             = "forward"
     target_group_arn = aws_lb_target_group.https.arn
+  }
+
+  tags = {
+    Blueprint = var.blueprint
   }
 }
 
@@ -126,6 +150,10 @@ resource "aws_lb_listener" "lxd" {
     type             = "forward"
     target_group_arn = aws_lb_target_group.lxd.arn
   }
+
+  tags = {
+    Blueprint = var.blueprint
+  }
 }
 
 resource "aws_lb_listener" "uplink" {
@@ -136,6 +164,10 @@ resource "aws_lb_listener" "uplink" {
   default_action {
     type             = "forward"
     target_group_arn = aws_lb_target_group.uplink.arn
+  }
+
+  tags = {
+    Blueprint = var.blueprint
   }
 }
 
