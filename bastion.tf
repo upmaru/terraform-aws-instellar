@@ -104,7 +104,6 @@ resource "aws_vpc_security_group_ingress_rule" "allow_ssh" {
   to_port           = 22
   ip_protocol       = "tcp"
   cidr_ipv4         = "0.0.0.0/0"
-  cidr_ipv6         = "::/0"
 
   tags = {
     Blueprint = var.blueprint
