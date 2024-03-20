@@ -58,25 +58,25 @@ data "instellar_uplink" "this" {
 }
 
 resource "aws_lb_target_group_attachment" "http" {
-  for_each         = tomap(data.instellar_uplink.this.nodes)
+  for_each         = toset(data.instellar_uplink.this.nodes)
   target_group_arn = aws_lb_target_group.http.arn
   target_id        = local.topology[each.key].id
 }
 
 resource "aws_lb_target_group_attachment" "https" {
-  for_each         = tomap(data.instellar_uplink.this.nodes)
+  for_each         = toset(data.instellar_uplink.this.nodes)
   target_group_arn = aws_lb_target_group.https.arn
   target_id        = local.topology[each.key].id
 }
 
 resource "aws_lb_target_group_attachment" "lxd" {
-  for_each         = tomap(data.instellar_uplink.this.nodes)
+  for_each         = toset(data.instellar_uplink.this.nodes)
   target_group_arn = aws_lb_target_group.lxd.arn
   target_id        = local.topology[each.key].id
 }
 
 resource "aws_lb_target_group_attachment" "uplink" {
-  for_each         = tomap(data.instellar_uplink.this.nodes)
+  for_each         = toset(data.instellar_uplink.this.nodes)
   target_group_arn = aws_lb_target_group.uplink.arn
   target_id        = local.topology[each.key].id
 }
