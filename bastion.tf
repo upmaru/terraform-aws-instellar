@@ -89,7 +89,6 @@ resource "aws_vpc_security_group_egress_rule" "allow_outgoing" {
   to_port           = 0
   ip_protocol       = "-1"
   cidr_ipv4         = "0.0.0.0/0"
-  cidr_ipv6         = "::/0"
 
   tags = {
     Blueprint = var.blueprint

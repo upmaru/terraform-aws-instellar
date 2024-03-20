@@ -8,13 +8,14 @@ locals {
 resource "aws_lb" "this" {
   name               = "${var.identifier}-balancer"
   load_balancer_type = "network"
-  security_group_ids = [aws_security_group.this.id]
+  security_groups    = [aws_security_group.this.id]
   subnets            = var.subnet_ids
 
   enable_deletion_protection = var.deletion_protection
 
-  tags {
+  tags = {
     Name = "${var.identifier}-balancer"
+    Blueprint = var.blueprint
   }
 }
 

@@ -16,7 +16,6 @@ resource "aws_vpc_security_group_ingress_rule" "http" {
 resource "aws_vpc_security_group_ingress_rule" "https" {
   security_group_id = aws_security_group.this.id
   cidr_ipv4         = "0.0.0.0/0"
-  cidr_ipv6         = "::/0"
   from_port         = 443
   to_port           = 443
   ip_protocol       = "tcp"
