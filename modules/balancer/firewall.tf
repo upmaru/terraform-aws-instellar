@@ -2,6 +2,22 @@ resource "aws_security_group" "this" {
   name        = "${var.identifier}-balancer"
   description = "Allow inbound for serving http / https and opsmaru ports"
   vpc_id      = var.vpc_id
+
+  tags = {
+    Blueprint = var.blueprint
+  }
+}
+
+resource "aws_vpc_security_group_egress_rule" "outgoing" {
+  security_group_id = aws_security_group.this.id
+  description       = "Allow all outgoing traffic"
+  from_port         = 0
+  to_port           = 0
+  ip_protocol       = "-1"
+
+  tags = {
+    Blueprint = var.blueprint
+  }
 }
 
 resource "aws_vpc_security_group_ingress_rule" "http" {
@@ -10,6 +26,10 @@ resource "aws_vpc_security_group_ingress_rule" "http" {
   from_port         = 80
   to_port           = 80
   ip_protocol       = "tcp"
+
+  tags = {
+    Blueprint = var.blueprint
+  }
 }
 
 resource "aws_vpc_security_group_ingress_rule" "https" {
@@ -18,6 +38,10 @@ resource "aws_vpc_security_group_ingress_rule" "https" {
   from_port         = 443
   to_port           = 443
   ip_protocol       = "tcp"
+
+  tags = {
+    Blueprint = var.blueprint
+  }
 }
 
 resource "aws_vpc_security_group_ingress_rule" "lxd" {
@@ -26,6 +50,10 @@ resource "aws_vpc_security_group_ingress_rule" "lxd" {
   from_port         = 8443
   to_port           = 8443
   ip_protocol       = "tcp"
+
+  tags = {
+    Blueprint = var.blueprint
+  }
 }
 
 resource "aws_vpc_security_group_ingress_rule" "uplink" {
@@ -34,6 +62,10 @@ resource "aws_vpc_security_group_ingress_rule" "uplink" {
   from_port         = 49152
   to_port           = 49152
   ip_protocol       = "tcp"
+
+  tags = {
+    Blueprint = var.blueprint
+  }
 }
 
 resource "aws_vpc_security_group_ingress_rule" "nodes_http" {
@@ -43,6 +75,10 @@ resource "aws_vpc_security_group_ingress_rule" "nodes_http" {
   from_port                    = 80
   to_port                      = 80
   ip_protocol                  = "tcp"
+
+  tags = {
+    Blueprint = var.blueprint
+  }
 }
 
 resource "aws_vpc_security_group_ingress_rule" "nodes_https" {
@@ -52,6 +88,10 @@ resource "aws_vpc_security_group_ingress_rule" "nodes_https" {
   from_port                    = 443
   to_port                      = 443
   ip_protocol                  = "tcp"
+
+  tags = {
+    Blueprint = var.blueprint
+  }
 }
 
 resource "aws_vpc_security_group_ingress_rule" "nodes_lxd" {
@@ -61,6 +101,10 @@ resource "aws_vpc_security_group_ingress_rule" "nodes_lxd" {
   from_port                    = 8443
   to_port                      = 8443
   ip_protocol                  = "tcp"
+
+  tags = {
+    Blueprint = var.blueprint
+  }
 }
 
 resource "aws_vpc_security_group_ingress_rule" "nodes_uplink" {
@@ -70,4 +114,8 @@ resource "aws_vpc_security_group_ingress_rule" "nodes_uplink" {
   from_port                    = 49152
   to_port                      = 49152
   ip_protocol                  = "tcp"
+
+  tags = {
+    Blueprint = var.blueprint
+  }
 }
