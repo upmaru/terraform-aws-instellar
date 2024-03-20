@@ -60,25 +60,25 @@ resource "aws_lb_target_group" "uplink" {
 }
 
 resource "aws_lb_target_group_attachment" "http" {
-  for_each         = toset(terraform_data.uplink_nodes)
+  for_each         = toset(terraform_data.uplink_nodes.output)
   target_group_arn = aws_lb_target_group.http.arn
   target_id        = local.topology[each.key].id
 }
 
 resource "aws_lb_target_group_attachment" "https" {
-  for_each         = toset(terraform_data.uplink_nodes)
+  for_each         = toset(terraform_data.uplink_nodes.output)
   target_group_arn = aws_lb_target_group.https.arn
   target_id        = local.topology[each.key].id
 }
 
 resource "aws_lb_target_group_attachment" "lxd" {
-  for_each         = toset(terraform_data.uplink_nodes)
+  for_each         = toset(terraform_data.uplink_nodes.output)
   target_group_arn = aws_lb_target_group.lxd.arn
   target_id        = local.topology[each.key].id
 }
 
 resource "aws_lb_target_group_attachment" "uplink" {
-  for_each         = toset(terraform_data.uplink_nodes)
+  for_each         = toset(terraform_data.uplink_nodes.output)
   target_group_arn = aws_lb_target_group.uplink.arn
   target_id        = local.topology[each.key].id
 }
