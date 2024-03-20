@@ -76,7 +76,7 @@ resource "ssh_resource" "cluster_join_token" {
 resource "aws_instance" "bootstrap_node" {
   ami                    = data.aws_ami.ubuntu.id
   instance_type          = var.node_size
-  subnet_id              = var.public_subnet_ids[1]
+  subnet_id              = var.public_subnet_ids[0]
   vpc_security_group_ids = [aws_security_group.nodes_firewall.id]
   placement_group        = aws_placement_group.nodes.id
   ebs_optimized          = true
@@ -128,7 +128,8 @@ resource "aws_instance" "bootstrap_node" {
   lifecycle {
     ignore_changes = [
       ami,
-      user_data_base64
+      user_data_base64,
+      subnet_id
     ]
   }
 }
@@ -183,7 +184,8 @@ resource "aws_instance" "nodes" {
   }
 
   tags = {
-    Name = "${var.identifier}-node-${each.key}"
+    Name      = "${var.identifier}-node-${each.key}"
+    Blueprint = var.blueprint
   }
 
   lifecycle {
@@ -297,70 +299,6 @@ resource "aws_security_group" "nodes_firewall" {
   description = "Instellar Nodes Configuration"
   vpc_id      = var.vpc_id
 
-  #tfsec:ignore:aws-vpc-no-public-ingress-sgr[from_port=80]
-  ingress {
-    description      = "HTTP"
-    from_port        = 80
-    to_port          = 80
-    protocol         = "tcp"
-    cidr_blocks      = ["0.0.0.0/0"]
-    ipv6_cidr_blocks = ["::/0"]
-  }
-
-  #tfsec:ignore:aws-ec2-no-public-ingress-sgr[from_port=443]
-  ingress {
-    description      = "HTTPS"
-    from_port        = 443
-    to_port          = 443
-    protocol         = "tcp"
-    cidr_blocks      = ["0.0.0.0/0"]
-    ipv6_cidr_blocks = ["::/0"]
-  }
-
-  #tfsec:ignore:aws-vpc-no-public-ingress-sgr[from_port=8443]
-  ingress {
-    description      = "LXD"
-    from_port        = 8443
-    to_port          = 8443
-    protocol         = "tcp"
-    cidr_blocks      = ["0.0.0.0/0"]
-    ipv6_cidr_blocks = ["::/0"]
-  }
-
-  #tfsec:ignore:aws-vpc-no-public-ingress-sgr[from_port=49152]
-  ingress {
-    description      = "Uplink"
-    from_port        = 49152
-    to_port          = 49152
-    protocol         = "tcp"
-    cidr_blocks      = ["0.0.0.0/0"]
-    ipv6_cidr_blocks = ["::/0"]
-  }
-
-  ingress {
-    description     = "From Bastion"
-    from_port       = 22
-    to_port         = 22
-    protocol        = "tcp"
-    security_groups = [aws_security_group.bastion_firewall.id]
-  }
-
-  ingress {
-    description = "Full Cross Node TCP"
-    from_port   = 1
-    to_port     = 65535
-    protocol    = "tcp"
-    self        = true
-  }
-
-  ingress {
-    description = "Full Cross Node UDP"
-    from_port   = 1
-    to_port     = 65535
-    protocol    = "udp"
-    self        = true
-  }
-
   #tfsec:ignore:aws-ec2-no-public-egress-sgr
   egress {
     description      = "Egress to everywhere"
@@ -372,6 +310,98 @@ resource "aws_security_group" "nodes_firewall" {
   }
 
   tags = {
-    Name = "${var.identifier}-instellar"
+    Name      = "${var.identifier}-instellar"
+    Blueprint = var.blueprint
+  }
+}
+
+resource "aws_vpc_security_group_ingress_rule" "cross_nodes" {
+  security_group_id            = aws_security_group.nodes_firewall.id
+  description                  = "Full Cross Node Communication"
+  from_port                    = 1
+  to_port                      = 65535
+  ip_protocol                  = "-1"
+  referenced_security_group_id = aws_security_group.nodes_firewall.id
+
+  tags = {
+    Blueprint = var.blueprint
+  }
+}
+
+
+resource "aws_vpc_security_group_ingress_rule" "nodes_from_bastion" {
+  security_group_id            = aws_security_group.nodes_firewall
+  description                  = "Connect from Bastion"
+  from_port                    = 22
+  to_port                      = 22
+  ip_protocol                  = "tcp"
+  referenced_security_group_id = aws_security_group.bastion_firewall.id
+
+  tags = {
+    Blueprint = var.blueprint
+  }
+}
+
+resource "aws_vpc_security_group_ingress_rule" "nodes_public_http" {
+  count = var.publically_accessible ? 1 : 0
+
+  security_group_id = aws_security_group.nodes_firewall.id
+  description       = "Enable public http for setup or cluster without network load balancer"
+  cidr_ipv4         = ["0.0.0.0/0"]
+  cidr_ipv6         = ["::/0"]
+  from_port         = 80
+  to_port           = 80
+  ip_protocol       = "tcp"
+
+  tags = {
+    Blueprint = var.blueprint
+  }
+}
+
+resource "aws_vpc_security_group_ingress_rule" "nodes_public_https" {
+  count = var.publically_accessible ? 1 : 0
+
+  security_group_id = aws_security_group.nodes_firewall.id
+  description       = "Enable public https for setup or cluster without network load balancer"
+  cidr_ipv4         = ["0.0.0.0/0"]
+  cidr_ipv6         = ["::/0"]
+  from_port         = 443
+  to_port           = 443
+  ip_protocol       = "tcp"
+
+  tags = {
+    Blueprint = var.blueprint
+  }
+}
+
+resource "aws_vpc_security_group_ingress_rule" "nodes_public_lxd" {
+  count = var.publically_accessible ? 1 : 0
+
+  security_group_id = aws_security_group.nodes_firewall.id
+  description       = "Enable public lxd for setup or cluster without network load balancer"
+  cidr_ipv4         = ["0.0.0.0/0"]
+  cidr_ipv6         = ["::/0"]
+  from_port         = 8443
+  to_port           = 8443
+  ip_protocol       = "tcp"
+
+  tags = {
+    Blueprint = var.blueprint
+  }
+}
+
+resource "aws_vpc_security_group_ingress_rule" "nodes_public_uplink" {
+  count = var.publically_accessible ? 1 : 0
+
+  security_group_id = aws_security_group.nodes_firewall.id
+  description       = "Enable public uplink for setup or cluster without network load balancer"
+  cidr_ipv4         = ["0.0.0.0/0"]
+  cidr_ipv6         = ["::/0"]
+  from_port         = 49152
+  to_port           = 49152
+  ip_protocol       = "tcp"
+
+  tags = {
+    Blueprint = var.blueprint
   }
 }

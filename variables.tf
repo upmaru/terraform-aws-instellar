@@ -4,9 +4,19 @@ variable "protect_leader" {
   default     = true
 }
 
+variable "blueprint" {
+  description = "Identifier of the blueprint"
+  type        = string
+}
+
 variable "identifier" {
   description = "Name of your cluster"
   type        = string
+}
+
+variable "publically_accessible" {
+  description = "Make the cluster publically accessible? If you use a load balancer this can be false."
+  default     = true
 }
 
 variable "vpc_ip_range" {
@@ -34,9 +44,14 @@ variable "bastion_size" {
   default     = "t3a.micro"
 }
 
+variable "bastion_ssh" {
+  description = "Enable SSH port"
+  default     = true
+}
+
 variable "node_size" {
   description = "Which instance type?"
-  default     = "t3.medium"
+  default     = "t3a.medium"
 }
 
 variable "node_monitoring" {

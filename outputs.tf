@@ -14,6 +14,7 @@ output "bootstrap_node" {
   value = {
     slug      = aws_instance.bootstrap_node.tags.Name
     public_ip = aws_instance.bootstrap_node.public_ip
+    id        = aws_instance.bootstrap_node.id
   }
 }
 
@@ -23,6 +24,7 @@ output "nodes" {
     {
       slug      = node.tags.Name
       public_ip = node.public_ip
+      id        = node.id
     }
   ]
 }
@@ -33,4 +35,8 @@ output "nodes_security_group_id" {
 
 output "bastion_security_group_id" {
   value = aws_security_group.bastion_firewall.id
+}
+
+output "vpc_id" {
+  value = var.vpc_id
 }
