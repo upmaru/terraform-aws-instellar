@@ -318,8 +318,6 @@ resource "aws_security_group" "nodes_firewall" {
 resource "aws_vpc_security_group_ingress_rule" "cross_nodes" {
   security_group_id            = aws_security_group.nodes_firewall.id
   description                  = "Full Cross Node Communication"
-  from_port                    = 1
-  to_port                      = 65535
   ip_protocol                  = "-1"
   referenced_security_group_id = aws_security_group.nodes_firewall.id
 

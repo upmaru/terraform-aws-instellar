@@ -85,8 +85,6 @@ resource "aws_security_group" "bastion_firewall" {
 resource "aws_vpc_security_group_egress_rule" "allow_outgoing" {
   security_group_id = aws_security_group.bastion_firewall.id
   description       = "Enable all outgoing traffic"
-  from_port         = 0
-  to_port           = 0
   ip_protocol       = "-1"
   cidr_ipv4         = "0.0.0.0/0"
 
