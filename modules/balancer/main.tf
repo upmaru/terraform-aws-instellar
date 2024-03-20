@@ -5,10 +5,6 @@ locals {
   }
 }
 
-resource "terraform_data" "uplink_nodes" {
-  input = var.uplink_nodes
-}
-
 resource "aws_lb" "this" {
   name               = "${var.identifier}-balancer"
   load_balancer_type = "network"
@@ -60,27 +56,27 @@ resource "aws_lb_target_group" "uplink" {
 }
 
 resource "aws_lb_target_group_attachment" "http" {
-  for_each         = toset(terraform_data.uplink_nodes.output)
+  for_each         = local.topology
   target_group_arn = aws_lb_target_group.http.arn
-  target_id        = local.topology[each.key].id
+  target_id        = each.value.id
 }
 
 resource "aws_lb_target_group_attachment" "https" {
-  for_each         = toset(terraform_data.uplink_nodes.output)
+  for_each         = local.topology
   target_group_arn = aws_lb_target_group.https.arn
-  target_id        = local.topology[each.key].id
+  target_id        = each.value.id
 }
 
 resource "aws_lb_target_group_attachment" "lxd" {
-  for_each         = toset(terraform_data.uplink_nodes.output)
+  for_each         = local.topology
   target_group_arn = aws_lb_target_group.lxd.arn
-  target_id        = local.topology[each.key].id
+  target_id        = each.value.id
 }
 
 resource "aws_lb_target_group_attachment" "uplink" {
-  for_each         = toset(terraform_data.uplink_nodes.output)
+  for_each         = local.topology
   target_group_arn = aws_lb_target_group.uplink.arn
-  target_id        = local.topology[each.key].id
+  target_id        = each.value.id
 }
 
 resource "aws_lb_listener" "http" {
