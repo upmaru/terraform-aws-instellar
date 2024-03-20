@@ -3,7 +3,6 @@ locals {
     for index, node in concat(var.nodes, [var.bootstrap_node]) :
     node.slug => node
   }
-  valid_nodes = { for k, v in local.topology : k => v if contains(toset(var.uplink_nodes), k) }
 }
 
 resource "aws_lb" "this" {
@@ -15,7 +14,7 @@ resource "aws_lb" "this" {
   enable_deletion_protection = var.deletion_protection
 
   tags = {
-    Name = "${var.identifier}-balancer"
+    Name      = "${var.identifier}-balancer"
     Blueprint = var.blueprint
   }
 }
@@ -49,27 +48,55 @@ resource "aws_lb_target_group" "uplink" {
 }
 
 resource "aws_lb_target_group_attachment" "http" {
-  for_each         = local.valid_nodes
-  target_group_arn = aws_lb_target_group.http.arn
-  target_id        = local.topology[each.key].id
+  for_each = local.topology
+
+  dynamic "uplink_node" {
+    for_each = contains(toset(var.uplink_nodes), each.key) ? toset(var.uplink_nodes) : []
+
+    content {
+      target_group_arn = aws_lb_target_group.http.arn
+      target_id        = local.topology[uplink_node.key].id
+    }
+  }
 }
 
 resource "aws_lb_target_group_attachment" "https" {
-  for_each         = local.valid_nodes
-  target_group_arn = aws_lb_target_group.https.arn
-  target_id        = local.topology[each.key].id
+  for_each = local.topology
+
+  dynamic "uplink_node" {
+    for_each = contains(toset(var.uplink_nodes), each.key) ? toset(var.uplink_nodes) : []
+
+    content {
+      target_group_arn = aws_lb_target_group.https.arn
+      target_id        = local.topology[uplink_node.key].id
+    }
+  }
 }
 
 resource "aws_lb_target_group_attachment" "lxd" {
-  for_each         = local.valid_nodes
-  target_group_arn = aws_lb_target_group.lxd.arn
-  target_id        = local.topology[each.key].id
+  for_each = local.topology
+
+  dynamic "uplink_node" {
+    for_each = contains(toset(var.uplink_nodes), each.key) ? toset(var.uplink_nodes) : []
+
+    content {
+      target_group_arn = aws_lb_target_group.lxd.arn
+      target_id        = local.topology[uplink_node.key].id
+    }
+  }
 }
 
 resource "aws_lb_target_group_attachment" "uplink" {
-  for_each         = local.valid_nodes
-  target_group_arn = aws_lb_target_group.uplink.arn
-  target_id        = local.topology[each.key].id
+  for_each = local.topology
+
+  dynamic "uplink_node" {
+    for_each = contains(toset(var.uplink_nodes), each.key) ? toset(var.uplink_nodes) : []
+
+    content {
+      target_group_arn = aws_lb_target_group.uplink.arn
+      target_id        = local.topology[uplink_node.key].id
+    }
+  }
 }
 
 resource "aws_lb_listener" "http" {
