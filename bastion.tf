@@ -18,10 +18,6 @@ data "cloudinit_config" "bastion" {
   }
 }
 
-locals {
-  user = "ubuntu"
-}
-
 resource "terraform_data" "bastion_cloudinit" {
   input = data.cloudinit_config.bastion.rendered
 }
