@@ -28,11 +28,6 @@ variable "subnet_ids" {
   type        = list(string)
 }
 
-variable "uplink_nodes" {
-  description = "Uplink nodes"
-  type        = list(string)
-}
-
 variable "bootstrap_node" {
   type = object({
     id        = string

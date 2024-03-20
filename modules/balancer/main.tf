@@ -14,7 +14,7 @@ resource "aws_lb" "this" {
   enable_deletion_protection = var.deletion_protection
 
   tags = {
-    Name = "${var.identifier}-balancer"
+    Name      = "${var.identifier}-balancer"
     Blueprint = var.blueprint
   }
 }
@@ -24,6 +24,12 @@ resource "aws_lb_target_group" "http" {
   port     = 80
   protocol = "TCP"
   vpc_id   = var.vpc_id
+
+  health_check {
+    enabled  = true
+    protocol = "TCP"
+    port     = 80
+  }
 }
 
 resource "aws_lb_target_group" "https" {
@@ -31,6 +37,12 @@ resource "aws_lb_target_group" "https" {
   port     = 443
   protocol = "TCP"
   vpc_id   = var.vpc_id
+
+  health_check {
+    enabled  = true
+    protocol = "TCP"
+    port     = 443
+  }
 }
 
 resource "aws_lb_target_group" "lxd" {
@@ -38,6 +50,12 @@ resource "aws_lb_target_group" "lxd" {
   port     = 8443
   protocol = "TCP"
   vpc_id   = var.vpc_id
+
+  health_check {
+    enabled  = true
+    protocol = "TCP"
+    port     = 8443
+  }
 }
 
 resource "aws_lb_target_group" "uplink" {
@@ -47,11 +65,9 @@ resource "aws_lb_target_group" "uplink" {
   vpc_id   = var.vpc_id
 
   health_check {
-    enabled = true
-    protocol = "HTTPS"
-    matcher = "200-299"
-    path = "/health"
-    port = 49152
+    enabled  = true
+    protocol = "TCP"
+    port     = 49152
   }
 }
 
