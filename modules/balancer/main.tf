@@ -48,25 +48,25 @@ resource "aws_lb_target_group" "uplink" {
 }
 
 resource "aws_lb_target_group_attachment" "http" {
-  for_each         = toset(var.uplink_nodes)
+  for_each         = local.topology
   target_group_arn = aws_lb_target_group.http.arn
   target_id        = local.topology[each.key].id
 }
 
 resource "aws_lb_target_group_attachment" "https" {
-  for_each         = toset(var.uplink_nodes)
+  for_each         = local.topology
   target_group_arn = aws_lb_target_group.https.arn
   target_id        = local.topology[each.key].id
 }
 
 resource "aws_lb_target_group_attachment" "lxd" {
-  for_each         = toset(var.uplink_nodes)
+  for_each         = local.topology
   target_group_arn = aws_lb_target_group.lxd.arn
   target_id        = local.topology[each.key].id
 }
 
 resource "aws_lb_target_group_attachment" "uplink" {
-  for_each         = toset(var.uplink_nodes)
+  for_each         = local.topology
   target_group_arn = aws_lb_target_group.uplink.arn
   target_id        = local.topology[each.key].id
 }
@@ -78,7 +78,7 @@ resource "aws_lb_listener" "http" {
 
   default_action {
     type             = "forward"
-    target_group_arn = aws_lb_target_group.http
+    target_group_arn = aws_lb_target_group.http.arn
   }
 }
 
@@ -89,7 +89,7 @@ resource "aws_lb_listener" "https" {
 
   default_action {
     type             = "forward"
-    target_group_arn = aws_lb_target_group.https
+    target_group_arn = aws_lb_target_group.https.arn
   }
 }
 
@@ -100,7 +100,7 @@ resource "aws_lb_listener" "lxd" {
 
   default_action {
     type             = "forward"
-    target_group_arn = aws_lb_target_group.lxd
+    target_group_arn = aws_lb_target_group.lxd.arn
   }
 }
 
@@ -111,7 +111,7 @@ resource "aws_lb_listener" "uplink" {
 
   default_action {
     type             = "forward"
-    target_group_arn = aws_lb_target_group.uplink
+    target_group_arn = aws_lb_target_group.uplink.arn
   }
 }
 
