@@ -347,8 +347,8 @@ resource "aws_vpc_security_group_ingress_rule" "nodes_public_http" {
 
   security_group_id = aws_security_group.nodes_firewall.id
   description       = "Enable public http for setup or cluster without network load balancer"
-  cidr_ipv4         = ["0.0.0.0/0"]
-  cidr_ipv6         = ["::/0"]
+  cidr_ipv4         = "0.0.0.0/0"
+  cidr_ipv6         = "::/0"
   from_port         = 80
   to_port           = 80
   ip_protocol       = "tcp"
@@ -363,8 +363,8 @@ resource "aws_vpc_security_group_ingress_rule" "nodes_public_https" {
 
   security_group_id = aws_security_group.nodes_firewall.id
   description       = "Enable public https for setup or cluster without network load balancer"
-  cidr_ipv4         = ["0.0.0.0/0"]
-  cidr_ipv6         = ["::/0"]
+  cidr_ipv4         = "0.0.0.0/0"
+  cidr_ipv6         = "::/0"
   from_port         = 443
   to_port           = 443
   ip_protocol       = "tcp"
@@ -379,8 +379,8 @@ resource "aws_vpc_security_group_ingress_rule" "nodes_public_lxd" {
 
   security_group_id = aws_security_group.nodes_firewall.id
   description       = "Enable public lxd for setup or cluster without network load balancer"
-  cidr_ipv4         = ["0.0.0.0/0"]
-  cidr_ipv6         = ["::/0"]
+  cidr_ipv4         = "0.0.0.0/0"
+  cidr_ipv6         = "::/0"
   from_port         = 8443
   to_port           = 8443
   ip_protocol       = "tcp"
@@ -395,8 +395,8 @@ resource "aws_vpc_security_group_ingress_rule" "nodes_public_uplink" {
 
   security_group_id = aws_security_group.nodes_firewall.id
   description       = "Enable public uplink for setup or cluster without network load balancer"
-  cidr_ipv4         = ["0.0.0.0/0"]
-  cidr_ipv6         = ["::/0"]
+  cidr_ipv4         = "0.0.0.0/0"
+  cidr_ipv6         = "::/0"
   from_port         = 49152
   to_port           = 49152
   ip_protocol       = "tcp"

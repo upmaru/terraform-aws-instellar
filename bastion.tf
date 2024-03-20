@@ -88,8 +88,8 @@ resource "aws_vpc_security_group_egress_rule" "allow_outgoing" {
   from_port         = 0
   to_port           = 0
   ip_protocol       = "-1"
-  cidr_ipv4         = ["0.0.0.0/0"]
-  cidr_ipv6         = ["::/0"]
+  cidr_ipv4         = "0.0.0.0/0"
+  cidr_ipv6         = "::/0"
 
   tags = {
     Blueprint = var.blueprint
@@ -104,8 +104,8 @@ resource "aws_vpc_security_group_ingress_rule" "allow_ssh" {
   from_port         = 22
   to_port           = 22
   ip_protocol       = "tcp"
-  cidr_ipv4         = ["0.0.0.0/0"]
-  cidr_ipv6         = ["::/0"]
+  cidr_ipv4         = "0.0.0.0/0"
+  cidr_ipv6         = "::/0"
 
   tags = {
     Blueprint = var.blueprint
