@@ -40,3 +40,7 @@ output "bastion_security_group_id" {
 output "vpc_id" {
   value = var.vpc_id
 }
+
+output "subnet_ids" {
+  value = var.public_subnet_ids
+}

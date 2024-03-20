@@ -23,7 +23,7 @@ variable "vpc_id" {
   type        = string
 }
 
-variable "sunet_ids" {
+variable "subnet_ids" {
   description = "Public subnet ids to pass in if block type is compute"
   type        = list(string)
 }
