@@ -455,7 +455,7 @@ resource "aws_vpc_security_group_ingress_rule" "nodes_public_uplink_v6" {
 
   security_group_id = aws_security_group.nodes_firewall.id
   description       = "Enable public uplink for setup or cluster without network load balancer"
-  cidr_ipv4         = "::/0"
+  cidr_ipv6         = "::/0"
   from_port         = 49152
   to_port           = 49152
   ip_protocol       = "tcp"

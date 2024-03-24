@@ -105,7 +105,7 @@ resource "aws_vpc_security_group_ingress_rule" "uplink_v4" {
 
 resource "aws_vpc_security_group_ingress_rule" "uplink_v6" {
   security_group_id = aws_security_group.this.id
-  cidr_ipv4         = "::/0"
+  cidr_ipv6         = "::/0"
   from_port         = 49152
   to_port           = 49152
   ip_protocol       = "tcp"
