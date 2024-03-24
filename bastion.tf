@@ -77,7 +77,7 @@ resource "aws_security_group" "bastion_firewall" {
   vpc_id      = var.vpc_id
 
   tags = {
-    Name      = "${var.identifier}-instellar"
+    Name      = "${var.identifier}-bastion-firewall"
     Blueprint = var.blueprint
   }
 }
@@ -89,6 +89,7 @@ resource "aws_vpc_security_group_egress_rule" "allow_bastion_outgoing_v4" {
   cidr_ipv4         = "0.0.0.0/0"
 
   tags = {
+    Name      = "${var.identifier}-bastion-outgoing-v4"
     Blueprint = var.blueprint
   }
 }
@@ -100,6 +101,7 @@ resource "aws_vpc_security_group_egress_rule" "allow_bastion_outgoing_v6" {
   cidr_ipv6         = "::/0"
 
   tags = {
+    Name      = "${var.identifier}-bastion-outgoing-v6"
     Blueprint = var.blueprint
   }
 }
@@ -115,6 +117,7 @@ resource "aws_vpc_security_group_ingress_rule" "allow_ssh" {
   cidr_ipv4         = "0.0.0.0/0"
 
   tags = {
+    Name      = "${var.identifier}-public-ssh"
     Blueprint = var.blueprint
   }
 }

@@ -15,6 +15,7 @@ resource "aws_vpc_security_group_egress_rule" "allow_outgoing" {
   referenced_security_group_id = var.nodes_security_group_id
 
   tags = {
+    Name      = "${var.identifier}-outgoing"
     Blueprint = var.blueprint
   }
 }
@@ -28,6 +29,7 @@ resource "aws_vpc_security_group_ingress_rule" "http_v4" {
   ip_protocol       = "tcp"
 
   tags = {
+    Name      = "${var.identifier}-public-http-v4"
     Blueprint = var.blueprint
   }
 }
@@ -41,6 +43,7 @@ resource "aws_vpc_security_group_ingress_rule" "http_v6" {
   ip_protocol       = "tcp"
 
   tags = {
+    Name      = "${var.identifier}-public-http-v6"
     Blueprint = var.blueprint
   }
 }
@@ -54,6 +57,7 @@ resource "aws_vpc_security_group_ingress_rule" "https_v4" {
   ip_protocol       = "tcp"
 
   tags = {
+    Name      = "${var.identifier}-public-https-v4"
     Blueprint = var.blueprint
   }
 }
@@ -67,6 +71,7 @@ resource "aws_vpc_security_group_ingress_rule" "https_v6" {
   ip_protocol       = "tcp"
 
   tags = {
+    Name      = "${var.identifier}-public-https-v6"
     Blueprint = var.blueprint
   }
 }
@@ -80,6 +85,7 @@ resource "aws_vpc_security_group_ingress_rule" "lxd_v4" {
   ip_protocol       = "tcp"
 
   tags = {
+    Name      = "${var.identifier}-public-lxd-v4"
     Blueprint = var.blueprint
   }
 }
@@ -93,6 +99,7 @@ resource "aws_vpc_security_group_ingress_rule" "lxd_v6" {
   ip_protocol       = "tcp"
 
   tags = {
+    Name      = "${var.identifier}-public-lxd-v6"
     Blueprint = var.blueprint
   }
 }
@@ -106,6 +113,7 @@ resource "aws_vpc_security_group_ingress_rule" "uplink_v4" {
   ip_protocol       = "tcp"
 
   tags = {
+    Name      = "${var.identifier}-public-uplink-v4"
     Blueprint = var.blueprint
   }
 }
@@ -119,6 +127,7 @@ resource "aws_vpc_security_group_ingress_rule" "uplink_v6" {
   ip_protocol       = "tcp"
 
   tags = {
+    Name      = "${var.identifier}-public-uplink-v6"
     Blueprint = var.blueprint
   }
 }
@@ -132,6 +141,7 @@ resource "aws_vpc_security_group_ingress_rule" "nodes_http" {
   ip_protocol                  = "tcp"
 
   tags = {
+    Name      = "${var.identifier}-balancer-http"
     Blueprint = var.blueprint
   }
 }
@@ -145,6 +155,7 @@ resource "aws_vpc_security_group_ingress_rule" "nodes_https" {
   ip_protocol                  = "tcp"
 
   tags = {
+    Name      = "${var.identifier}-balancer-https"
     Blueprint = var.blueprint
   }
 }
@@ -158,6 +169,7 @@ resource "aws_vpc_security_group_ingress_rule" "nodes_lxd" {
   ip_protocol                  = "tcp"
 
   tags = {
+    Name      = "${var.identifier}-balancer-lxd"
     Blueprint = var.blueprint
   }
 }
@@ -171,6 +183,7 @@ resource "aws_vpc_security_group_ingress_rule" "nodes_uplink" {
   ip_protocol                  = "tcp"
 
   tags = {
+    Name      = "${var.identifier}-balancer-uplink"
     Blueprint = var.blueprint
   }
 }

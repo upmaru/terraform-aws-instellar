@@ -301,7 +301,7 @@ resource "aws_security_group" "nodes_firewall" {
   vpc_id      = var.vpc_id
 
   tags = {
-    Name      = "${var.identifier}-instellar"
+    Name      = "${var.identifier}-instellar-nodes"
     Blueprint = var.blueprint
   }
 }
@@ -311,6 +311,11 @@ resource "aws_vpc_security_group_egress_rule" "allow_nodes_outgoing_v4" {
   description       = "Allow all outgoing traffic"
   ip_protocol       = "-1"
   cidr_ipv4         = "0.0.0.0/0"
+
+  tags = {
+    Name      = "${var.identifier}-nodes-outgoing-v4"
+    Blueprint = var.blueprint
+  }
 }
 
 resource "aws_vpc_security_group_egress_rule" "allow_nodes_outgoing_v6" {
@@ -318,6 +323,11 @@ resource "aws_vpc_security_group_egress_rule" "allow_nodes_outgoing_v6" {
   description       = "Allow all outgoing traffic"
   ip_protocol       = "-1"
   cidr_ipv6         = "::/0"
+
+  tags = {
+    Name      = "${var.identifier}-nodes-outgoing-v6"
+    Blueprint = var.blueprint
+  }
 }
 
 resource "aws_vpc_security_group_ingress_rule" "cross_nodes" {
@@ -327,6 +337,7 @@ resource "aws_vpc_security_group_ingress_rule" "cross_nodes" {
   referenced_security_group_id = aws_security_group.nodes_firewall.id
 
   tags = {
+    Name      = "${var.identifier}-cross-nodes"
     Blueprint = var.blueprint
   }
 }
@@ -340,6 +351,7 @@ resource "aws_vpc_security_group_ingress_rule" "nodes_from_bastion" {
   referenced_security_group_id = aws_security_group.bastion_firewall.id
 
   tags = {
+    Name      = "${var.identifier}-from-bastion"
     Blueprint = var.blueprint
   }
 }
@@ -355,6 +367,7 @@ resource "aws_vpc_security_group_ingress_rule" "nodes_public_http_v4" {
   ip_protocol       = "tcp"
 
   tags = {
+    Name      = "${var.identifier}-public-http-v4"
     Blueprint = var.blueprint
   }
 }
@@ -370,6 +383,7 @@ resource "aws_vpc_security_group_ingress_rule" "nodes_public_http_v6" {
   ip_protocol       = "tcp"
 
   tags = {
+    Name      = "${var.identifier}-public-http-v6"
     Blueprint = var.blueprint
   }
 }
@@ -386,6 +400,7 @@ resource "aws_vpc_security_group_ingress_rule" "nodes_public_https_v4" {
   ip_protocol       = "tcp"
 
   tags = {
+    Name      = "${var.identifier}-public-https-v4"
     Blueprint = var.blueprint
   }
 }
@@ -401,6 +416,7 @@ resource "aws_vpc_security_group_ingress_rule" "nodes_public_https_v6" {
   ip_protocol       = "tcp"
 
   tags = {
+    Name      = "${var.identifier}-public-https-v6"
     Blueprint = var.blueprint
   }
 }
@@ -416,6 +432,7 @@ resource "aws_vpc_security_group_ingress_rule" "nodes_public_lxd_v4" {
   ip_protocol       = "tcp"
 
   tags = {
+    Name      = "${var.identifier}-public-lxd-v4"
     Blueprint = var.blueprint
   }
 }
@@ -431,6 +448,7 @@ resource "aws_vpc_security_group_ingress_rule" "nodes_public_lxd_v6" {
   ip_protocol       = "tcp"
 
   tags = {
+    Name      = "${var.identifier}-public-lxd-v6"
     Blueprint = var.blueprint
   }
 }
@@ -446,6 +464,7 @@ resource "aws_vpc_security_group_ingress_rule" "nodes_public_uplink_v4" {
   ip_protocol       = "tcp"
 
   tags = {
+    Name      = "${var.identifier}-public-uplink-v4"
     Blueprint = var.blueprint
   }
 }
@@ -461,6 +480,7 @@ resource "aws_vpc_security_group_ingress_rule" "nodes_public_uplink_v6" {
   ip_protocol       = "tcp"
 
   tags = {
+    Name      = "${var.identifier}-public-uplink-v6"
     Blueprint = var.blueprint
   }
 }
