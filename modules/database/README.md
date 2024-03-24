@@ -42,6 +42,7 @@ No modules.
 | <a name="input_max_storage_size"></a> [max\_storage\_size](#input\_max\_storage\_size) | Database max storage size | `number` | `100` | no |
 | <a name="input_port"></a> [port](#input\_port) | Database port | `number` | n/a | yes |
 | <a name="input_publicly_accessible"></a> [publicly\_accessible](#input\_publicly\_accessible) | Database publically accessible | `bool` | `false` | no |
+| <a name="input_region"></a> [region](#input\_region) | Database region | `string` | n/a | yes |
 | <a name="input_security_group_ids"></a> [security\_group\_ids](#input\_security\_group\_ids) | Database security group ids | `list(string)` | n/a | yes |
 | <a name="input_skip_final_snapshot"></a> [skip\_final\_snapshot](#input\_skip\_final\_snapshot) | Database skip final snapshot | `bool` | `false` | no |
 | <a name="input_storage_size"></a> [storage\_size](#input\_storage\_size) | Database storage size | `number` | `20` | no |
@@ -54,6 +55,7 @@ No modules.
 | Name | Description |
 |------|-------------|
 | <a name="output_address"></a> [address](#output\_address) | The database address |
+| <a name="output_certificate_url"></a> [certificate\_url](#output\_certificate\_url) | The certificate url for using with the database. |
 | <a name="output_db_name"></a> [db\_name](#output\_db\_name) | The database name |
 | <a name="output_endpoint"></a> [endpoint](#output\_endpoint) | The database endpoint |
 | <a name="output_engine_version"></a> [engine\_version](#output\_engine\_version) | The database engine version |

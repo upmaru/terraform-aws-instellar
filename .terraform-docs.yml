@@ -1,5 +1,9 @@
 formatter: "markdown" # this is required
 
+recursive:
+  enabled: true
+  path: modules
+
 output:
   file: "README.md"
   mode: inject
