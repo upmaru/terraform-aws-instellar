@@ -82,11 +82,22 @@ resource "aws_security_group" "bastion_firewall" {
   }
 }
 
-resource "aws_vpc_security_group_egress_rule" "allow_outgoing" {
+resource "aws_vpc_security_group_egress_rule" "allow_outgoing_v4" {
   security_group_id = aws_security_group.bastion_firewall.id
   description       = "Enable all outgoing traffic"
   ip_protocol       = "-1"
   cidr_ipv4         = "0.0.0.0/0"
+
+  tags = {
+    Blueprint = var.blueprint
+  }
+}
+
+resource "aws_vpc_security_group_egress_rule" "allow_outgoing_v6" {
+  security_group_id = aws_security_group.bastion_firewall.id
+  description       = "Enable all outgoing traffic"
+  ip_protocol       = "-1"
+  cidr_ipv6         = "::/0"
 
   tags = {
     Blueprint = var.blueprint

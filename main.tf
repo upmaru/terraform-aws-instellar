@@ -344,7 +344,7 @@ resource "aws_vpc_security_group_ingress_rule" "nodes_from_bastion" {
   }
 }
 
-resource "aws_vpc_security_group_ingress_rule" "nodes_public_http" {
+resource "aws_vpc_security_group_ingress_rule" "nodes_public_http_v4" {
   count = var.publically_accessible ? 1 : 0
 
   security_group_id = aws_security_group.nodes_firewall.id
@@ -359,7 +359,23 @@ resource "aws_vpc_security_group_ingress_rule" "nodes_public_http" {
   }
 }
 
-resource "aws_vpc_security_group_ingress_rule" "nodes_public_https" {
+resource "aws_vpc_security_group_ingress_rule" "nodes_public_http_v6" {
+  count = var.publically_accessible ? 1 : 0
+
+  security_group_id = aws_security_group.nodes_firewall.id
+  description       = "Enable public http for setup or cluster without network load balancer"
+  cidr_ipv6         = "::/0"
+  from_port         = 80
+  to_port           = 80
+  ip_protocol       = "tcp"
+
+  tags = {
+    Blueprint = var.blueprint
+  }
+}
+
+
+resource "aws_vpc_security_group_ingress_rule" "nodes_public_https_v4" {
   count = var.publically_accessible ? 1 : 0
 
   security_group_id = aws_security_group.nodes_firewall.id
@@ -374,7 +390,22 @@ resource "aws_vpc_security_group_ingress_rule" "nodes_public_https" {
   }
 }
 
-resource "aws_vpc_security_group_ingress_rule" "nodes_public_lxd" {
+resource "aws_vpc_security_group_ingress_rule" "nodes_public_https_v6" {
+  count = var.publically_accessible ? 1 : 0
+
+  security_group_id = aws_security_group.nodes_firewall.id
+  description       = "Enable public https for setup or cluster without network load balancer"
+  cidr_ipv6         = "::/0"
+  from_port         = 443
+  to_port           = 443
+  ip_protocol       = "tcp"
+
+  tags = {
+    Blueprint = var.blueprint
+  }
+}
+
+resource "aws_vpc_security_group_ingress_rule" "nodes_public_lxd_v4" {
   count = var.publically_accessible ? 1 : 0
 
   security_group_id = aws_security_group.nodes_firewall.id
@@ -389,12 +420,42 @@ resource "aws_vpc_security_group_ingress_rule" "nodes_public_lxd" {
   }
 }
 
-resource "aws_vpc_security_group_ingress_rule" "nodes_public_uplink" {
+resource "aws_vpc_security_group_ingress_rule" "nodes_public_lxd_v6" {
+  count = var.publically_accessible ? 1 : 0
+
+  security_group_id = aws_security_group.nodes_firewall.id
+  description       = "Enable public lxd for setup or cluster without network load balancer"
+  cidr_ipv6         = "::/0"
+  from_port         = 8443
+  to_port           = 8443
+  ip_protocol       = "tcp"
+
+  tags = {
+    Blueprint = var.blueprint
+  }
+}
+
+resource "aws_vpc_security_group_ingress_rule" "nodes_public_uplink_v4" {
   count = var.publically_accessible ? 1 : 0
 
   security_group_id = aws_security_group.nodes_firewall.id
   description       = "Enable public uplink for setup or cluster without network load balancer"
   cidr_ipv4         = "0.0.0.0/0"
+  from_port         = 49152
+  to_port           = 49152
+  ip_protocol       = "tcp"
+
+  tags = {
+    Blueprint = var.blueprint
+  }
+}
+
+resource "aws_vpc_security_group_ingress_rule" "nodes_public_uplink_v6" {
+  count = var.publically_accessible ? 1 : 0
+
+  security_group_id = aws_security_group.nodes_firewall.id
+  description       = "Enable public uplink for setup or cluster without network load balancer"
+  cidr_ipv4         = "::/0"
   from_port         = 49152
   to_port           = 49152
   ip_protocol       = "tcp"

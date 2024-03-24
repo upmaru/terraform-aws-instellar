@@ -36,11 +36,19 @@ resource "aws_iam_policy" "this" {
       }
     ]
   })
+
+  tags = {
+    Blueprint = var.blueprint
+  }
 }
 
 resource "aws_iam_user" "this" {
   name = "${local.identifier}-user"
   path = local.path
+
+  tags = {
+    Blueprint = var.blueprint
+  }
 }
 
 resource "aws_iam_access_key" "this" {

@@ -67,7 +67,7 @@ resource "aws_vpc_security_group_ingress_rule" "https_v6" {
   }
 }
 
-resource "aws_vpc_security_group_ingress_rule" "lxd" {
+resource "aws_vpc_security_group_ingress_rule" "lxd_v4" {
   security_group_id = aws_security_group.this.id
   cidr_ipv4         = "0.0.0.0/0"
   from_port         = 8443
@@ -79,9 +79,33 @@ resource "aws_vpc_security_group_ingress_rule" "lxd" {
   }
 }
 
-resource "aws_vpc_security_group_ingress_rule" "uplink" {
+resource "aws_vpc_security_group_ingress_rule" "lxd_v6" {
+  security_group_id = aws_security_group.this.id
+  cidr_ipv6         = "::/0"
+  from_port         = 8443
+  to_port           = 8443
+  ip_protocol       = "tcp"
+
+  tags = {
+    Blueprint = var.blueprint
+  }
+}
+
+resource "aws_vpc_security_group_ingress_rule" "uplink_v4" {
   security_group_id = aws_security_group.this.id
   cidr_ipv4         = "0.0.0.0/0"
+  from_port         = 49152
+  to_port           = 49152
+  ip_protocol       = "tcp"
+
+  tags = {
+    Blueprint = var.blueprint
+  }
+}
+
+resource "aws_vpc_security_group_ingress_rule" "uplink_v6" {
+  security_group_id = aws_security_group.this.id
+  cidr_ipv4         = "::/0"
   from_port         = 49152
   to_port           = 49152
   ip_protocol       = "tcp"
