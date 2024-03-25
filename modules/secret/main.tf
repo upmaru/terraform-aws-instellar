@@ -1,5 +1,5 @@
 resource "aws_secretsmanager_secret" "this" {
-  name = var.identifier
+  name        = var.key
   name_prefix = var.blueprint
   description = var.description
 
@@ -9,8 +9,8 @@ resource "aws_secretsmanager_secret" "this" {
 }
 
 resource "aws_secretsmanager_secret_version" "this" {
-  secret_id = aws_secretsmanager_secret.this.id
-  secret_string = var.secret_value
+  secret_id     = aws_secretsmanager_secret.this.id
+  secret_string = var.value
 }
 
 data "aws_iam_policy_document" "this" {
@@ -28,8 +28,12 @@ data "aws_iam_policy_document" "this" {
 }
 
 resource "aws_iam_policy" "this" {
-  name = "${var.identifier}-secret-policy"
+  name   = "${var.key}-secret-policy"
   policy = data.aws_iam_policy_document.this.json
+
+  tags = {
+    Blueprint = var.blueprint
+  }
 }
 
 resource "aws_iam_role_policy_attachment" "this" {
