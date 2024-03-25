@@ -95,7 +95,8 @@ resource "aws_instance" "bootstrap_node" {
   iam_instance_profile = aws_iam_instance_profile.nodes.name
 
   metadata_options {
-    http_tokens = "required"
+    http_tokens                 = "required"
+    http_put_response_hop_limit = 2
   }
 
   root_block_device {
@@ -161,7 +162,8 @@ resource "aws_instance" "nodes" {
   iam_instance_profile = aws_iam_instance_profile.nodes.name
 
   metadata_options {
-    http_tokens = "required"
+    http_tokens                 = "required"
+    http_put_response_hop_limit = 2
   }
 
   root_block_device {

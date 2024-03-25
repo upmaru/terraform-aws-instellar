@@ -19,8 +19,8 @@ data "cloudinit_config" "bastion" {
 }
 
 resource "aws_iam_instance_profile" "bastion" {
-  name  = "${var.identifier}-bastion-profile"
-  role  = aws_iam_role.bastion.name
+  name = "${var.identifier}-bastion-profile"
+  role = aws_iam_role.bastion.name
 
   tags = {
     Blueprint = var.blueprint
