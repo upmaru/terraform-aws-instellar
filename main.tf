@@ -214,9 +214,9 @@ resource "aws_instance" "nodes" {
 
 resource "ssh_resource" "node_detail" {
   for_each = local.topology
-  
+
   triggers = {
-    always_run = "${timestamp()}"
+    always_run = "${formatdate("DD-MM-YYYY",timestamp())}"
   }
 
   host         = aws_instance.bootstrap_node.private_ip
