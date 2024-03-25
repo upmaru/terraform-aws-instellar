@@ -216,7 +216,7 @@ resource "ssh_resource" "node_detail" {
   for_each = local.topology
 
   triggers = {
-    always_run = "${timestamp()}"
+    always_run = var.bastion_ssh ? "${timestamp()}" : null
   }
 
   host         = aws_instance.bootstrap_node.private_ip
