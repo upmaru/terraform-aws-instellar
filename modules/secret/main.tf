@@ -1,3 +1,7 @@
+locals {
+  policy_name = replace(title(var.key), "/", "")
+}
+
 resource "aws_secretsmanager_secret" "this" {
   name        = var.key
   description = var.description
@@ -27,7 +31,7 @@ data "aws_iam_policy_document" "this" {
 }
 
 resource "aws_iam_policy" "this" {
-  name   = "${var.key}-secret-policy"
+  name   = "${local.policy_name}SecretPolicy"
   policy = data.aws_iam_policy_document.this.json
 
   tags = {
