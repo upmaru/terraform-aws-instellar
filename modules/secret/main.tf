@@ -1,6 +1,5 @@
 resource "aws_secretsmanager_secret" "this" {
   name        = var.key
-  name_prefix = var.blueprint
   description = var.description
 
   tags = {
