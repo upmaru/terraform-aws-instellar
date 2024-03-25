@@ -29,6 +29,10 @@ output "nodes" {
   ]
 }
 
+output "lb" {
+  value = data.aws_lb.this
+}
+
 output "nodes_iam_role" {
   value = {
     name = aws_iam_role.nodes.name

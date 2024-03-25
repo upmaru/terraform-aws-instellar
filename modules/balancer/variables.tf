@@ -13,6 +13,11 @@ variable "blueprint" {
   type        = string
 }
 
+variable "compute_identifier" {
+  description = "Identifier for compute block"
+  type        = string
+}
+
 variable "identifier" {
   default = "Identifier for load balancer"
   type    = string
