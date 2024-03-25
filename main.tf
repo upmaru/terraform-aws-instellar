@@ -214,11 +214,7 @@ resource "aws_instance" "nodes" {
 
 resource "ssh_resource" "node_detail" {
   for_each = local.topology
-
-  depends_on = [
-    aws_vpc_security_group_ingress_rule.allow_ssh[0]
-  ]
-
+  
   triggers = {
     always_run = "${timestamp()}"
   }
