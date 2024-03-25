@@ -30,6 +30,7 @@ No modules.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
+| <a name="input_blueprint"></a> [blueprint](#input\_blueprint) | Blueprint name | `string` | n/a | yes |
 | <a name="input_ca_cert_identifier"></a> [ca\_cert\_identifier](#input\_ca\_cert\_identifier) | CA Cert identifier | `string` | `"rds-ca-rsa2048-g1"` | no |
 | <a name="input_db_name"></a> [db\_name](#input\_db\_name) | Database name to create | `string` | `"instellar"` | no |
 | <a name="input_db_size"></a> [db\_size](#input\_db\_size) | Database instance size | `string` | n/a | yes |

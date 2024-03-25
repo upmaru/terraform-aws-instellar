@@ -29,6 +29,13 @@ output "nodes" {
   ]
 }
 
+output "nodes_iam_role" {
+  value = {
+    name = aws_iam_role.nodes.name
+    id   = aws_iam_role.nodes.id
+  }
+}
+
 output "nodes_security_group_id" {
   value = aws_security_group.nodes_firewall.id
 }

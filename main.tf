@@ -41,6 +41,15 @@ data "cloudinit_config" "node" {
   }
 }
 
+resource "aws_iam_instance_profile" "nodes" {
+  name = "${var.identifier}-nodes-profile"
+  role = aws_iam_role.nodes.name
+
+  tags = {
+    Blueprint = var.blueprint
+  }
+}
+
 resource "ssh_resource" "trust_token" {
   host         = aws_instance.bootstrap_node.private_ip
   bastion_host = aws_instance.bastion.public_ip
@@ -82,6 +91,8 @@ resource "aws_instance" "bootstrap_node" {
   ebs_optimized          = true
   monitoring             = var.node_monitoring
   user_data_base64       = data.cloudinit_config.node.rendered
+
+  iam_instance_profile = aws_iam_instance_profile.nodes.name
 
   metadata_options {
     http_tokens = "required"
@@ -146,6 +157,8 @@ resource "aws_instance" "nodes" {
   ebs_optimized          = true
   monitoring             = var.node_monitoring
   user_data_base64       = data.cloudinit_config.node.rendered
+
+  iam_instance_profile = aws_iam_instance_profile.nodes.name
 
   metadata_options {
     http_tokens = "required"

@@ -31,6 +31,7 @@ No modules.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
+| <a name="input_blueprint"></a> [blueprint](#input\_blueprint) | Blueprint name | `string` | n/a | yes |
 | <a name="input_identifier"></a> [identifier](#input\_identifier) | Credential identifier | `string` | n/a | yes |
 | <a name="input_region"></a> [region](#input\_region) | Region for bucket generation | `string` | n/a | yes |
 

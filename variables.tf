@@ -19,6 +19,11 @@ variable "publically_accessible" {
   default     = true
 }
 
+variable "ssm" {
+  description = "Enable SSM"
+  default     = false
+}
+
 variable "vpc_ip_range" {
   description = "VPC ip range"
   type        = string

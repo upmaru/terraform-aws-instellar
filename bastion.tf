@@ -18,6 +18,15 @@ data "cloudinit_config" "bastion" {
   }
 }
 
+resource "aws_iam_instance_profile" "bastion" {
+  name  = "${var.identifier}-bastion-profile"
+  role  = aws_iam_role.bastion.name
+
+  tags = {
+    Blueprint = var.blueprint
+  }
+}
+
 resource "terraform_data" "bastion_cloudinit" {
   input = data.cloudinit_config.bastion.rendered
 }
