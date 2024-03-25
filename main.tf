@@ -234,7 +234,7 @@ resource "ssh_resource" "node_detail" {
 }
 
 resource "terraform_data" "reboot" {
-  for_each = local.topology
+  for_each = var.bastion_ssh ? local.topology : {}
 
   input = {
     user                        = local.user
@@ -266,7 +266,7 @@ resource "terraform_data" "reboot" {
 }
 
 resource "terraform_data" "removal" {
-  for_each = local.topology
+  for_each = var.bastion_ssh ? local.topology : {}
 
   input = {
     user                        = local.user
