@@ -23,13 +23,13 @@ resource "aws_iam_role" "nodes" {
   assume_role_policy = data.aws_iam_policy_document.assume_role.json
 }
 
-resource "aws_iam_role_policy_attachment" "nodes_core" {
+resource "aws_iam_role_policy_attachment" "bastion_core" {
   count      = var.ssm ? 1 : 0
   role       = aws_iam_role.bastion.name
   policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
 }
 
-resource "aws_iam_role_policy_attachment" "nodes_patch" {
+resource "aws_iam_role_policy_attachment" "bastion_patch" {
   count      = var.ssm ? 1 : 0
   role       = aws_iam_role.bastion.name
   policy_arn = "arn:aws:iam::aws:policy/AmazonSSMPatchAssociation"
