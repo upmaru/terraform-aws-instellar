@@ -213,8 +213,8 @@ resource "aws_instance" "nodes" {
 }
 
 resource "ssh_resource" "node_detail" {
-  for_each = var.bastion_ssh ? local.topology : {}
-
+  for_each = local.topology
+  
   triggers = {
     always_run = "${timestamp()}"
   }
@@ -234,7 +234,7 @@ resource "ssh_resource" "node_detail" {
 }
 
 resource "terraform_data" "reboot" {
-  for_each = var.bastion_ssh ? local.topology : {}
+  for_each = local.topology
 
   input = {
     user                        = local.user
@@ -266,7 +266,7 @@ resource "terraform_data" "reboot" {
 }
 
 resource "terraform_data" "removal" {
-  for_each = var.bastion_ssh ? local.topology : {}
+  for_each = local.topology
 
   input = {
     user                        = local.user
