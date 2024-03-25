@@ -41,10 +41,6 @@ data "cloudinit_config" "node" {
   }
 }
 
-data "aws_lb" "this" {
-  name = "${var.identifier}-balancer"
-}
-
 resource "aws_iam_instance_profile" "nodes" {
   name = "${var.identifier}-nodes-profile"
   role = aws_iam_role.nodes.name
