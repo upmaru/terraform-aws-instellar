@@ -38,6 +38,8 @@ resource "aws_instance" "bastion" {
   vpc_security_group_ids = [aws_security_group.bastion_firewall.id]
   user_data_base64       = data.cloudinit_config.bastion.rendered
 
+  iam_instance_profile = aws_iam_instance_profile.bastion.name
+
   metadata_options {
     http_tokens = "required"
   }
