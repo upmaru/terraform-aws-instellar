@@ -213,8 +213,8 @@ resource "aws_instance" "nodes" {
 }
 
 resource "ssh_resource" "node_detail" {
-  for_each = local.topology
-  
+  for_each = var.bastion_ssh ? local.topology : []
+
   triggers = {
     always_run = "${timestamp()}"
   }
