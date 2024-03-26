@@ -119,6 +119,6 @@ variable "create_replica" {
 
 variable "multi_az" {
   description = "Enable multi AZ"
-  default     = true
+  default     = false
   type        = bool
 }
