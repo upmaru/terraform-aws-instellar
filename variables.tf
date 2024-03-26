@@ -24,7 +24,7 @@ variable "balancer_deletion_protection" {
   default     = true
 }
 
-variable "publically_accessible" {
+variable "publicly_accessible" {
   description = "Make the cluster publically accessible? If you use a load balancer this can be false."
   default     = true
 }

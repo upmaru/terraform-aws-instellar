@@ -411,7 +411,7 @@ resource "aws_vpc_security_group_ingress_rule" "nodes_from_bastion" {
 }
 
 resource "aws_vpc_security_group_ingress_rule" "nodes_public_http_v4" {
-  count = var.publically_accessible ? 1 : 0
+  count = var.publicly_accessible ? 1 : 0
 
   security_group_id = aws_security_group.nodes_firewall.id
   description       = "Enable public http for setup or cluster without network load balancer"
@@ -427,7 +427,7 @@ resource "aws_vpc_security_group_ingress_rule" "nodes_public_http_v4" {
 }
 
 resource "aws_vpc_security_group_ingress_rule" "nodes_public_http_v6" {
-  count = var.publically_accessible ? 1 : 0
+  count = var.publicly_accessible ? 1 : 0
 
   security_group_id = aws_security_group.nodes_firewall.id
   description       = "Enable public http for setup or cluster without network load balancer"
@@ -444,7 +444,7 @@ resource "aws_vpc_security_group_ingress_rule" "nodes_public_http_v6" {
 
 
 resource "aws_vpc_security_group_ingress_rule" "nodes_public_https_v4" {
-  count = var.publically_accessible ? 1 : 0
+  count = var.publicly_accessible ? 1 : 0
 
   security_group_id = aws_security_group.nodes_firewall.id
   description       = "Enable public https for setup or cluster without network load balancer"
@@ -460,7 +460,7 @@ resource "aws_vpc_security_group_ingress_rule" "nodes_public_https_v4" {
 }
 
 resource "aws_vpc_security_group_ingress_rule" "nodes_public_https_v6" {
-  count = var.publically_accessible ? 1 : 0
+  count = var.publicly_accessible ? 1 : 0
 
   security_group_id = aws_security_group.nodes_firewall.id
   description       = "Enable public https for setup or cluster without network load balancer"
@@ -476,7 +476,7 @@ resource "aws_vpc_security_group_ingress_rule" "nodes_public_https_v6" {
 }
 
 resource "aws_vpc_security_group_ingress_rule" "nodes_public_lxd_v4" {
-  count = var.publically_accessible ? 1 : 0
+  count = var.publicly_accessible ? 1 : 0
 
   security_group_id = aws_security_group.nodes_firewall.id
   description       = "Enable public lxd for setup or cluster without network load balancer"
@@ -492,7 +492,7 @@ resource "aws_vpc_security_group_ingress_rule" "nodes_public_lxd_v4" {
 }
 
 resource "aws_vpc_security_group_ingress_rule" "nodes_public_lxd_v6" {
-  count = var.publically_accessible ? 1 : 0
+  count = var.publicly_accessible ? 1 : 0
 
   security_group_id = aws_security_group.nodes_firewall.id
   description       = "Enable public lxd for setup or cluster without network load balancer"
@@ -508,7 +508,7 @@ resource "aws_vpc_security_group_ingress_rule" "nodes_public_lxd_v6" {
 }
 
 resource "aws_vpc_security_group_ingress_rule" "nodes_public_uplink_v4" {
-  count = var.publically_accessible ? 1 : 0
+  count = var.publicly_accessible ? 1 : 0
 
   security_group_id = aws_security_group.nodes_firewall.id
   description       = "Enable public uplink for setup or cluster without network load balancer"
@@ -524,7 +524,7 @@ resource "aws_vpc_security_group_ingress_rule" "nodes_public_uplink_v4" {
 }
 
 resource "aws_vpc_security_group_ingress_rule" "nodes_public_uplink_v6" {
-  count = var.publically_accessible ? 1 : 0
+  count = var.publicly_accessible ? 1 : 0
 
   security_group_id = aws_security_group.nodes_firewall.id
   description       = "Enable public uplink for setup or cluster without network load balancer"
