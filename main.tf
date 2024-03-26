@@ -1,5 +1,6 @@
 locals {
   user = "ubuntu"
+  ssh_port = 22
   topology = {
     for index, node in var.cluster_topology :
     node.name => merge(node, { subnet = node.id % length(var.public_subnet_ids) })
@@ -39,6 +40,32 @@ data "cloudinit_config" "node" {
       ssh_keys = [tls_private_key.bastion_key.public_key_openssh]
     })
   }
+}
+
+module "balancer" {
+  count = var.balancer ? 1 : 0
+
+  source = "./modules/balancer"
+
+  nodes_security_group_id = aws_security_group.nodes_firewall.id
+  deletion_protection     = var.balancer_deletion_protection
+  blueprint               = var.blueprint
+  identifier              = var.identifier
+  vpc_id                  = var.vpc_id
+  subnet_ids              = var.public_subnet_ids
+  bootstrap_node = {
+    slug      = aws_instance.bootstrap_node.tags.Name
+    public_ip = aws_instance.bootstrap_node.public_ip
+    id        = aws_instance.bootstrap_node.id
+  }
+  nodes = [
+    for key, node in aws_instance.nodes :
+    {
+      slug      = node.tags.Name
+      public_ip = node.public_ip
+      id        = node.id
+    }
+  ]
 }
 
 resource "aws_iam_instance_profile" "nodes" {
@@ -216,11 +243,12 @@ resource "ssh_resource" "node_detail" {
   for_each = local.topology
 
   triggers = {
-    always_run = "${formatdate("DD-MM-YYYY",timestamp())}"
+    always_run = "${timestamp()}"
   }
 
   host         = aws_instance.bootstrap_node.private_ip
-  bastion_host = aws_instance.bastion.public_ip
+  bastion_host = var.balancer ? module.balancer[0].dns_name : aws_instance.bastion.public_ip
+  bastion_port = var.balancer ? module.balancer[0].bastion_ssh_port : local.ssh_port
 
   user         = local.user
   bastion_user = local.user
@@ -240,7 +268,8 @@ resource "terraform_data" "reboot" {
     user                        = local.user
     node_name                   = aws_instance.nodes[each.key].tags.Name
     bastion_private_key         = tls_private_key.bastion_key.private_key_openssh
-    bastion_public_ip           = aws_instance.bastion.public_ip
+    bastion_public_ip           = var.balancer ? module.balancer[0].dns_name : aws_instance.bastion.public_ip
+    bastion_port                = var.balancer ? module.balancer[0].bastion_ssh_port : local.ssh_port
     node_private_ip             = aws_instance.nodes[each.key].private_ip
     terraform_cloud_private_key = tls_private_key.terraform_cloud.private_key_openssh
     commands = contains(yamldecode(ssh_resource.node_detail[each.key].result).roles, "database-leader") ? ["echo Node is database-leader restarting later", "sudo shutdown -r +1"] : [
@@ -255,6 +284,7 @@ resource "terraform_data" "reboot" {
     private_key         = self.input.bastion_private_key
     bastion_user        = self.input.user
     bastion_host        = self.input.bastion_public_ip
+    bastion_port        = self.input.bastion_port
     bastion_private_key = self.input.terraform_cloud_private_key
     timeout             = "10s"
   }
@@ -272,7 +302,8 @@ resource "terraform_data" "removal" {
     user                        = local.user
     node_name                   = aws_instance.nodes[each.key].tags.Name
     bastion_private_key         = tls_private_key.bastion_key.private_key_openssh
-    bastion_public_ip           = aws_instance.bastion.public_ip
+    bastion_public_ip           = var.balancer ? module.balancer[0].dns_name : aws_instance.bastion.public_ip
+    bastion_port                = var.balancer ? module.balancer[0].bastion_ssh_port : local.ssh_port
     bootstrap_node_private_ip   = aws_instance.bootstrap_node.private_ip
     terraform_cloud_private_key = tls_private_key.terraform_cloud.private_key_openssh
     commands = contains(yamldecode(ssh_resource.node_detail[each.key].result).roles, "database-leader") ? [
@@ -300,6 +331,7 @@ resource "terraform_data" "removal" {
     private_key         = self.input.bastion_private_key
     bastion_user        = self.input.user
     bastion_host        = self.input.bastion_public_ip
+    bastion_port        = self.input.bastion_port
     bastion_private_key = self.input.terraform_cloud_private_key
     timeout             = "10s"
   }

@@ -19,6 +19,43 @@ resource "aws_lb" "this" {
   }
 }
 
+resource "aws_lb_target_group" "ssh" {
+  name     = "${var.identifier}-target-group-ssh"
+  port     = 22
+  protocol = "TCP"
+  vpc_id   = var.vpc_id
+
+  health_check {
+    enabled  = true
+    protocol = "TCP"
+    port     = 22
+  }
+
+  tags = {
+    Blueprint = var.blueprint
+  }
+}
+
+resource "aws_lb_target_group_attachment" "ssh" {
+  target_group_arn = aws_lb_target_group.ssh.arn
+  target_id        = var.bastion_node.id
+}
+
+resource "aws_lb_listener" "ssh" {
+  load_balancer_arn = aws_lb.this.arn
+  port              = "${var.bastion_ssh_port}"
+  protocol          = "TCP"
+
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.ssh.arn
+  }
+
+  tags = {
+    Blueprint = var.blueprint
+  }
+}
+
 resource "aws_lb_target_group" "http" {
   name     = "${var.identifier}-target-group-http"
   port     = 80
@@ -29,6 +66,27 @@ resource "aws_lb_target_group" "http" {
     enabled  = true
     protocol = "TCP"
     port     = 80
+  }
+
+  tags = {
+    Blueprint = var.blueprint
+  }
+}
+
+resource "aws_lb_target_group_attachment" "http" {
+  for_each         = local.topology
+  target_group_arn = aws_lb_target_group.http.arn
+  target_id        = each.value.id
+}
+
+resource "aws_lb_listener" "http" {
+  load_balancer_arn = aws_lb.this.arn
+  port              = "80"
+  protocol          = "TCP"
+
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.http.arn
   }
 
   tags = {
@@ -53,6 +111,27 @@ resource "aws_lb_target_group" "https" {
   }
 }
 
+resource "aws_lb_target_group_attachment" "https" {
+  for_each         = local.topology
+  target_group_arn = aws_lb_target_group.https.arn
+  target_id        = each.value.id
+}
+
+resource "aws_lb_listener" "https" {
+  load_balancer_arn = aws_lb.this.arn
+  port              = "443"
+  protocol          = "TCP"
+
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.https.arn
+  }
+
+  tags = {
+    Blueprint = var.blueprint
+  }
+}
+
 resource "aws_lb_target_group" "lxd" {
   name     = "${var.identifier}-target-group-lxd"
   port     = 8443
@@ -63,6 +142,27 @@ resource "aws_lb_target_group" "lxd" {
     enabled  = true
     protocol = "TCP"
     port     = 8443
+  }
+
+  tags = {
+    Blueprint = var.blueprint
+  }
+}
+
+resource "aws_lb_target_group_attachment" "lxd" {
+  for_each         = local.topology
+  target_group_arn = aws_lb_target_group.lxd.arn
+  target_id        = each.value.id
+}
+
+resource "aws_lb_listener" "lxd" {
+  load_balancer_arn = aws_lb.this.arn
+  port              = "8443"
+  protocol          = "TCP"
+
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.lxd.arn
   }
 
   tags = {
@@ -87,73 +187,10 @@ resource "aws_lb_target_group" "uplink" {
   }
 }
 
-resource "aws_lb_target_group_attachment" "http" {
-  for_each         = local.topology
-  target_group_arn = aws_lb_target_group.http.arn
-  target_id        = each.value.id
-}
-
-resource "aws_lb_target_group_attachment" "https" {
-  for_each         = local.topology
-  target_group_arn = aws_lb_target_group.https.arn
-  target_id        = each.value.id
-}
-
-resource "aws_lb_target_group_attachment" "lxd" {
-  for_each         = local.topology
-  target_group_arn = aws_lb_target_group.lxd.arn
-  target_id        = each.value.id
-}
-
 resource "aws_lb_target_group_attachment" "uplink" {
   for_each         = local.topology
   target_group_arn = aws_lb_target_group.uplink.arn
   target_id        = each.value.id
-}
-
-resource "aws_lb_listener" "http" {
-  load_balancer_arn = aws_lb.this.arn
-  port              = "80"
-  protocol          = "TCP"
-
-  default_action {
-    type             = "forward"
-    target_group_arn = aws_lb_target_group.http.arn
-  }
-
-  tags = {
-    Blueprint = var.blueprint
-  }
-}
-
-resource "aws_lb_listener" "https" {
-  load_balancer_arn = aws_lb.this.arn
-  port              = "443"
-  protocol          = "TCP"
-
-  default_action {
-    type             = "forward"
-    target_group_arn = aws_lb_target_group.https.arn
-  }
-
-  tags = {
-    Blueprint = var.blueprint
-  }
-}
-
-resource "aws_lb_listener" "lxd" {
-  load_balancer_arn = aws_lb.this.arn
-  port              = "8443"
-  protocol          = "TCP"
-
-  default_action {
-    type             = "forward"
-    target_group_arn = aws_lb_target_group.lxd.arn
-  }
-
-  tags = {
-    Blueprint = var.blueprint
-  }
 }
 
 resource "aws_lb_listener" "uplink" {
@@ -170,5 +207,3 @@ resource "aws_lb_listener" "uplink" {
     Blueprint = var.blueprint
   }
 }
-
-

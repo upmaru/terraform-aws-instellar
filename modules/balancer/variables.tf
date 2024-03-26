@@ -13,11 +13,6 @@ variable "blueprint" {
   type        = string
 }
 
-variable "compute_identifier" {
-  description = "Identifier for compute block"
-  type        = string
-}
-
 variable "identifier" {
   default = "Identifier for load balancer"
   type    = string
@@ -33,7 +28,22 @@ variable "subnet_ids" {
   type        = list(string)
 }
 
+variable "bastion_node" {
+  description = "The bastion node"
+  type = object({
+    id        = string
+    slug      = string
+    public_ip = string
+  })
+}
+
+variable "bastion_ssh_port" {
+  description = "The bastion ssh port"
+  default     = 2348
+}
+
 variable "bootstrap_node" {
+  description = "The bootstrap node"
   type = object({
     id        = string
     slug      = string
@@ -42,6 +52,7 @@ variable "bootstrap_node" {
 }
 
 variable "nodes" {
+  description = "The nodes of the cluster"
   type = list(object({
     id        = string
     slug      = string

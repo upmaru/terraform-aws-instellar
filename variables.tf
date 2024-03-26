@@ -14,6 +14,16 @@ variable "identifier" {
   type        = string
 }
 
+variable "balancer" {
+  description = "Enable Load Balancer"
+  default     = false
+}
+
+variable "balancer_deletion_protection" {
+  description = "Enable balancer deletion protection"
+  default     = true
+}
+
 variable "publically_accessible" {
   description = "Make the cluster publically accessible? If you use a load balancer this can be false."
   default     = true
