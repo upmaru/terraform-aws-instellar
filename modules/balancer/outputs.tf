@@ -7,7 +7,7 @@ output "name" {
   value = var.identifier
 }
 
-output "bastion_ssh_port" {
+output "ssh_port" {
   description = "The bastion ssh port"
-  value       = var.bastion_ssh_port
+  value       = local.ssh_port
 }

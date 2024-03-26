@@ -255,7 +255,7 @@ resource "ssh_resource" "node_detail" {
 
   host         = aws_instance.bootstrap_node.private_ip
   bastion_host = var.balancer ? module.balancer[0].dns_name : aws_instance.bastion.public_ip
-  bastion_port = var.balancer ? module.balancer[0].bastion_ssh_port : local.ssh_port
+  bastion_port = var.balancer ? module.balancer[0].ssh_port : local.ssh_port
 
   user         = local.user
   bastion_user = local.user
@@ -276,7 +276,7 @@ resource "terraform_data" "reboot" {
     node_name                   = aws_instance.nodes[each.key].tags.Name
     bastion_private_key         = tls_private_key.bastion_key.private_key_openssh
     bastion_public_ip           = var.balancer ? module.balancer[0].dns_name : aws_instance.bastion.public_ip
-    bastion_port                = var.balancer ? module.balancer[0].bastion_ssh_port : local.ssh_port
+    bastion_port                = var.balancer ? module.balancer[0].ssh_port : local.ssh_port
     node_private_ip             = aws_instance.nodes[each.key].private_ip
     terraform_cloud_private_key = tls_private_key.terraform_cloud.private_key_openssh
     commands = contains(yamldecode(ssh_resource.node_detail[each.key].result).roles, "database-leader") ? ["echo Node is database-leader restarting later", "sudo shutdown -r +1"] : [
@@ -310,7 +310,7 @@ resource "terraform_data" "removal" {
     node_name                   = aws_instance.nodes[each.key].tags.Name
     bastion_private_key         = tls_private_key.bastion_key.private_key_openssh
     bastion_public_ip           = var.balancer ? module.balancer[0].dns_name : aws_instance.bastion.public_ip
-    bastion_port                = var.balancer ? module.balancer[0].bastion_ssh_port : local.ssh_port
+    bastion_port                = var.balancer ? module.balancer[0].ssh_port : local.ssh_port
     bootstrap_node_private_ip   = aws_instance.bootstrap_node.private_ip
     terraform_cloud_private_key = tls_private_key.terraform_cloud.private_key_openssh
     commands = contains(yamldecode(ssh_resource.node_detail[each.key].result).roles, "database-leader") ? [
