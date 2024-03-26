@@ -45,6 +45,7 @@ resource "aws_db_instance" "this" {
   publicly_accessible = var.publicly_accessible
   deletion_protection = var.deletion_protection
   skip_final_snapshot = var.skip_final_snapshot
+  apply_immediately   = var.apply_immediately
 
   tags = {
     Blueprint = var.blueprint

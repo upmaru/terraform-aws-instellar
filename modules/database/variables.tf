@@ -135,3 +135,9 @@ variable "replicate_source_db" {
   type        = string
   default     = null
 }
+
+variable "apply_immediately" {
+  description = "Apply changes immediately"
+  type        = bool
+  default     = false
+}
