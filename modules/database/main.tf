@@ -27,11 +27,22 @@ resource "aws_db_instance" "this" {
   performance_insights_enabled = var.enable_performance_insight
 
   storage_encrypted       = true
-  backup_retention_period = 5
+  backup_retention_period = var.backup_retention_period
 
   publicly_accessible = var.publicly_accessible
   deletion_protection = var.deletion_protection
   skip_final_snapshot = var.skip_final_snapshot
+
+  tags = {
+    Blueprint = var.blueprint
+  }
+}
+
+resource "aws_db_instance" "this_replica" {
+  count = var.create_replica ? 1 : 0
+
+  instance_class      = var.db_size
+  replicate_source_db = aws_db_instance.this.identifier
 
   tags = {
     Blueprint = var.blueprint

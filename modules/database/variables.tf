@@ -74,7 +74,7 @@ variable "storage_type" {
 }
 
 variable "publicly_accessible" {
-  description = "Database publically accessible"
+  description = "Database publicly accessible"
   default     = false
   type        = bool
 }
@@ -105,3 +105,15 @@ variable "vpc_id" {
   description = "Database VPC id"
   type        = string
 }
+
+variable "backup_retention_period" {
+  description = "Backup retention days"
+  default     = 5
+  type        = number
+}
+
+variable "create_replica" {
+  description = "Create a read replica"
+  default     = false
+}
+
