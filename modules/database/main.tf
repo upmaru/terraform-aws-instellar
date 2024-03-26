@@ -1,3 +1,7 @@
+locals {
+  is_replica = var.replicate_source_db != null
+}
+
 resource "random_password" "password" {
   length           = 16
   special          = true
@@ -14,8 +18,8 @@ resource "aws_db_instance" "this" {
   engine             = var.engine
   engine_version     = var.engine_version
   instance_class     = var.db_size
-  username           = var.db_username
-  password           = var.generate_master_password ? random_password.password.result : null
+  username           = !local.is_replica ? var.db_username : null
+  password           = !local.is_replica ? random_password.password.result : null
   port               = var.port
   ca_cert_identifier = var.ca_cert_identifier
 

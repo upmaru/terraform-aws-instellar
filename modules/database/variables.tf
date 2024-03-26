@@ -112,11 +112,6 @@ variable "backup_retention_period" {
   type        = number
 }
 
-variable "generate_master_password" {
-  description = "Generate master password"
-  default     = true
-}
-
 variable "multi_az" {
   description = "Enable multi AZ"
   default     = false
