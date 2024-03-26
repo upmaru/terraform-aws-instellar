@@ -30,6 +30,8 @@ resource "aws_db_instance" "this" {
   backup_retention_period = var.backup_retention_period
   multi_az                = var.multi_az
 
+  final_snapshot_identifier = "${var.identifier}-snapshot"
+
   publicly_accessible = var.publicly_accessible
   deletion_protection = var.deletion_protection
   skip_final_snapshot = var.skip_final_snapshot
@@ -46,6 +48,8 @@ resource "aws_db_instance" "this_replica" {
   instance_class      = var.db_size
   replicate_source_db = aws_db_instance.this.identifier
   multi_az            = var.multi_az
+
+  final_snapshot_identifier = "${var.identifier}-replica-snapshot"
 
   publicly_accessible = var.publicly_accessible
   deletion_protection = var.deletion_protection
