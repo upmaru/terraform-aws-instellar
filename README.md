@@ -35,7 +35,9 @@ These functionality come together to enable the user to fully manage LXD cluster
 
 ## Modules
 
-No modules.
+| Name | Source | Version |
+|------|--------|---------|
+| <a name="module_balancer"></a> [balancer](#module\_balancer) | ./modules/balancer | n/a |
 
 ## Resources
 
@@ -90,6 +92,8 @@ No modules.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
+| <a name="input_balancer"></a> [balancer](#input\_balancer) | Enable Load Balancer | `bool` | `false` | no |
+| <a name="input_balancer_deletion_protection"></a> [balancer\_deletion\_protection](#input\_balancer\_deletion\_protection) | Enable balancer deletion protection | `bool` | `true` | no |
 | <a name="input_bastion_size"></a> [bastion\_size](#input\_bastion\_size) | Bastion instance type? | `string` | `"t3a.micro"` | no |
 | <a name="input_bastion_ssh"></a> [bastion\_ssh](#input\_bastion\_ssh) | Enable SSH port | `bool` | `true` | no |
 | <a name="input_blueprint"></a> [blueprint](#input\_blueprint) | Identifier of the blueprint | `string` | n/a | yes |
@@ -112,6 +116,7 @@ No modules.
 
 | Name | Description |
 |------|-------------|
+| <a name="output_balancer"></a> [balancer](#output\_balancer) | n/a |
 | <a name="output_bastion_security_group_id"></a> [bastion\_security\_group\_id](#output\_bastion\_security\_group\_id) | n/a |
 | <a name="output_bootstrap_node"></a> [bootstrap\_node](#output\_bootstrap\_node) | n/a |
 | <a name="output_cluster_address"></a> [cluster\_address](#output\_cluster\_address) | n/a |
