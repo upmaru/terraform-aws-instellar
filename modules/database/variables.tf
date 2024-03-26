@@ -112,11 +112,6 @@ variable "backup_retention_period" {
   type        = number
 }
 
-variable "create_replica" {
-  description = "Create a read replica"
-  default     = false
-}
-
 variable "multi_az" {
   description = "Enable multi AZ"
   default     = false

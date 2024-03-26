@@ -40,22 +40,3 @@ resource "aws_db_instance" "this" {
     Blueprint = var.blueprint
   }
 }
-
-resource "aws_db_instance" "this_replica" {
-  count = var.create_replica ? 1 : 0
-
-  identifier          = "${var.identifier}-${var.engine}-replica"
-  instance_class      = var.db_size
-  replicate_source_db = aws_db_instance.this.identifier
-  multi_az            = var.multi_az
-
-  final_snapshot_identifier = "${var.identifier}-replica-snapshot"
-
-  publicly_accessible = var.publicly_accessible
-  deletion_protection = var.deletion_protection
-  skip_final_snapshot = var.skip_final_snapshot
-
-  tags = {
-    Blueprint = var.blueprint
-  }
-}
