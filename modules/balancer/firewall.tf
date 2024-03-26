@@ -8,14 +8,26 @@ resource "aws_security_group" "this" {
   }
 }
 
-resource "aws_vpc_security_group_egress_rule" "allow_outgoing" {
+resource "aws_vpc_security_group_egress_rule" "allow_outgoing_to_nodes" {
   security_group_id            = aws_security_group.this.id
   description                  = "Allow all outgoing traffic"
   ip_protocol                  = "-1"
   referenced_security_group_id = var.nodes_security_group_id
 
   tags = {
-    Name      = "${var.identifier}-outgoing"
+    Name      = "${var.identifier}-outgoing-nodes"
+    Blueprint = var.blueprint
+  }
+}
+
+resource "aws_vpc_security_group_egress_rule" "allow_outgoing_to_bastion" {
+  security_group_id            = aws_security_group.this.id
+  description                  = "Allow all outgoing traffic"
+  ip_protocol                  = "-1"
+  referenced_security_group_id = var.bastion_security_group_id
+
+  tags = {
+    Name      = "${var.identifier}-outgoing-bastion"
     Blueprint = var.blueprint
   }
 }
