@@ -6,7 +6,7 @@ locals {
 }
 
 resource "aws_lb" "this" {
-  name               = "${var.compute_identifier}-balancer"
+  name               = "${var.identifier}-balancer"
   load_balancer_type = "network"
   security_groups    = [aws_security_group.this.id]
   subnets            = var.subnet_ids
