@@ -44,6 +44,7 @@ resource "aws_db_instance" "this_replica" {
   identifier          = "${var.identifier}-${var.engine}-replica"
   instance_class      = var.db_size
   replicate_source_db = aws_db_instance.this.identifier
+  multi_az            = true
 
   tags = {
     Blueprint = var.blueprint
