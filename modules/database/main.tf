@@ -41,6 +41,7 @@ resource "aws_db_instance" "this" {
 resource "aws_db_instance" "this_replica" {
   count = var.create_replica ? 1 : 0
 
+  identifier          = "${var.identifier}-${var.engine}-replica"
   instance_class      = var.db_size
   replicate_source_db = aws_db_instance.this.identifier
 
