@@ -47,12 +47,13 @@ module "balancer" {
 
   source = "./modules/balancer"
 
-  nodes_security_group_id = aws_security_group.nodes_firewall.id
-  deletion_protection     = var.balancer_deletion_protection
-  blueprint               = var.blueprint
-  identifier              = var.identifier
-  vpc_id                  = var.vpc_id
-  subnet_ids              = var.public_subnet_ids
+  bastion_security_group_id = aws_security_group.bastion_firewall.id
+  nodes_security_group_id   = aws_security_group.nodes_firewall.id
+  deletion_protection       = var.balancer_deletion_protection
+  blueprint                 = var.blueprint
+  identifier                = var.identifier
+  vpc_id                    = var.vpc_id
+  subnet_ids                = var.public_subnet_ids
 
   bastion_node = {
     id        = aws_instance.bastion.id
