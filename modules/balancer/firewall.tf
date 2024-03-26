@@ -20,6 +20,34 @@ resource "aws_vpc_security_group_egress_rule" "allow_outgoing" {
   }
 }
 
+resource "aws_vpc_security_group_ingress_rule" "ssh_v4" {
+  security_group_id = aws_security_group.this.id
+  description       = "Enable public ssh v4 to load balancer"
+  cidr_ipv4         = "0.0.0.0/0"
+  from_port         = local.ssh_port
+  to_port           = local.ssh_port
+  ip_protocol       = "tcp"
+
+  tags = {
+    Name      = "${var.identifier}-public-ssh-v4"
+    Blueprint = var.blueprint
+  }
+}
+
+resource "aws_vpc_security_group_ingress_rule" "ssh_v6" {
+  security_group_id = aws_security_group.this.id
+  description       = "Enable public ssh v6 to load balancer"
+  cidr_ipv6         = "::/0"
+  from_port         = local.ssh_port
+  to_port           = local.ssh_port
+  ip_protocol       = "tcp"
+
+  tags = {
+    Name      = "${var.identifier}-public-ssh-v6"
+    Blueprint = var.blueprint
+  }
+}
+
 resource "aws_vpc_security_group_ingress_rule" "http_v4" {
   security_group_id = aws_security_group.this.id
   description       = "Enable public http v4 to load balancer"
@@ -128,6 +156,20 @@ resource "aws_vpc_security_group_ingress_rule" "uplink_v6" {
 
   tags = {
     Name      = "${var.identifier}-public-uplink-v6"
+    Blueprint = var.blueprint
+  }
+}
+
+resource "aws_vpc_security_group_ingress_rule" "bastion_ssh" {
+  security_group_id            = var.bastion_security_group_id
+  description                  = "Enable load balancer traffic for ssh"
+  referenced_security_group_id = aws_security_group.this.id
+  from_port                    = 22
+  to_port                      = 22
+  ip_protocol                  = "tcp"
+
+  tags = {
+    Name      = "${var.identifier}-balancer-ssh"
     Blueprint = var.blueprint
   }
 }

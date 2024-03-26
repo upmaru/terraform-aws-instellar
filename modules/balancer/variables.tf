@@ -3,6 +3,11 @@ variable "nodes_security_group_id" {
   type        = string
 }
 
+variable "bastion_security_group_id" {
+  description = "Security group id for bastion"
+  type        = string
+}
+
 variable "deletion_protection" {
   description = "Enable deletion protection"
   default     = true
@@ -35,11 +40,6 @@ variable "bastion_node" {
     slug      = string
     public_ip = string
   })
-}
-
-variable "bastion_ssh_port" {
-  description = "The bastion ssh port"
-  default     = 2348
 }
 
 variable "bootstrap_node" {
