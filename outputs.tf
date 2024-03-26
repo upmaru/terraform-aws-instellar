@@ -36,6 +36,14 @@ output "nodes_iam_role" {
   }
 }
 
+output "balancer" {
+  value = {
+    enabled = var.balancer
+    name    = var.balancer ? module.balancer[0].name : null
+    address = var.balancer ? module.balancer[0].address : null
+  }
+}
+
 output "nodes_security_group_id" {
   value = aws_security_group.nodes_firewall.id
 }
