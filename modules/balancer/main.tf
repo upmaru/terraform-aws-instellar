@@ -43,7 +43,7 @@ resource "aws_lb_target_group_attachment" "ssh" {
 
 resource "aws_lb_listener" "ssh" {
   load_balancer_arn = aws_lb.this.arn
-  port              = "${var.bastion_ssh_port}"
+  port              = var.bastion_ssh_port
   protocol          = "TCP"
 
   default_action {

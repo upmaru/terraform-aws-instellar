@@ -1,5 +1,5 @@
 locals {
-  user = "ubuntu"
+  user     = "ubuntu"
   ssh_port = 22
   topology = {
     for index, node in var.cluster_topology :
@@ -53,6 +53,12 @@ module "balancer" {
   identifier              = var.identifier
   vpc_id                  = var.vpc_id
   subnet_ids              = var.public_subnet_ids
+
+  bastion_node = {
+    id        = aws_instance.bastion.id
+    slug      = aws_instance.bastion.tags.Name
+    public_ip = aws_instance.bastion.public_ip
+  }
   bootstrap_node = {
     slug      = aws_instance.bootstrap_node.tags.Name
     public_ip = aws_instance.bootstrap_node.public_ip
