@@ -28,6 +28,7 @@ resource "aws_db_instance" "this" {
 
   storage_encrypted       = true
   backup_retention_period = var.backup_retention_period
+  multi_az                = var.multi_az
 
   publicly_accessible = var.publicly_accessible
   deletion_protection = var.deletion_protection
@@ -44,7 +45,11 @@ resource "aws_db_instance" "this_replica" {
   identifier          = "${var.identifier}-${var.engine}-replica"
   instance_class      = var.db_size
   replicate_source_db = aws_db_instance.this.identifier
-  multi_az            = true
+  multi_az            = var.multi_az
+
+  publicly_accessible = var.publicly_accessible
+  deletion_protection = var.deletion_protection
+  skip_final_snapshot = var.skip_final_snapshot
 
   tags = {
     Blueprint = var.blueprint
