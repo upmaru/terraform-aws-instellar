@@ -117,3 +117,15 @@ variable "multi_az" {
   default     = false
   type        = bool
 }
+
+variable "availability_zone" {
+  description = "Database availability zone"
+  type        = string
+  default     = null
+}
+
+variable "replicate_source_db" {
+  description = "Replicate source database"
+  type        = string
+  default     = null
+}

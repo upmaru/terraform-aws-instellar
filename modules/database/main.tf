@@ -8,6 +8,8 @@ resource "random_password" "password" {
 resource "aws_db_instance" "this" {
   identifier = "${var.identifier}-${var.engine}"
 
+  availability_zone = var.availability_zone
+
   db_name            = var.db_name
   engine             = var.engine
   engine_version     = var.engine_version
@@ -16,6 +18,8 @@ resource "aws_db_instance" "this" {
   password           = random_password.password.result
   port               = var.port
   ca_cert_identifier = var.ca_cert_identifier
+
+  replicate_source_db = var.replicate_source_db
 
   allocated_storage     = var.storage_size
   max_allocated_storage = var.max_storage_size
