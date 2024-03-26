@@ -15,7 +15,7 @@ resource "aws_db_instance" "this" {
   engine_version     = var.engine_version
   instance_class     = var.db_size
   username           = var.db_username
-  password           = random_password.password.result
+  password           = var.generate_master_password ? random_password.password.result : null
   port               = var.port
   ca_cert_identifier = var.ca_cert_identifier
 
