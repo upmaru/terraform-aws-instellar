@@ -19,9 +19,11 @@ resource "aws_db_instance" "this" {
   engine_version     = var.engine_version
   instance_class     = var.db_size
   username           = !local.is_replica ? var.db_username : null
-  password           = !local.is_replica ? random_password.password.result : null
+  password           = !local.is_replica && var.manage_master_user_password ? null : random_password.password.result
   port               = var.port
   ca_cert_identifier = var.ca_cert_identifier
+
+  manage_master_user_password = !local.is_replica && var.manage_master_user_password ? var.manage_master_user_password : null
 
   replicate_source_db = var.replicate_source_db
 

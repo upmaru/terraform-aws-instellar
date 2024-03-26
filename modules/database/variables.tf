@@ -112,6 +112,12 @@ variable "backup_retention_period" {
   type        = number
 }
 
+variable "manage_master_user_password" {
+  description = "Manage master user password"
+  default     = false
+  type        = bool
+}
+
 variable "multi_az" {
   description = "Enable multi AZ"
   default     = false
