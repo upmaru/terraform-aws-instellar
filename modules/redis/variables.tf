@@ -54,7 +54,7 @@ variable "transit_encryption" {
   default     = true
 }
 
-variable "manage_auth_token" {
+variable "manage_credential_with_secret" {
   description = "Enable / Disable auth token management with secret manager"
   default     = false
 }

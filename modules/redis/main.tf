@@ -8,6 +8,8 @@ resource "random_password" "password" {
   }
 }
 
+resource "random_uuid" "this" {}
+
 resource "aws_elasticache_replication_group" "this" {
   replication_group_id = var.identifier
   description          = "${var.identifier} redis replication group"
@@ -34,11 +36,11 @@ resource "aws_elasticache_replication_group" "this" {
 }
 
 module "secret" {
-  count  = var.manage_auth_token ? 1 : 0
+  count  = var.manage_credential_with_secret ? 1 : 0
   source = "../secret"
 
   blueprint      = var.blueprint
-  key            = "${var.identifier}/redis"
+  key            = "${var.identifier}/redis/${random_uuid.this.result}"
   description    = "Store ${var.identifier} redis auth token"
   value          = random_password.password.result
   nodes_iam_role = var.nodes_iam_role
