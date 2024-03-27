@@ -9,7 +9,7 @@ data "aws_iam_policy_document" "this" {
     ]
 
     resources = [
-      aws_secretsmanager_secret.this.master_user_secret[0].secret_arn
+      aws_db_instance.this.master_user_secret[0].secret_arn
     ]
   }
 }
