@@ -3,11 +3,6 @@ variable "identifier" {
   type        = string
 }
 
-variable "description" {
-  description = "Description of the cache cluster"
-  type        = string
-}
-
 variable "engine_version" {
   description = "The version number of Redis to be used"
   default     = "7.0"

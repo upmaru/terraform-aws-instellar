@@ -38,7 +38,7 @@ module "secret" {
 
   blueprint      = var.blueprint
   key            = "${var.identifier}/redis"
-  description    = "Store redis auth token"
+  description    = "Store ${var.identifier} redis auth token"
   value          = random_password.password.result
   nodes_iam_role = var.nodes_iam_role
 }
