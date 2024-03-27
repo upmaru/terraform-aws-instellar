@@ -104,7 +104,7 @@ These functionality come together to enable the user to fully manage LXD cluster
 | <a name="input_node_size"></a> [node\_size](#input\_node\_size) | Which instance type? | `string` | `"t3a.medium"` | no |
 | <a name="input_protect_leader"></a> [protect\_leader](#input\_protect\_leader) | Protect the database leader node | `bool` | `true` | no |
 | <a name="input_public_subnet_ids"></a> [public\_subnet\_ids](#input\_public\_subnet\_ids) | Public subnet ids to pass in if block type is compute | `list(string)` | n/a | yes |
-| <a name="input_publically_accessible"></a> [publically\_accessible](#input\_publically\_accessible) | Make the cluster publically accessible? If you use a load balancer this can be false. | `bool` | `true` | no |
+| <a name="input_publicly_accessible"></a> [publicly\_accessible](#input\_publicly\_accessible) | Make the cluster publically accessible? If you use a load balancer this can be false. | `bool` | `true` | no |
 | <a name="input_ssh_keys"></a> [ssh\_keys](#input\_ssh\_keys) | List of ssh key names | `list(string)` | `[]` | no |
 | <a name="input_ssm"></a> [ssm](#input\_ssm) | Enable SSM | `bool` | `false` | no |
 | <a name="input_storage_size"></a> [storage\_size](#input\_storage\_size) | How much storage on your nodes? | `number` | `40` | no |
