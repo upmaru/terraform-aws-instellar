@@ -10,6 +10,7 @@ resource "random_password" "password" {
 
 resource "aws_elasticache_replication_group" "this" {
   replication_group_id = var.identifier
+  description          = "${var.identifier} redis replication group"
   num_cache_clusters   = var.num_cache_clusters
   node_type            = var.node_type
   port                 = var.port
