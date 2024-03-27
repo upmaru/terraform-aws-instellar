@@ -34,9 +34,11 @@ resource "aws_elasticache_replication_group" "this" {
 
 module "secret" {
   count  = var.manage_auth_token ? 1 : 0
-  source = "./secret"
+  source = "../secret"
 
+  blueprint      = var.blueprint
   key            = "${var.identifier}/redis"
+  description    = "Store redis auth token"
   value          = random_password.password.result
   nodes_iam_role = var.nodes_iam_role
 }

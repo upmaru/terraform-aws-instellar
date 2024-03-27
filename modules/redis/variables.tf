@@ -69,3 +69,11 @@ variable "password_revision" {
   default     = 1
   type        = number
 }
+
+variable "nodes_iam_role" {
+  description = "The IAM role to attach the policy to"
+  type = object({
+    name = string
+    id   = string
+  })
+}
