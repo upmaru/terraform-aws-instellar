@@ -1,5 +1,6 @@
 locals {
-  is_replica = var.replicate_source_db != null
+  is_replica  = var.replicate_source_db != null
+  policy_name = var.manage_master_user_password ? replace(title(var.identifier), "-", "") : null
 }
 
 resource "random_password" "password" {
