@@ -248,6 +248,10 @@ resource "aws_instance" "nodes" {
   }
 }
 
+resource "terraform_data" "node_detail_revision" {
+  input = var.node_detail_revision
+}
+
 resource "random_uuid" "node_detail" {
   keepers = {
     revision = var.node_detail_revision
@@ -255,8 +259,8 @@ resource "random_uuid" "node_detail" {
 
   lifecycle {
     precondition {
-      condition     = local.node_detail_refreshable
-      error_message = "Node detail is not refreshable because balancer_ssh and bastion_ssh is inactive"
+      condition     = local.node_detail_refreshable || terraform_data.node_detail_revision.output == var.node_detail_revision
+      error_message = "Node detail is not refreshable because balancer_ssh and bastion_ssh are both inactive if the balancer is enabled please activate balancer_ssh."
     }
   }
 }
