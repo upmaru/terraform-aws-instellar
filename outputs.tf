@@ -59,7 +59,3 @@ output "vpc_id" {
 output "subnet_ids" {
   value = var.public_subnet_ids
 }
-
-output "node_detail_revision" {
-  value = var.node_detail_revision
-}
