@@ -248,7 +248,7 @@ resource "aws_instance" "nodes" {
 
 resource "random_uuid" "node_detail" {
   keepers = {
-    revision = var.node_detail_revision
+    revision = "${var.refresh_node_detail ? timestamp() : var.node_detail_revision}"
   }
 }
 

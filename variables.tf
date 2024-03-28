@@ -94,6 +94,11 @@ variable "cluster_topology" {
   default     = []
 }
 
+variable "refresh_node_detail" {
+  description = "Refresh the node detail"
+  default     = false
+}
+
 variable "node_detail_revision" {
   description = "Revision of the node detail"
   default     = 1
