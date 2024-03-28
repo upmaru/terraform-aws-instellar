@@ -248,11 +248,24 @@ resource "aws_instance" "nodes" {
   }
 }
 
+resource "random_uuid" "node_detail" {
+  keepers = {
+    revision = var.node_detail_revision
+  }
+
+  lifecycle {
+    precondition {
+      condition = local.node_detail_refreshable
+      error_message = "Node detail is not refreshable because balancer_ssh and bastion_ssh is inactive"
+    }
+  }
+}
+
 resource "ssh_resource" "node_detail" {
   for_each = local.topology
 
   triggers = {
-    hash = sha256("${local.node_detail_refreshable ? timestamp() : var.node_detail_revision}")
+    uuid = random_uuid.node_detail.result
   }
 
   host         = aws_instance.bootstrap_node.private_ip
