@@ -94,12 +94,14 @@ These functionality come together to enable the user to fully manage LXD cluster
 |------|-------------|------|---------|:--------:|
 | <a name="input_balancer"></a> [balancer](#input\_balancer) | Enable Load Balancer | `bool` | `false` | no |
 | <a name="input_balancer_deletion_protection"></a> [balancer\_deletion\_protection](#input\_balancer\_deletion\_protection) | Enable balancer deletion protection | `bool` | `true` | no |
+| <a name="input_balancer_ssh"></a> [balancer\_ssh](#input\_balancer\_ssh) | Enable SSH port on balancer | `bool` | `true` | no |
 | <a name="input_bastion_size"></a> [bastion\_size](#input\_bastion\_size) | Bastion instance type? | `string` | `"t3a.micro"` | no |
 | <a name="input_bastion_ssh"></a> [bastion\_ssh](#input\_bastion\_ssh) | Enable SSH port | `bool` | `true` | no |
 | <a name="input_blueprint"></a> [blueprint](#input\_blueprint) | Identifier of the blueprint | `string` | n/a | yes |
 | <a name="input_cluster_topology"></a> [cluster\_topology](#input\_cluster\_topology) | How many nodes do you want in your cluster? | <pre>list(object({<br>    id   = number<br>    name = string<br>    size = optional(string, "t3.medium")<br>  }))</pre> | `[]` | no |
 | <a name="input_identifier"></a> [identifier](#input\_identifier) | Name of your cluster | `string` | n/a | yes |
 | <a name="input_network_dependencies"></a> [network\_dependencies](#input\_network\_dependencies) | value | `list` | `[]` | no |
+| <a name="input_node_detail_revision"></a> [node\_detail\_revision](#input\_node\_detail\_revision) | The revision of the node detail | `number` | `1` | no |
 | <a name="input_node_monitoring"></a> [node\_monitoring](#input\_node\_monitoring) | Enable / Disable detailed monitoring | `bool` | `false` | no |
 | <a name="input_node_size"></a> [node\_size](#input\_node\_size) | Which instance type? | `string` | `"t3a.medium"` | no |
 | <a name="input_protect_leader"></a> [protect\_leader](#input\_protect\_leader) | Protect the database leader node | `bool` | `true` | no |

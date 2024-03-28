@@ -67,6 +67,7 @@ No modules.
 | <a name="input_identifier"></a> [identifier](#input\_identifier) | n/a | `string` | `"Identifier for load balancer"` | no |
 | <a name="input_nodes"></a> [nodes](#input\_nodes) | The nodes of the cluster | <pre>list(object({<br>    id        = string<br>    slug      = string<br>    public_ip = string<br>  }))</pre> | n/a | yes |
 | <a name="input_nodes_security_group_id"></a> [nodes\_security\_group\_id](#input\_nodes\_security\_group\_id) | Security group id for nodes | `string` | n/a | yes |
+| <a name="input_ssh"></a> [ssh](#input\_ssh) | Enable SSH | `bool` | `true` | no |
 | <a name="input_subnet_ids"></a> [subnet\_ids](#input\_subnet\_ids) | Public subnet ids to pass in if block type is compute | `list(string)` | n/a | yes |
 | <a name="input_vpc_id"></a> [vpc\_id](#input\_vpc\_id) | vpc id to pass in if block type is compute | `string` | n/a | yes |
 
