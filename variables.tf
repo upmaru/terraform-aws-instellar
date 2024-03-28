@@ -99,6 +99,11 @@ variable "cluster_topology" {
   default     = []
 }
 
+variable "node_detail_revision" {
+  description = "The revision of the node detail"
+  default     = 1
+}
+
 variable "ssh_keys" {
   type        = list(string)
   description = "List of ssh key names"

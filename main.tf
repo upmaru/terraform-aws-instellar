@@ -248,12 +248,11 @@ resource "aws_instance" "nodes" {
   }
 }
 
-
 resource "ssh_resource" "node_detail" {
   for_each = local.topology
 
   triggers = {
-    timestamp = "${timestamp()}"
+    revision = "${var.node_detail_revision}"
   }
 
   host         = aws_instance.bootstrap_node.private_ip
