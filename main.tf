@@ -1,6 +1,6 @@
 locals {
-  user     = "ubuntu"
-  ssh_port = 22
+  user                    = "ubuntu"
+  ssh_port                = 22
   node_detail_refreshable = var.bastion_ssh || var.balancer_ssh
   topology = {
     for index, node in var.cluster_topology :
@@ -255,7 +255,7 @@ resource "random_uuid" "node_detail" {
 
   lifecycle {
     precondition {
-      condition = local.node_detail_refreshable
+      condition     = local.node_detail_refreshable
       error_message = "Node detail is not refreshable because balancer_ssh and bastion_ssh is inactive"
     }
   }
