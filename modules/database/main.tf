@@ -67,8 +67,9 @@ module "secret" {
     database = var.db_name
     port     = var.port
     username = var.db_username
-    password = var.manage_master_user_password ? aws_db_instance.this.master_user_secret[0].secret_arn : random_password.this.result
+    password = var.manage_master_user_password ? null : random_password.this.result
     endpoint = aws_db_instance.this.endpoint
+    password_secret_id = var.manage_master_user_password ? aws_db_instance.this.master_user_secret[0].secret_arn : null
   })
   nodes_iam_role = var.nodes_iam_role
 }
