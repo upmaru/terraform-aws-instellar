@@ -246,11 +246,17 @@ resource "aws_instance" "nodes" {
   }
 }
 
+resource "random_uuid" "node_detail" {
+  keepers = {
+    revision = var.node_detail_revision
+  }
+}
+
 resource "ssh_resource" "node_detail" {
   for_each = local.topology
 
   triggers = {
-    always_run = "${timestamp()}"
+    uuid = "${random_uuid.node_detail.result}"
   }
 
   host         = aws_instance.bootstrap_node.private_ip
