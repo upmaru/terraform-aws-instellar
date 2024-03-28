@@ -248,28 +248,12 @@ resource "aws_instance" "nodes" {
   }
 }
 
-data "terraform_remote_state" "this" {
-  backend = "remote"
-}
-
-resource "random_uuid" "node_detail" {
-  keepers = {
-    revision = var.node_detail_revision
-  }
-
-  lifecycle {
-    precondition {
-      condition     = local.node_detail_refreshable || data.terraform_remote_state.this.node_detail_revision == var.node_detail_revision
-      error_message = "Node detail is not refreshable because balancer_ssh and bastion_ssh are both inactive if the balancer is enabled please activate balancer_ssh."
-    }
-  }
-}
 
 resource "ssh_resource" "node_detail" {
   for_each = local.topology
 
   triggers = {
-    uuid = random_uuid.node_detail.result
+    timestamp = "${timestamp()}"
   }
 
   host         = aws_instance.bootstrap_node.private_ip
@@ -285,6 +269,13 @@ resource "ssh_resource" "node_detail" {
   commands = [
     "lxc cluster show ${aws_instance.nodes[each.key].tags.Name}"
   ]
+
+  lifecycle {
+    precondition {
+      condition     = local.node_detail_refreshable
+      error_message = "Node detail is not refreshable because balancer_ssh and bastion_ssh are both inactive if the balancer is enabled please activate balancer_ssh."
+    }
+  }
 }
 
 resource "terraform_data" "reboot" {
