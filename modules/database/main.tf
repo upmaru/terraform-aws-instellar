@@ -9,6 +9,8 @@ resource "random_password" "password" {
   override_special = "!#$%&*()-_=+[]{}<>:?"
 }
 
+resource "random_uuid" "this" {}
+
 # tfsec:ignore:aws-rds-enable-iam-auth
 resource "aws_db_instance" "this" {
   identifier = "${var.identifier}-${var.engine}"
@@ -51,4 +53,22 @@ resource "aws_db_instance" "this" {
   tags = {
     Blueprint = var.blueprint
   }
+}
+
+module "secret" {
+  count  = var.manage_credential_with_secret ? 1 : 0
+  source = "../secret"
+
+  blueprint   = var.blueprint
+  key         = "${var.identifier}/database/${random_uuid.this.result}"
+  description = "Store ${var.identifier} database credential"
+  value = jsonencode({
+    engine   = var.engine
+    database = var.db_name
+    port     = var.port
+    username = var.db_username
+    password = var.manage_master_user_password ? aws_db_instance.this.master_user_secret[0].secret_arn : random_password.this.result
+    endpoint = aws_db_instance.this.endpoint
+  })
+  nodes_iam_role = var.nodes_iam_role
 }

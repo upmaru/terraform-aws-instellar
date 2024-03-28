@@ -144,6 +144,12 @@ variable "replicate_source_db" {
   default     = null
 }
 
+variable "manage_credential_with_secret" {
+  description = "Manage credentials with secret"
+  type        = bool
+  default     = false
+}
+
 variable "apply_immediately" {
   description = "Apply changes immediately"
   type        = bool

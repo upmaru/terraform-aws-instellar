@@ -39,10 +39,15 @@ module "secret" {
   count  = var.manage_credential_with_secret ? 1 : 0
   source = "../secret"
 
-  blueprint      = var.blueprint
-  key            = "${var.identifier}/redis/${random_uuid.this.result}"
-  description    = "Store ${var.identifier} redis auth token"
-  value          = random_password.password.result
+  blueprint   = var.blueprint
+  key         = "${var.identifier}/redis/${random_uuid.this.result}"
+  description = "Store ${var.identifier} redis credential"
+  value = jsonencode({
+    endpoint = aws_elasticache_replication_group.primary_endpoint_address
+    reader_endpoint = aws_elasticache_replication_group.reader_endpoint_address
+    port     = var.port
+    password = random_password.password.result
+  })
   nodes_iam_role = var.nodes_iam_role
 }
 
