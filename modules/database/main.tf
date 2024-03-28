@@ -3,7 +3,7 @@ locals {
   policy_name = var.manage_master_user_password ? replace(title(var.identifier), "-", "") : null
 }
 
-resource "random_password" "this" {
+resource "random_password" "password" {
   length           = 16
   special          = true
   override_special = "!#$%&*()-_=+[]{}<>:?"
@@ -22,7 +22,7 @@ resource "aws_db_instance" "this" {
   engine_version     = var.engine_version
   instance_class     = var.db_size
   username           = !local.is_replica ? var.db_username : null
-  password           = !local.is_replica && var.manage_master_user_password ? null : random_password.this.result
+  password           = !local.is_replica && var.manage_master_user_password ? null : random_password.password.result
   port               = var.port
   ca_cert_identifier = var.ca_cert_identifier
 
@@ -67,7 +67,7 @@ module "secret" {
     database = var.db_name
     port     = var.port
     username = var.db_username
-    password = var.manage_master_user_password ? null : random_password.this.result
+    password = var.manage_master_user_password ? null : random_password.password.result
     endpoint = aws_db_instance.this.endpoint
     password_secret_id = var.manage_master_user_password ? aws_db_instance.this.master_user_secret[0].secret_arn : null 
   })
