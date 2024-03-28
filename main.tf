@@ -1,6 +1,7 @@
 locals {
   user     = "ubuntu"
   ssh_port = 22
+  node_detail_refreshable = var.bastion_ssh || var.balancer_ssh
   topology = {
     for index, node in var.cluster_topology :
     node.name => merge(node, { subnet = node.id % length(var.public_subnet_ids) })
@@ -47,6 +48,7 @@ module "balancer" {
 
   source = "./modules/balancer"
 
+  ssh                       = var.balancer_ssh
   bastion_security_group_id = aws_security_group.bastion_firewall.id
   nodes_security_group_id   = aws_security_group.nodes_firewall.id
   deletion_protection       = var.balancer_deletion_protection
@@ -246,17 +248,11 @@ resource "aws_instance" "nodes" {
   }
 }
 
-resource "random_uuid" "node_detail" {
-  keepers = {
-    revision = "${var.refresh_node_detail ? timestamp() : var.node_detail_revision}"
-  }
-}
-
 resource "ssh_resource" "node_detail" {
   for_each = local.topology
 
   triggers = {
-    uuid = "${random_uuid.node_detail.result}"
+    hash = sha256("${local.node_detail_refreshable ? timestamp() : var.node_detail_revision}")
   }
 
   host         = aws_instance.bootstrap_node.private_ip

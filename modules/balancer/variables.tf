@@ -13,6 +13,11 @@ variable "deletion_protection" {
   default     = true
 }
 
+variable "ssh" {
+  description = "Enable SSH"
+  default     = true
+}
+
 variable "blueprint" {
   description = "Identifier of the blueprint"
   type        = string

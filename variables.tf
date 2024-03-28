@@ -64,6 +64,11 @@ variable "bastion_ssh" {
   default     = true
 }
 
+variable "balancer_ssh" {
+  description = "Enable SSH port on balancer"
+  default     = true
+}
+
 variable "node_size" {
   description = "Which instance type?"
   default     = "t3a.medium"
@@ -92,11 +97,6 @@ variable "cluster_topology" {
   }))
   description = "How many nodes do you want in your cluster?"
   default     = []
-}
-
-variable "refresh_node_detail" {
-  description = "Refresh the node detail"
-  default     = false
 }
 
 variable "node_detail_revision" {

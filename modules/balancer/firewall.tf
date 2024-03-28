@@ -33,6 +33,8 @@ resource "aws_vpc_security_group_egress_rule" "allow_outgoing_to_bastion" {
 }
 
 resource "aws_vpc_security_group_ingress_rule" "ssh_v4" {
+  count = var.ssh ? 1 : 0
+
   security_group_id = aws_security_group.this.id
   description       = "Enable public ssh v4 to load balancer"
   cidr_ipv4         = "0.0.0.0/0"
@@ -47,6 +49,8 @@ resource "aws_vpc_security_group_ingress_rule" "ssh_v4" {
 }
 
 resource "aws_vpc_security_group_ingress_rule" "ssh_v6" {
+  count = var.ssh ? 1 : 0
+  
   security_group_id = aws_security_group.this.id
   description       = "Enable public ssh v6 to load balancer"
   cidr_ipv6         = "::/0"
