@@ -65,10 +65,10 @@ variable "password_revision" {
   type        = number
 }
 
-variable "nodes_iam_role" {
+variable "nodes_iam_roles" {
   description = "The IAM role to attach the policy to"
-  type = object({
+  type = list(object({
     name = string
     id   = string
-  })
+  }))
 }

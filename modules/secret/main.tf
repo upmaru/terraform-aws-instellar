@@ -1,5 +1,8 @@
 locals {
   policy_name = replace(title(var.key), "/", "")
+  nodes_iam_roles = {
+    for role in var.nodes_iam_roles : role.name => role
+  }
 }
 
 resource "aws_secretsmanager_secret" "this" {
@@ -40,6 +43,8 @@ resource "aws_iam_policy" "this" {
 }
 
 resource "aws_iam_role_policy_attachment" "this" {
-  role       = var.nodes_iam_role.id
+  for_each = local.nodes_iam_roles
+
+  role       = each.value.id
   policy_arn = aws_iam_policy.this.arn
 }

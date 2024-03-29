@@ -1,10 +1,6 @@
 locals {
   is_replica  = var.replicate_source_db != null
   policy_name = var.manage_master_user_password ? replace(title(var.identifier), "-", "") : null
-  nodes_iam_roles = {
-    for index, role in var.nodes_iam_roles :
-    role.name => node
-  }
 }
 
 resource "random_password" "password" {
@@ -60,7 +56,7 @@ resource "aws_db_instance" "this" {
 }
 
 module "secret" {
-  for_each = var.manage_credential_with_secret ? local.nodes_iam_roles : []
+  count = var.manage_credential_with_secret ? 1 : 0
   source   = "../secret"
 
   blueprint   = var.blueprint
@@ -75,5 +71,5 @@ module "secret" {
     endpoint           = aws_db_instance.this.endpoint
     password_secret_id = var.manage_master_user_password ? aws_db_instance.this.master_user_secret[0].secret_arn : null
   })
-  nodes_iam_role = each.value
+  nodes_iam_roles = var.nodes_iam_roles
 }

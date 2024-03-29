@@ -18,10 +18,12 @@ variable "value" {
   type        = string
 }
 
-variable "nodes_iam_role" {
-  description = "The IAM role to attach the policy to"
-  type = object({
-    name = string
-    id   = string
-  })
+variable "nodes_iam_roles" {
+  description = "The IAM roles to attach the policy to"
+  type = list(
+    object({
+      name = string
+      id   = string
+    })
+  )
 }
