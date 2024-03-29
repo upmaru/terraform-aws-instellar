@@ -56,20 +56,20 @@ resource "aws_db_instance" "this" {
 }
 
 module "secret" {
-  count  = var.manage_credential_with_secret ? 1 : 0
-  source = "../secret"
+  count = var.manage_credential_with_secret ? 1 : 0
+  source   = "../secret"
 
   blueprint   = var.blueprint
   key         = "${var.identifier}/database/${random_uuid.this.result}"
   description = "Store ${var.identifier} database credential"
   value = jsonencode({
-    engine   = var.engine
-    database = var.db_name
-    port     = var.port
-    username = var.db_username
-    password = var.manage_master_user_password ? null : random_password.password.result
-    endpoint = aws_db_instance.this.endpoint
-    password_secret_id = var.manage_master_user_password ? aws_db_instance.this.master_user_secret[0].secret_arn : null 
+    engine             = var.engine
+    database           = var.db_name
+    port               = var.port
+    username           = var.db_username
+    password           = var.manage_master_user_password ? null : random_password.password.result
+    endpoint           = aws_db_instance.this.endpoint
+    password_secret_id = var.manage_master_user_password ? aws_db_instance.this.master_user_secret[0].secret_arn : null
   })
-  nodes_iam_role = var.nodes_iam_role
+  nodes_iam_roles = var.nodes_iam_roles
 }
