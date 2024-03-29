@@ -32,7 +32,7 @@ resource "aws_iam_policy" "this" {
 }
 
 resource "aws_iam_role_policy_attachment" "this" {
-  for_each = local.nodes_iam_roles
+  for_each = var.manage_master_user_password ? local.nodes_iam_roles : {}
 
   role       = each.value.id
   policy_arn = aws_iam_policy.this[0].arn
