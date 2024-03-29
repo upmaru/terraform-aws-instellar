@@ -53,7 +53,7 @@
 | <a name="input_manage_master_user_password"></a> [manage\_master\_user\_password](#input\_manage\_master\_user\_password) | Manage master user password | `bool` | `false` | no |
 | <a name="input_max_storage_size"></a> [max\_storage\_size](#input\_max\_storage\_size) | Database max storage size | `number` | `100` | no |
 | <a name="input_multi_az"></a> [multi\_az](#input\_multi\_az) | Enable multi AZ | `bool` | `false` | no |
-| <a name="input_nodes_iam_role"></a> [nodes\_iam\_role](#input\_nodes\_iam\_role) | The IAM role to attach the policy to | <pre>object({<br>    name = string<br>    id   = string<br>  })</pre> | n/a | yes |
+| <a name="input_nodes_iam_roles"></a> [nodes\_iam\_roles](#input\_nodes\_iam\_roles) | The IAM role to attach the policy to | <pre>list(<br>    object({<br>      name = string<br>      id   = string<br>    })<br>  )</pre> | n/a | yes |
 | <a name="input_port"></a> [port](#input\_port) | Database port | `number` | n/a | yes |
 | <a name="input_publicly_accessible"></a> [publicly\_accessible](#input\_publicly\_accessible) | Database publicly accessible | `bool` | `false` | no |
 | <a name="input_region"></a> [region](#input\_region) | Database region | `string` | n/a | yes |

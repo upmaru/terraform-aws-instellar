@@ -91,12 +91,14 @@ variable "skip_final_snapshot" {
   type        = bool
 }
 
-variable "nodes_iam_role" {
+variable "nodes_iam_roles" {
   description = "The IAM role to attach the policy to"
-  type = object({
-    name = string
-    id   = string
-  })
+  type = list(
+    object({
+      name = string
+      id   = string
+    })
+  )
 }
 
 variable "subnet_ids" {
