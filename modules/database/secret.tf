@@ -1,3 +1,9 @@
+locals {
+  nodes_iam_roles = {
+    for role in var.nodes_iam_roles : role.name => role
+  }
+}
+
 data "aws_iam_policy_document" "this" {
   count = var.manage_master_user_password ? 1 : 0
 
@@ -26,8 +32,8 @@ resource "aws_iam_policy" "this" {
 }
 
 resource "aws_iam_role_policy_attachment" "this" {
-  count = var.manage_master_user_password ? 1 : 0
+  for_each = local.nodes_iam_roles
 
-  role       = var.nodes_iam_role.id
+  role       = each.value.id
   policy_arn = aws_iam_policy.this[0].arn
 }
