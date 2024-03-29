@@ -7,7 +7,8 @@ resource "aws_vpc" "this" {
   enable_dns_hostnames = true
 
   tags = {
-    Name = "${var.identifier}-vpc"
+    Name      = "${var.identifier}-vpc"
+    Blueprint = var.blueprint
   }
 }
 
@@ -15,7 +16,8 @@ resource "aws_internet_gateway" "this" {
   vpc_id = aws_vpc.this.id
 
   tags = {
-    Name = "${var.identifier}-gateway"
+    Name      = "${var.identifier}-gateway"
+    Blueprint = var.blueprint
   }
 }
 
@@ -28,7 +30,8 @@ resource "aws_route_table" "public" {
   }
 
   tags = {
-    Name = "${var.identifier}-public-route-table"
+    Name      = "${var.identifier}-public-route-table"
+    Blueprint = var.blueprint
   }
 }
 
@@ -48,6 +51,7 @@ resource "aws_subnet" "this" {
   map_public_ip_on_launch = true
 
   tags = {
-    Name = "${var.identifier}-public-${count.index + 1}"
+    Name      = "${var.identifier}-public-${count.index + 1}"
+    Blueprint = var.blueprint
   }
 }

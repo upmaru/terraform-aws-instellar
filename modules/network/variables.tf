@@ -3,6 +3,11 @@ variable "identifier" {
   type        = string
 }
 
+variable "blueprint" {
+  description = "Name of the blueprint"
+  type        = string
+}
+
 variable "vpc_ip_range" {
   description = "VPC ip range"
   default     = "10.0.0.0/16"

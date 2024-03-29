@@ -1,5 +1,7 @@
 locals {
-  user = "ubuntu"
+  user                    = "ubuntu"
+  ssh_port                = 22
+  node_detail_refreshable = var.bastion_ssh || var.balancer_ssh
   topology = {
     for index, node in var.cluster_topology :
     node.name => merge(node, { subnet = node.id % length(var.public_subnet_ids) })
@@ -41,6 +43,49 @@ data "cloudinit_config" "node" {
   }
 }
 
+module "balancer" {
+  count = var.balancer ? 1 : 0
+
+  source = "./modules/balancer"
+
+  ssh                       = var.balancer_ssh
+  bastion_security_group_id = aws_security_group.bastion_firewall.id
+  nodes_security_group_id   = aws_security_group.nodes_firewall.id
+  deletion_protection       = var.balancer_deletion_protection
+  blueprint                 = var.blueprint
+  identifier                = var.identifier
+  vpc_id                    = var.vpc_id
+  subnet_ids                = var.public_subnet_ids
+
+  bastion_node = {
+    id        = aws_instance.bastion.id
+    slug      = aws_instance.bastion.tags.Name
+    public_ip = aws_instance.bastion.public_ip
+  }
+  bootstrap_node = {
+    slug      = aws_instance.bootstrap_node.tags.Name
+    public_ip = aws_instance.bootstrap_node.public_ip
+    id        = aws_instance.bootstrap_node.id
+  }
+  nodes = [
+    for key, node in aws_instance.nodes :
+    {
+      slug      = node.tags.Name
+      public_ip = node.public_ip
+      id        = node.id
+    }
+  ]
+}
+
+resource "aws_iam_instance_profile" "nodes" {
+  name = "${var.identifier}-nodes-profile"
+  role = aws_iam_role.nodes.name
+
+  tags = {
+    Blueprint = var.blueprint
+  }
+}
+
 resource "ssh_resource" "trust_token" {
   host         = aws_instance.bootstrap_node.private_ip
   bastion_host = aws_instance.bastion.public_ip
@@ -76,15 +121,18 @@ resource "ssh_resource" "cluster_join_token" {
 resource "aws_instance" "bootstrap_node" {
   ami                    = data.aws_ami.ubuntu.id
   instance_type          = var.node_size
-  subnet_id              = var.public_subnet_ids[1]
+  subnet_id              = var.public_subnet_ids[0]
   vpc_security_group_ids = [aws_security_group.nodes_firewall.id]
   placement_group        = aws_placement_group.nodes.id
   ebs_optimized          = true
   monitoring             = var.node_monitoring
   user_data_base64       = data.cloudinit_config.node.rendered
 
+  iam_instance_profile = aws_iam_instance_profile.nodes.name
+
   metadata_options {
-    http_tokens = "required"
+    http_tokens                 = "required"
+    http_put_response_hop_limit = 2
   }
 
   root_block_device {
@@ -122,13 +170,15 @@ resource "aws_instance" "bootstrap_node" {
   }
 
   tags = {
-    Name = "${var.identifier}-bootstrap-node"
+    Name      = "${var.identifier}-bootstrap-node"
+    Blueprint = var.blueprint
   }
 
   lifecycle {
     ignore_changes = [
       ami,
-      user_data_base64
+      user_data_base64,
+      subnet_id
     ]
   }
 }
@@ -145,8 +195,11 @@ resource "aws_instance" "nodes" {
   monitoring             = var.node_monitoring
   user_data_base64       = data.cloudinit_config.node.rendered
 
+  iam_instance_profile = aws_iam_instance_profile.nodes.name
+
   metadata_options {
-    http_tokens = "required"
+    http_tokens                 = "required"
+    http_put_response_hop_limit = 2
   }
 
   root_block_device {
@@ -183,7 +236,8 @@ resource "aws_instance" "nodes" {
   }
 
   tags = {
-    Name = "${var.identifier}-node-${each.key}"
+    Name      = "${var.identifier}-node-${each.key}"
+    Blueprint = var.blueprint
   }
 
   lifecycle {
@@ -198,11 +252,12 @@ resource "ssh_resource" "node_detail" {
   for_each = local.topology
 
   triggers = {
-    always_run = "${timestamp()}"
+    revision = var.node_detail_revision
   }
 
   host         = aws_instance.bootstrap_node.private_ip
-  bastion_host = aws_instance.bastion.public_ip
+  bastion_host = var.balancer ? module.balancer[0].address : aws_instance.bastion.public_ip
+  bastion_port = var.balancer ? module.balancer[0].ssh_port : local.ssh_port
 
   user         = local.user
   bastion_user = local.user
@@ -222,7 +277,8 @@ resource "terraform_data" "reboot" {
     user                        = local.user
     node_name                   = aws_instance.nodes[each.key].tags.Name
     bastion_private_key         = tls_private_key.bastion_key.private_key_openssh
-    bastion_public_ip           = aws_instance.bastion.public_ip
+    bastion_public_ip           = var.balancer ? module.balancer[0].address : aws_instance.bastion.public_ip
+    bastion_port                = var.balancer ? module.balancer[0].ssh_port : local.ssh_port
     node_private_ip             = aws_instance.nodes[each.key].private_ip
     terraform_cloud_private_key = tls_private_key.terraform_cloud.private_key_openssh
     commands = contains(yamldecode(ssh_resource.node_detail[each.key].result).roles, "database-leader") ? ["echo Node is database-leader restarting later", "sudo shutdown -r +1"] : [
@@ -237,6 +293,7 @@ resource "terraform_data" "reboot" {
     private_key         = self.input.bastion_private_key
     bastion_user        = self.input.user
     bastion_host        = self.input.bastion_public_ip
+    bastion_port        = self.input.bastion_port
     bastion_private_key = self.input.terraform_cloud_private_key
     timeout             = "10s"
   }
@@ -254,7 +311,8 @@ resource "terraform_data" "removal" {
     user                        = local.user
     node_name                   = aws_instance.nodes[each.key].tags.Name
     bastion_private_key         = tls_private_key.bastion_key.private_key_openssh
-    bastion_public_ip           = aws_instance.bastion.public_ip
+    bastion_public_ip           = var.balancer ? module.balancer[0].address : aws_instance.bastion.public_ip
+    bastion_port                = var.balancer ? module.balancer[0].ssh_port : local.ssh_port
     bootstrap_node_private_ip   = aws_instance.bootstrap_node.private_ip
     terraform_cloud_private_key = tls_private_key.terraform_cloud.private_key_openssh
     commands = contains(yamldecode(ssh_resource.node_detail[each.key].result).roles, "database-leader") ? [
@@ -282,6 +340,7 @@ resource "terraform_data" "removal" {
     private_key         = self.input.bastion_private_key
     bastion_user        = self.input.user
     bastion_host        = self.input.bastion_public_ip
+    bastion_port        = self.input.bastion_port
     bastion_private_key = self.input.terraform_cloud_private_key
     timeout             = "10s"
   }
@@ -297,81 +356,187 @@ resource "aws_security_group" "nodes_firewall" {
   description = "Instellar Nodes Configuration"
   vpc_id      = var.vpc_id
 
-  #tfsec:ignore:aws-vpc-no-public-ingress-sgr[from_port=80]
-  ingress {
-    description      = "HTTP"
-    from_port        = 80
-    to_port          = 80
-    protocol         = "tcp"
-    cidr_blocks      = ["0.0.0.0/0"]
-    ipv6_cidr_blocks = ["::/0"]
+  tags = {
+    Name      = "${var.identifier}-instellar-nodes"
+    Blueprint = var.blueprint
   }
+}
 
-  #tfsec:ignore:aws-ec2-no-public-ingress-sgr[from_port=443]
-  ingress {
-    description      = "HTTPS"
-    from_port        = 443
-    to_port          = 443
-    protocol         = "tcp"
-    cidr_blocks      = ["0.0.0.0/0"]
-    ipv6_cidr_blocks = ["::/0"]
-  }
-
-  #tfsec:ignore:aws-vpc-no-public-ingress-sgr[from_port=8443]
-  ingress {
-    description      = "LXD"
-    from_port        = 8443
-    to_port          = 8443
-    protocol         = "tcp"
-    cidr_blocks      = ["0.0.0.0/0"]
-    ipv6_cidr_blocks = ["::/0"]
-  }
-
-  #tfsec:ignore:aws-vpc-no-public-ingress-sgr[from_port=49152]
-  ingress {
-    description      = "Uplink"
-    from_port        = 49152
-    to_port          = 49152
-    protocol         = "tcp"
-    cidr_blocks      = ["0.0.0.0/0"]
-    ipv6_cidr_blocks = ["::/0"]
-  }
-
-  ingress {
-    description     = "From Bastion"
-    from_port       = 22
-    to_port         = 22
-    protocol        = "tcp"
-    security_groups = [aws_security_group.bastion_firewall.id]
-  }
-
-  ingress {
-    description = "Full Cross Node TCP"
-    from_port   = 1
-    to_port     = 65535
-    protocol    = "tcp"
-    self        = true
-  }
-
-  ingress {
-    description = "Full Cross Node UDP"
-    from_port   = 1
-    to_port     = 65535
-    protocol    = "udp"
-    self        = true
-  }
-
-  #tfsec:ignore:aws-ec2-no-public-egress-sgr
-  egress {
-    description      = "Egress to everywhere"
-    from_port        = 0
-    to_port          = 0
-    protocol         = "-1"
-    cidr_blocks      = ["0.0.0.0/0"]
-    ipv6_cidr_blocks = ["::/0"]
-  }
+resource "aws_vpc_security_group_egress_rule" "allow_nodes_outgoing_v4" {
+  security_group_id = aws_security_group.nodes_firewall.id
+  description       = "Allow all outgoing traffic"
+  ip_protocol       = "-1"
+  cidr_ipv4         = "0.0.0.0/0"
 
   tags = {
-    Name = "${var.identifier}-instellar"
+    Name      = "${var.identifier}-nodes-outgoing-v4"
+    Blueprint = var.blueprint
+  }
+}
+
+resource "aws_vpc_security_group_egress_rule" "allow_nodes_outgoing_v6" {
+  security_group_id = aws_security_group.nodes_firewall.id
+  description       = "Allow all outgoing traffic"
+  ip_protocol       = "-1"
+  cidr_ipv6         = "::/0"
+
+  tags = {
+    Name      = "${var.identifier}-nodes-outgoing-v6"
+    Blueprint = var.blueprint
+  }
+}
+
+resource "aws_vpc_security_group_ingress_rule" "cross_nodes" {
+  security_group_id            = aws_security_group.nodes_firewall.id
+  description                  = "Full Cross Node Communication"
+  ip_protocol                  = "-1"
+  referenced_security_group_id = aws_security_group.nodes_firewall.id
+
+  tags = {
+    Name      = "${var.identifier}-cross-nodes"
+    Blueprint = var.blueprint
+  }
+}
+
+resource "aws_vpc_security_group_ingress_rule" "nodes_from_bastion" {
+  security_group_id            = aws_security_group.nodes_firewall.id
+  description                  = "Connect from Bastion"
+  from_port                    = 22
+  to_port                      = 22
+  ip_protocol                  = "tcp"
+  referenced_security_group_id = aws_security_group.bastion_firewall.id
+
+  tags = {
+    Name      = "${var.identifier}-from-bastion"
+    Blueprint = var.blueprint
+  }
+}
+
+resource "aws_vpc_security_group_ingress_rule" "nodes_public_http_v4" {
+  count = var.publicly_accessible ? 1 : 0
+
+  security_group_id = aws_security_group.nodes_firewall.id
+  description       = "Enable public http for setup or cluster without network load balancer"
+  cidr_ipv4         = "0.0.0.0/0"
+  from_port         = 80
+  to_port           = 80
+  ip_protocol       = "tcp"
+
+  tags = {
+    Name      = "${var.identifier}-public-http-v4"
+    Blueprint = var.blueprint
+  }
+}
+
+resource "aws_vpc_security_group_ingress_rule" "nodes_public_http_v6" {
+  count = var.publicly_accessible ? 1 : 0
+
+  security_group_id = aws_security_group.nodes_firewall.id
+  description       = "Enable public http for setup or cluster without network load balancer"
+  cidr_ipv6         = "::/0"
+  from_port         = 80
+  to_port           = 80
+  ip_protocol       = "tcp"
+
+  tags = {
+    Name      = "${var.identifier}-public-http-v6"
+    Blueprint = var.blueprint
+  }
+}
+
+
+resource "aws_vpc_security_group_ingress_rule" "nodes_public_https_v4" {
+  count = var.publicly_accessible ? 1 : 0
+
+  security_group_id = aws_security_group.nodes_firewall.id
+  description       = "Enable public https for setup or cluster without network load balancer"
+  cidr_ipv4         = "0.0.0.0/0"
+  from_port         = 443
+  to_port           = 443
+  ip_protocol       = "tcp"
+
+  tags = {
+    Name      = "${var.identifier}-public-https-v4"
+    Blueprint = var.blueprint
+  }
+}
+
+resource "aws_vpc_security_group_ingress_rule" "nodes_public_https_v6" {
+  count = var.publicly_accessible ? 1 : 0
+
+  security_group_id = aws_security_group.nodes_firewall.id
+  description       = "Enable public https for setup or cluster without network load balancer"
+  cidr_ipv6         = "::/0"
+  from_port         = 443
+  to_port           = 443
+  ip_protocol       = "tcp"
+
+  tags = {
+    Name      = "${var.identifier}-public-https-v6"
+    Blueprint = var.blueprint
+  }
+}
+
+resource "aws_vpc_security_group_ingress_rule" "nodes_public_lxd_v4" {
+  count = var.publicly_accessible ? 1 : 0
+
+  security_group_id = aws_security_group.nodes_firewall.id
+  description       = "Enable public lxd for setup or cluster without network load balancer"
+  cidr_ipv4         = "0.0.0.0/0"
+  from_port         = 8443
+  to_port           = 8443
+  ip_protocol       = "tcp"
+
+  tags = {
+    Name      = "${var.identifier}-public-lxd-v4"
+    Blueprint = var.blueprint
+  }
+}
+
+resource "aws_vpc_security_group_ingress_rule" "nodes_public_lxd_v6" {
+  count = var.publicly_accessible ? 1 : 0
+
+  security_group_id = aws_security_group.nodes_firewall.id
+  description       = "Enable public lxd for setup or cluster without network load balancer"
+  cidr_ipv6         = "::/0"
+  from_port         = 8443
+  to_port           = 8443
+  ip_protocol       = "tcp"
+
+  tags = {
+    Name      = "${var.identifier}-public-lxd-v6"
+    Blueprint = var.blueprint
+  }
+}
+
+resource "aws_vpc_security_group_ingress_rule" "nodes_public_uplink_v4" {
+  count = var.publicly_accessible ? 1 : 0
+
+  security_group_id = aws_security_group.nodes_firewall.id
+  description       = "Enable public uplink for setup or cluster without network load balancer"
+  cidr_ipv4         = "0.0.0.0/0"
+  from_port         = 49152
+  to_port           = 49152
+  ip_protocol       = "tcp"
+
+  tags = {
+    Name      = "${var.identifier}-public-uplink-v4"
+    Blueprint = var.blueprint
+  }
+}
+
+resource "aws_vpc_security_group_ingress_rule" "nodes_public_uplink_v6" {
+  count = var.publicly_accessible ? 1 : 0
+
+  security_group_id = aws_security_group.nodes_firewall.id
+  description       = "Enable public uplink for setup or cluster without network load balancer"
+  cidr_ipv6         = "::/0"
+  from_port         = 49152
+  to_port           = 49152
+  ip_protocol       = "tcp"
+
+  tags = {
+    Name      = "${var.identifier}-public-uplink-v6"
+    Blueprint = var.blueprint
   }
 }

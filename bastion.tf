@@ -18,6 +18,15 @@ data "cloudinit_config" "bastion" {
   }
 }
 
+resource "aws_iam_instance_profile" "bastion" {
+  name = "${var.identifier}-bastion-profile"
+  role = aws_iam_role.bastion.name
+
+  tags = {
+    Blueprint = var.blueprint
+  }
+}
+
 resource "terraform_data" "bastion_cloudinit" {
   input = data.cloudinit_config.bastion.rendered
 }
@@ -29,6 +38,8 @@ resource "aws_instance" "bastion" {
   vpc_security_group_ids = [aws_security_group.bastion_firewall.id]
   user_data_base64       = data.cloudinit_config.bastion.rendered
 
+  iam_instance_profile = aws_iam_instance_profile.bastion.name
+
   metadata_options {
     http_tokens = "required"
   }
@@ -39,7 +50,7 @@ resource "aws_instance" "bastion" {
 
   connection {
     type        = "ssh"
-    user        = "ubuntu"
+    user        = local.user
     host        = self.public_ip
     private_key = tls_private_key.terraform_cloud.private_key_openssh
   }
@@ -56,7 +67,8 @@ resource "aws_instance" "bastion" {
   }
 
   tags = {
-    Name = "${var.identifier}-bastion"
+    Name      = "${var.identifier}-bastion"
+    Blueprint = var.blueprint
   }
 
   lifecycle {
@@ -75,27 +87,48 @@ resource "aws_security_group" "bastion_firewall" {
   description = "Instellar Bastion Configuration"
   vpc_id      = var.vpc_id
 
-  #tfsec:ignore:aws-vpc-no-public-ingress-sgr[from_port=22]
-  ingress {
-    description      = "SSH"
-    from_port        = 22
-    to_port          = 22
-    protocol         = "tcp"
-    cidr_blocks      = ["0.0.0.0/0"]
-    ipv6_cidr_blocks = ["::/0"]
+  tags = {
+    Name      = "${var.identifier}-bastion-firewall"
+    Blueprint = var.blueprint
   }
+}
 
-  #tfsec:ignore:aws-ec2-no-public-egress-sgr
-  egress {
-    description      = "Egress to everywhere"
-    from_port        = 0
-    to_port          = 0
-    protocol         = "-1"
-    cidr_blocks      = ["0.0.0.0/0"]
-    ipv6_cidr_blocks = ["::/0"]
-  }
+resource "aws_vpc_security_group_egress_rule" "allow_bastion_outgoing_v4" {
+  security_group_id = aws_security_group.bastion_firewall.id
+  description       = "Enable all outgoing traffic"
+  ip_protocol       = "-1"
+  cidr_ipv4         = "0.0.0.0/0"
 
   tags = {
-    Name = "${var.identifier}-instellar"
+    Name      = "${var.identifier}-bastion-outgoing-v4"
+    Blueprint = var.blueprint
+  }
+}
+
+resource "aws_vpc_security_group_egress_rule" "allow_bastion_outgoing_v6" {
+  security_group_id = aws_security_group.bastion_firewall.id
+  description       = "Enable all outgoing traffic"
+  ip_protocol       = "-1"
+  cidr_ipv6         = "::/0"
+
+  tags = {
+    Name      = "${var.identifier}-bastion-outgoing-v6"
+    Blueprint = var.blueprint
+  }
+}
+
+resource "aws_vpc_security_group_ingress_rule" "allow_ssh" {
+  count = var.bastion_ssh ? 1 : 0
+
+  security_group_id = aws_security_group.bastion_firewall.id
+  description       = "Enable ssh traffic"
+  from_port         = 22
+  to_port           = 22
+  ip_protocol       = "tcp"
+  cidr_ipv4         = "0.0.0.0/0"
+
+  tags = {
+    Name      = "${var.identifier}-public-ssh"
+    Blueprint = var.blueprint
   }
 }

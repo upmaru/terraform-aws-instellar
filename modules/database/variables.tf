@@ -3,6 +3,11 @@ variable "identifier" {
   type        = string
 }
 
+variable "blueprint" {
+  description = "Blueprint name"
+  type        = string
+}
+
 variable "region" {
   description = "Database region"
   type        = string
@@ -69,7 +74,7 @@ variable "storage_type" {
 }
 
 variable "publicly_accessible" {
-  description = "Database publically accessible"
+  description = "Database publicly accessible"
   default     = false
   type        = bool
 }
@@ -86,6 +91,14 @@ variable "skip_final_snapshot" {
   type        = bool
 }
 
+variable "nodes_iam_role" {
+  description = "The IAM role to attach the policy to"
+  type = object({
+    name = string
+    id   = string
+  })
+}
+
 variable "subnet_ids" {
   description = "Database subnet ids"
   type        = list(string)
@@ -99,4 +112,46 @@ variable "security_group_ids" {
 variable "vpc_id" {
   description = "Database VPC id"
   type        = string
+}
+
+variable "backup_retention_period" {
+  description = "Backup retention days"
+  default     = 5
+  type        = number
+}
+
+variable "manage_master_user_password" {
+  description = "Manage master user password"
+  default     = false
+  type        = bool
+}
+
+variable "multi_az" {
+  description = "Enable multi AZ"
+  default     = false
+  type        = bool
+}
+
+variable "availability_zone" {
+  description = "Database availability zone"
+  type        = string
+  default     = null
+}
+
+variable "replicate_source_db" {
+  description = "Replicate source database"
+  type        = string
+  default     = null
+}
+
+variable "manage_credential_with_secret" {
+  description = "Manage credentials with secret"
+  type        = bool
+  default     = false
+}
+
+variable "apply_immediately" {
+  description = "Apply changes immediately"
+  type        = bool
+  default     = false
 }

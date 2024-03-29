@@ -15,7 +15,9 @@
 
 ## Modules
 
-No modules.
+| Name | Source | Version |
+|------|--------|---------|
+| <a name="module_secret"></a> [secret](#module\_secret) | ../secret | n/a |
 
 ## Resources
 
@@ -23,13 +25,21 @@ No modules.
 |------|------|
 | [aws_db_instance.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/db_instance) | resource |
 | [aws_db_subnet_group.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/db_subnet_group) | resource |
+| [aws_iam_policy.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy) | resource |
+| [aws_iam_role_policy_attachment.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
 | [aws_security_group.database](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group) | resource |
 | [random_password.password](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/password) | resource |
+| [random_uuid.this](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/uuid) | resource |
+| [aws_iam_policy_document.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 
 ## Inputs
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
+| <a name="input_apply_immediately"></a> [apply\_immediately](#input\_apply\_immediately) | Apply changes immediately | `bool` | `false` | no |
+| <a name="input_availability_zone"></a> [availability\_zone](#input\_availability\_zone) | Database availability zone | `string` | `null` | no |
+| <a name="input_backup_retention_period"></a> [backup\_retention\_period](#input\_backup\_retention\_period) | Backup retention days | `number` | `5` | no |
+| <a name="input_blueprint"></a> [blueprint](#input\_blueprint) | Blueprint name | `string` | n/a | yes |
 | <a name="input_ca_cert_identifier"></a> [ca\_cert\_identifier](#input\_ca\_cert\_identifier) | CA Cert identifier | `string` | `"rds-ca-rsa2048-g1"` | no |
 | <a name="input_db_name"></a> [db\_name](#input\_db\_name) | Database name to create | `string` | `"instellar"` | no |
 | <a name="input_db_size"></a> [db\_size](#input\_db\_size) | Database instance size | `string` | n/a | yes |
@@ -39,9 +49,15 @@ No modules.
 | <a name="input_engine"></a> [engine](#input\_engine) | Database engine | `string` | n/a | yes |
 | <a name="input_engine_version"></a> [engine\_version](#input\_engine\_version) | Database engine version | `string` | n/a | yes |
 | <a name="input_identifier"></a> [identifier](#input\_identifier) | Database instance name | `string` | n/a | yes |
+| <a name="input_manage_credential_with_secret"></a> [manage\_credential\_with\_secret](#input\_manage\_credential\_with\_secret) | Manage credentials with secret | `bool` | `false` | no |
+| <a name="input_manage_master_user_password"></a> [manage\_master\_user\_password](#input\_manage\_master\_user\_password) | Manage master user password | `bool` | `false` | no |
 | <a name="input_max_storage_size"></a> [max\_storage\_size](#input\_max\_storage\_size) | Database max storage size | `number` | `100` | no |
+| <a name="input_multi_az"></a> [multi\_az](#input\_multi\_az) | Enable multi AZ | `bool` | `false` | no |
+| <a name="input_nodes_iam_role"></a> [nodes\_iam\_role](#input\_nodes\_iam\_role) | The IAM role to attach the policy to | <pre>object({<br>    name = string<br>    id   = string<br>  })</pre> | n/a | yes |
 | <a name="input_port"></a> [port](#input\_port) | Database port | `number` | n/a | yes |
-| <a name="input_publicly_accessible"></a> [publicly\_accessible](#input\_publicly\_accessible) | Database publically accessible | `bool` | `false` | no |
+| <a name="input_publicly_accessible"></a> [publicly\_accessible](#input\_publicly\_accessible) | Database publicly accessible | `bool` | `false` | no |
+| <a name="input_region"></a> [region](#input\_region) | Database region | `string` | n/a | yes |
+| <a name="input_replicate_source_db"></a> [replicate\_source\_db](#input\_replicate\_source\_db) | Replicate source database | `string` | `null` | no |
 | <a name="input_security_group_ids"></a> [security\_group\_ids](#input\_security\_group\_ids) | Database security group ids | `list(string)` | n/a | yes |
 | <a name="input_skip_final_snapshot"></a> [skip\_final\_snapshot](#input\_skip\_final\_snapshot) | Database skip final snapshot | `bool` | `false` | no |
 | <a name="input_storage_size"></a> [storage\_size](#input\_storage\_size) | Database storage size | `number` | `20` | no |
@@ -54,6 +70,7 @@ No modules.
 | Name | Description |
 |------|-------------|
 | <a name="output_address"></a> [address](#output\_address) | The database address |
+| <a name="output_certificate_url"></a> [certificate\_url](#output\_certificate\_url) | The certificate url for using with the database. |
 | <a name="output_db_name"></a> [db\_name](#output\_db\_name) | The database name |
 | <a name="output_endpoint"></a> [endpoint](#output\_endpoint) | The database endpoint |
 | <a name="output_engine_version"></a> [engine\_version](#output\_engine\_version) | The database engine version |

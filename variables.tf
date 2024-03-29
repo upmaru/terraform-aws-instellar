@@ -4,9 +4,34 @@ variable "protect_leader" {
   default     = true
 }
 
+variable "blueprint" {
+  description = "Identifier of the blueprint"
+  type        = string
+}
+
 variable "identifier" {
   description = "Name of your cluster"
   type        = string
+}
+
+variable "balancer" {
+  description = "Enable Load Balancer"
+  default     = false
+}
+
+variable "balancer_deletion_protection" {
+  description = "Enable balancer deletion protection"
+  default     = true
+}
+
+variable "publicly_accessible" {
+  description = "Make the cluster publically accessible? If you use a load balancer this can be false."
+  default     = true
+}
+
+variable "ssm" {
+  description = "Enable SSM"
+  default     = false
 }
 
 variable "vpc_ip_range" {
@@ -34,9 +59,19 @@ variable "bastion_size" {
   default     = "t3a.micro"
 }
 
+variable "bastion_ssh" {
+  description = "Enable SSH port"
+  default     = true
+}
+
+variable "balancer_ssh" {
+  description = "Enable SSH port on balancer"
+  default     = true
+}
+
 variable "node_size" {
   description = "Which instance type?"
-  default     = "t3.medium"
+  default     = "t3a.medium"
 }
 
 variable "node_monitoring" {
@@ -62,6 +97,11 @@ variable "cluster_topology" {
   }))
   description = "How many nodes do you want in your cluster?"
   default     = []
+}
+
+variable "node_detail_revision" {
+  description = "The revision of the node detail"
+  default     = 1
 }
 
 variable "ssh_keys" {
