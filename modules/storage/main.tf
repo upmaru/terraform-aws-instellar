@@ -53,6 +53,7 @@ resource "aws_iam_user" "this" {
 
   tags = {
     Name = "${var.bucket_name}-user"
+    Blueprint = var.blueprint
   }
 }
 
@@ -70,8 +71,10 @@ resource "aws_iam_group_membership" "this" {
 # tfsec:ignore:aws-s3-enable-bucket-logging
 resource "aws_s3_bucket" "this" {
   bucket = local.bucket_name
+
   tags = {
     Name = local.bucket_name
+    Blueprint = var.blueprint
   }
 }
 
@@ -79,6 +82,10 @@ resource "aws_kms_key" "this" {
   description             = "${var.bucket_name} Key"
   deletion_window_in_days = 10
   enable_key_rotation     = true
+
+  tags = {
+    Blueprint = var.blueprint
+  }
 }
 
 resource "aws_s3_bucket_public_access_block" "this" {
