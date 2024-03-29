@@ -118,16 +118,16 @@ These functionality come together to enable the user to fully manage LXD cluster
 
 | Name | Description |
 |------|-------------|
-| <a name="output_balancer"></a> [balancer](#output\_balancer) | n/a |
-| <a name="output_bastion_security_group_id"></a> [bastion\_security\_group\_id](#output\_bastion\_security\_group\_id) | n/a |
-| <a name="output_bootstrap_node"></a> [bootstrap\_node](#output\_bootstrap\_node) | n/a |
-| <a name="output_cluster_address"></a> [cluster\_address](#output\_cluster\_address) | n/a |
-| <a name="output_identifier"></a> [identifier](#output\_identifier) | n/a |
-| <a name="output_nodes"></a> [nodes](#output\_nodes) | n/a |
-| <a name="output_nodes_iam_role"></a> [nodes\_iam\_role](#output\_nodes\_iam\_role) | n/a |
-| <a name="output_nodes_security_group_id"></a> [nodes\_security\_group\_id](#output\_nodes\_security\_group\_id) | n/a |
-| <a name="output_subnet_ids"></a> [subnet\_ids](#output\_subnet\_ids) | n/a |
-| <a name="output_trust_token"></a> [trust\_token](#output\_trust\_token) | n/a |
-| <a name="output_vpc_id"></a> [vpc\_id](#output\_vpc\_id) | n/a |
+| <a name="output_balancer"></a> [balancer](#output\_balancer) | Load balancer details |
+| <a name="output_bastion_security_group_id"></a> [bastion\_security\_group\_id](#output\_bastion\_security\_group\_id) | Bastion security group id |
+| <a name="output_bootstrap_node"></a> [bootstrap\_node](#output\_bootstrap\_node) | Bootstrap node details |
+| <a name="output_cluster_address"></a> [cluster\_address](#output\_cluster\_address) | Bootstrap node public ip |
+| <a name="output_identifier"></a> [identifier](#output\_identifier) | Identifier of the cluster |
+| <a name="output_nodes"></a> [nodes](#output\_nodes) | Compute nodes details |
+| <a name="output_nodes_iam_role"></a> [nodes\_iam\_role](#output\_nodes\_iam\_role) | IAM Role for nodes and bootstrap node |
+| <a name="output_nodes_security_group_id"></a> [nodes\_security\_group\_id](#output\_nodes\_security\_group\_id) | Nodes security group id |
+| <a name="output_subnet_ids"></a> [subnet\_ids](#output\_subnet\_ids) | Subnet IDs |
+| <a name="output_trust_token"></a> [trust\_token](#output\_trust\_token) | Trust token for the cluster |
+| <a name="output_vpc_id"></a> [vpc\_id](#output\_vpc\_id) | VPC id |
 <!-- END_TF_DOCS -->
 
