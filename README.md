@@ -37,7 +37,7 @@ These functionality come together to enable the user to fully manage LXD cluster
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_balancer"></a> [balancer](#module\_balancer) | ./modules/balancer | n/a |
+| <a name="module_balancer"></a> [balancer](#module\_balancer) | upmaru/instellar/aws//modules/balancer | ~> 0.8 |
 
 ## Resources
 

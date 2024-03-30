@@ -17,7 +17,7 @@
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_secret"></a> [secret](#module\_secret) | ../secret | n/a |
+| <a name="module_secret"></a> [secret](#module\_secret) | upmaru/instellar/aws//modules/secret | ~> 0.8 |
 
 ## Resources
 

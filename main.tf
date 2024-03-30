@@ -46,7 +46,8 @@ data "cloudinit_config" "node" {
 module "balancer" {
   count = var.balancer ? 1 : 0
 
-  source = "./modules/balancer"
+  source  = "upmaru/instellar/aws//modules/balancer"
+  version = "~> 0.8"
 
   ssh                       = var.balancer_ssh
   bastion_security_group_id = aws_security_group.bastion_firewall.id
