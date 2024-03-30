@@ -10,14 +10,14 @@
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | ~> 5.0 |
-| <a name="provider_random"></a> [random](#provider\_random) | n/a |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | 5.43.0 |
+| <a name="provider_random"></a> [random](#provider\_random) | 3.6.0 |
 
 ## Modules
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_secret"></a> [secret](#module\_secret) | ../secret | n/a |
+| <a name="module_secret"></a> [secret](#module\_secret) | upmaru/instellar/aws//modules/secret | ~> 0.8 |
 
 ## Resources
 

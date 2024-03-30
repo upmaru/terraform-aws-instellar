@@ -30,7 +30,7 @@ No modules.
 | <a name="input_blueprint"></a> [blueprint](#input\_blueprint) | Identifier of the blueprint | `string` | n/a | yes |
 | <a name="input_description"></a> [description](#input\_description) | Description of the secret | `string` | n/a | yes |
 | <a name="input_key"></a> [key](#input\_key) | Key for the secret | `string` | n/a | yes |
-| <a name="input_nodes_iam_role"></a> [nodes\_iam\_role](#input\_nodes\_iam\_role) | The IAM role to attach the policy to | <pre>object({<br>    name = string<br>    id   = string<br>  })</pre> | n/a | yes |
+| <a name="input_nodes_iam_roles"></a> [nodes\_iam\_roles](#input\_nodes\_iam\_roles) | The IAM roles to attach the policy to | <pre>list(<br>    object({<br>      name = string<br>      id   = string<br>    })<br>  )</pre> | n/a | yes |
 | <a name="input_value"></a> [value](#input\_value) | The value of the secret | `string` | n/a | yes |
 
 ## Outputs

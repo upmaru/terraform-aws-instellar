@@ -36,8 +36,10 @@ resource "aws_elasticache_replication_group" "this" {
 }
 
 module "secret" {
-  count  = var.manage_credential_with_secret ? 1 : 0
-  source = "../secret"
+  count = var.manage_credential_with_secret ? 1 : 0
+
+  source  = "upmaru/instellar/aws//modules/secret"
+  version = "~> 0.8"
 
   blueprint   = var.blueprint
   key         = "${var.identifier}/redis/${random_uuid.this.result}"

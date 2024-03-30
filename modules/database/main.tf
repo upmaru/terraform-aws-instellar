@@ -57,7 +57,9 @@ resource "aws_db_instance" "this" {
 
 module "secret" {
   count = var.manage_credential_with_secret ? 1 : 0
-  source   = "../secret"
+
+  source  = "upmaru/instellar/aws//modules/secret"
+  version = "~> 0.8"
 
   blueprint   = var.blueprint
   key         = "${var.identifier}/database/${random_uuid.this.result}"

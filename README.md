@@ -27,9 +27,9 @@ These functionality come together to enable the user to fully manage LXD cluster
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | 4.66.1 |
-| <a name="provider_cloudinit"></a> [cloudinit](#provider\_cloudinit) | 2.3.2 |
-| <a name="provider_ssh"></a> [ssh](#provider\_ssh) | 2.6.0 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | 5.43.0 |
+| <a name="provider_cloudinit"></a> [cloudinit](#provider\_cloudinit) | 2.3.3 |
+| <a name="provider_ssh"></a> [ssh](#provider\_ssh) | 2.7.0 |
 | <a name="provider_terraform"></a> [terraform](#provider\_terraform) | n/a |
 | <a name="provider_tls"></a> [tls](#provider\_tls) | 4.0.4 |
 
@@ -37,7 +37,7 @@ These functionality come together to enable the user to fully manage LXD cluster
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_balancer"></a> [balancer](#module\_balancer) | ./modules/balancer | n/a |
+| <a name="module_balancer"></a> [balancer](#module\_balancer) | upmaru/instellar/aws//modules/balancer | ~> 0.8 |
 
 ## Resources
 

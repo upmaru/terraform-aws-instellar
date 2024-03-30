@@ -7,14 +7,14 @@ No requirements.
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | n/a |
-| <a name="provider_random"></a> [random](#provider\_random) | n/a |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | 5.43.0 |
+| <a name="provider_random"></a> [random](#provider\_random) | 3.6.0 |
 
 ## Modules
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_secret"></a> [secret](#module\_secret) | ../secret | n/a |
+| <a name="module_secret"></a> [secret](#module\_secret) | upmaru/instellar/aws//modules/secret | ~> 0.8 |
 
 ## Resources
 
@@ -37,7 +37,7 @@ No requirements.
 | <a name="input_identifier"></a> [identifier](#input\_identifier) | Identifier of the cluster | `string` | n/a | yes |
 | <a name="input_manage_credential_with_secret"></a> [manage\_credential\_with\_secret](#input\_manage\_credential\_with\_secret) | Enable / Disable auth token management with secret manager | `bool` | `false` | no |
 | <a name="input_node_type"></a> [node\_type](#input\_node\_type) | The compute and memory capacity of the nodes | `string` | `"cache.t3.micro"` | no |
-| <a name="input_nodes_iam_role"></a> [nodes\_iam\_role](#input\_nodes\_iam\_role) | The IAM role to attach the policy to | <pre>object({<br>    name = string<br>    id   = string<br>  })</pre> | n/a | yes |
+| <a name="input_nodes_iam_roles"></a> [nodes\_iam\_roles](#input\_nodes\_iam\_roles) | The IAM role to attach the policy to | <pre>list(object({<br>    name = string<br>    id   = string<br>  }))</pre> | n/a | yes |
 | <a name="input_num_cache_clusters"></a> [num\_cache\_clusters](#input\_num\_cache\_clusters) | Number of cache replicas | `number` | `1` | no |
 | <a name="input_password_revision"></a> [password\_revision](#input\_password\_revision) | Password revision | `number` | `1` | no |
 | <a name="input_port"></a> [port](#input\_port) | The port on which the cache accepts connections | `number` | `6379` | no |
