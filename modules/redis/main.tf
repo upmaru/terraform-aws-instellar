@@ -45,8 +45,8 @@ module "secret" {
   key         = "${var.identifier}/redis/${random_uuid.this.result}"
   description = "Store ${var.identifier} redis credential"
   value = jsonencode({
-    endpoint        = aws_elasticache_replication_group.primary_endpoint_address
-    reader_endpoint = aws_elasticache_replication_group.reader_endpoint_address
+    endpoint        = aws_elasticache_replication_group.this.primary_endpoint_address
+    reader_endpoint = aws_elasticache_replication_group.this.reader_endpoint_address
     port            = var.port
     password        = random_password.password.result
   })
