@@ -44,6 +44,12 @@ variable "engine_version" {
   type        = string
 }
 
+variable "db_password_revision" {
+  description = "Database password revision"
+  default     = 1
+  type        = number
+}
+
 variable "db_username" {
   description = "Database username"
   default     = "instellar"
