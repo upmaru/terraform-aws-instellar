@@ -4,9 +4,12 @@ locals {
 }
 
 resource "random_password" "password" {
-  length           = 16
-  special          = true
-  override_special = "!#$%&*()-_=+[]{}<>:?"
+  keepers = {
+    revision = var.db_password_revision
+  }
+
+  length  = 16
+  special = false
 }
 
 resource "random_uuid" "this" {}

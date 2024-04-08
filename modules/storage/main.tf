@@ -52,7 +52,7 @@ resource "aws_iam_user" "this" {
   path = local.path
 
   tags = {
-    Name = "${var.bucket_name}-user"
+    Name      = "${var.bucket_name}-user"
     Blueprint = var.blueprint
   }
 }
@@ -73,7 +73,7 @@ resource "aws_s3_bucket" "this" {
   bucket = local.bucket_name
 
   tags = {
-    Name = local.bucket_name
+    Name      = local.bucket_name
     Blueprint = var.blueprint
   }
 }
