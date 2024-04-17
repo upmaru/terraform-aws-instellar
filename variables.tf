@@ -24,6 +24,13 @@ variable "balancer_deletion_protection" {
   default     = true
 }
 
+variable "ami_architecture" {
+  description = "The architecture of the AMI"
+  default     = "amd64"
+  type        = string
+}
+
+
 variable "publicly_accessible" {
   description = "Make the cluster publically accessible? If you use a load balancer this can be false."
   default     = true
