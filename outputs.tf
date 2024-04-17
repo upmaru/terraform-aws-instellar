@@ -28,6 +28,7 @@ output "bastion_access" {
   value = {
     user         = local.user
     host         = aws_instance.bastion.public_ip
+    port         = local.ssh_port
     key          = tls_private_key.terraform_cloud.private_key_openssh
     architecture = var.ami_architecture
   }
