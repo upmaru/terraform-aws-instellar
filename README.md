@@ -92,6 +92,7 @@ These functionality come together to enable the user to fully manage LXD cluster
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
+| <a name="input_ami_architecture"></a> [ami\_architecture](#input\_ami\_architecture) | The architecture of the AMI | `string` | `"amd64"` | no |
 | <a name="input_balancer"></a> [balancer](#input\_balancer) | Enable Load Balancer | `bool` | `false` | no |
 | <a name="input_balancer_deletion_protection"></a> [balancer\_deletion\_protection](#input\_balancer\_deletion\_protection) | Enable balancer deletion protection | `bool` | `true` | no |
 | <a name="input_balancer_ssh"></a> [balancer\_ssh](#input\_balancer\_ssh) | Enable SSH port on balancer | `bool` | `true` | no |
@@ -119,6 +120,7 @@ These functionality come together to enable the user to fully manage LXD cluster
 | Name | Description |
 |------|-------------|
 | <a name="output_balancer"></a> [balancer](#output\_balancer) | Load balancer details |
+| <a name="output_bastion_access"></a> [bastion\_access](#output\_bastion\_access) | Bastion access output for passing into other modules |
 | <a name="output_bastion_security_group_id"></a> [bastion\_security\_group\_id](#output\_bastion\_security\_group\_id) | Bastion security group id |
 | <a name="output_bootstrap_node"></a> [bootstrap\_node](#output\_bootstrap\_node) | Bootstrap node details |
 | <a name="output_cluster_address"></a> [cluster\_address](#output\_cluster\_address) | Bootstrap node public ip |
