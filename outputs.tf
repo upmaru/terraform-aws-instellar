@@ -22,6 +22,20 @@ output "bootstrap_node" {
   }
 }
 
+output "bastion_access" {
+  description = "Bastion access output for passing into other modules"
+
+  value = {
+    user         = local.user
+    host         = aws_instance.bastion.public_ip
+    port         = local.ssh_port
+    private_key  = tls_private_key.terraform_cloud.private_key_openssh
+    architecture = var.ami_architecture
+  }
+
+  sensitive = true
+}
+
 output "nodes" {
   description = "Compute nodes details"
   value = [
