@@ -45,9 +45,8 @@ No modules.
 |------|-------------|------|---------|:--------:|
 | <a name="input_balancer"></a> [balancer](#input\_balancer) | n/a | <pre>object({<br>    enabled = bool<br>    id      = optional(string)<br>  })</pre> | n/a | yes |
 | <a name="input_blueprint"></a> [blueprint](#input\_blueprint) | Identifier of the blueprint | `string` | n/a | yes |
-| <a name="input_bootstrap_node"></a> [bootstrap\_node](#input\_bootstrap\_node) | n/a | <pre>object({<br>    id        = string<br>    slug      = string<br>    public_ip = string<br>  })</pre> | n/a | yes |
 | <a name="input_identifier"></a> [identifier](#input\_identifier) | Identiifer for global accelerator | `string` | n/a | yes |
-| <a name="input_nodes"></a> [nodes](#input\_nodes) | n/a | <pre>list(object({<br>    id        = string<br>    slug      = string<br>    public_ip = string<br>  }))</pre> | n/a | yes |
+| <a name="input_node_ids"></a> [node\_ids](#input\_node\_ids) | n/a | `list(string)` | n/a | yes |
 | <a name="input_nodes_security_group_id"></a> [nodes\_security\_group\_id](#input\_nodes\_security\_group\_id) | Security group id for nodes | `string` | n/a | yes |
 | <a name="input_region"></a> [region](#input\_region) | Region for endpoint group | `string` | n/a | yes |
 
