@@ -13,7 +13,7 @@ resource "aws_globalaccelerator_accelerator" "this" {
 }
 
 resource "aws_globalaccelerator_listener" "http" {
-  accelerator_arn = aws_globalaccelerator_accelerator.this.arn
+  accelerator_arn = aws_globalaccelerator_accelerator.this.id
   protocol        = "TCP"
 
   port_range {
@@ -25,7 +25,7 @@ resource "aws_globalaccelerator_listener" "http" {
 resource "aws_globalaccelerator_endpoint_group" "http" {
   count = var.balancer.enabled ? 1 : 0
 
-  listener_arn                  = aws_globalaccelerator_listener.http.arn
+  listener_arn                  = aws_globalaccelerator_listener.http.id
   endpoint_group_region         = var.region
   health_check_interval_seconds = 10
   health_check_port             = 80
@@ -41,7 +41,7 @@ resource "aws_globalaccelerator_endpoint_group" "http" {
 }
 
 resource "aws_globalaccelerator_listener" "https" {
-  accelerator_arn = aws_globalaccelerator_accelerator.this.arn
+  accelerator_arn = aws_globalaccelerator_accelerator.this.id
   protocol        = "TCP"
 
   port_range {
@@ -51,7 +51,7 @@ resource "aws_globalaccelerator_listener" "https" {
 }
 
 resource "aws_globalaccelerator_endpoint_group" "https" {
-  listener_arn                  = aws_globalaccelerator_listener.https.arn
+  listener_arn                  = aws_globalaccelerator_listener.https.id
   endpoint_group_region         = var.region
   health_check_interval_seconds = 10
   health_check_port             = 443
@@ -67,7 +67,7 @@ resource "aws_globalaccelerator_endpoint_group" "https" {
 }
 
 resource "aws_globalaccelerator_listener" "uplink" {
-  accelerator_arn = aws_globalaccelerator_accelerator.this.arn
+  accelerator_arn = aws_globalaccelerator_accelerator.this.id
   protocol        = "TCP"
 
   port_range {
@@ -77,7 +77,7 @@ resource "aws_globalaccelerator_listener" "uplink" {
 }
 
 resource "aws_globalaccelerator_endpoint_group" "uplink" {
-  listener_arn                  = aws_globalaccelerator_listener.uplink.arn
+  listener_arn                  = aws_globalaccelerator_listener.uplink.id
   endpoint_group_region         = var.region
   health_check_interval_seconds = 10
   health_check_port             = 49152
@@ -93,7 +93,7 @@ resource "aws_globalaccelerator_endpoint_group" "uplink" {
 }
 
 resource "aws_globalaccelerator_listener" "lxd" {
-  accelerator_arn = aws_globalaccelerator_accelerator.this.arn
+  accelerator_arn = aws_globalaccelerator_accelerator.this.id
   protocol        = "TCP"
 
   port_range {
@@ -103,7 +103,7 @@ resource "aws_globalaccelerator_listener" "lxd" {
 }
 
 resource "aws_globalaccelerator_endpoint_group" "lxd" {
-  listener_arn                  = aws_globalaccelerator_listener.lxd.arn
+  listener_arn                  = aws_globalaccelerator_listener.lxd.id
   endpoint_group_region         = var.region
   health_check_interval_seconds = 10
   health_check_port             = 8443
