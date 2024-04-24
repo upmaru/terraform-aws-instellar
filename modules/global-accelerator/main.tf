@@ -1,3 +1,12 @@
+locals {
+  topology = {
+    for index, node in concat(var.nodes, [var.bootstrap_node]) :
+    node.slug => node
+  }
+
+  endpoints = var.balancer.enabled ? [var.balancer] : local.topology
+}
+
 resource "aws_globalaccelerator_accelerator" "this" {
   name            = var.identifier
   ip_address_type = "DUAL_STACK"
@@ -19,11 +28,21 @@ resource "aws_globalaccelerator_listener" "http" {
 }
 
 resource "aws_globalaccelerator_endpoint_group" "http" {
+  count = var.balancer.enabled ? 1 : 0
+
   listener_arn                  = aws_globalaccelerator_listener.http.arn
   endpoint_group_region         = var.region
   health_check_interval_seconds = 10
   health_check_port             = 80
   health_check_protocol         = "TCP"
+
+  dynamic "endpoint_configuration" {
+    for_each = local.endpoints
+
+    content {
+      endpoint_id = value.id
+    }
+  }
 }
 
 resource "aws_globalaccelerator_listener" "https" {
@@ -42,6 +61,14 @@ resource "aws_globalaccelerator_endpoint_group" "https" {
   health_check_interval_seconds = 10
   health_check_port             = 443
   health_check_protocol         = "TCP"
+
+  dynamic "endpoint_configuration" {
+    for_each = local.endpoints
+
+    content {
+      endpoint_id = value.id
+    }
+  }
 }
 
 resource "aws_globalaccelerator_listener" "uplink" {
@@ -60,6 +87,14 @@ resource "aws_globalaccelerator_endpoint_group" "uplink" {
   health_check_interval_seconds = 10
   health_check_port             = 49152
   health_check_protocol         = "TCP"
+
+  dynamic "endpoint_configuration" {
+    for_each = local.endpoints
+
+    content {
+      endpoint_id = value.id
+    }
+  }
 }
 
 resource "aws_globalaccelerator_listener" "lxd" {
@@ -78,6 +113,14 @@ resource "aws_globalaccelerator_endpoint_group" "lxd" {
   health_check_interval_seconds = 10
   health_check_port             = 8443
   health_check_protocol         = "TCP"
+
+  dynamic "endpoint_configuration" {
+    for_each = local.endpoints
+
+    content {
+      endpoint_id = value.id
+    }
+  }
 }
 
 
