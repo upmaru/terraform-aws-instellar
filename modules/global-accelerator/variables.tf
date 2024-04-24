@@ -25,18 +25,6 @@ variable "nodes_security_group_id" {
   type        = string
 }
 
-variable "bootstrap_node" {
-  type = object({
-    id        = string
-    slug      = string
-    public_ip = string
-  })
-}
-
-variable "nodes" {
-  type = list(object({
-    id        = string
-    slug      = string
-    public_ip = string
-  }))
+variable "node_ids" {
+  type = list(string)
 }

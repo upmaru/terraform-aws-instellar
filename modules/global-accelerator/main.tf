@@ -1,10 +1,5 @@
 locals {
-  topology = {
-    for index, node in concat(var.nodes, [var.bootstrap_node]) :
-    node.slug => node
-  }
-
-  endpoints = var.balancer.enabled ? [var.balancer] : local.topology
+  endpoints = var.balancer.enabled ? [var.balancer.id] : var.node_ids
 }
 
 resource "aws_globalaccelerator_accelerator" "this" {
@@ -40,7 +35,7 @@ resource "aws_globalaccelerator_endpoint_group" "http" {
     for_each = local.endpoints
 
     content {
-      endpoint_id = value.id
+      endpoint_id = endpoint_configuration.value
     }
   }
 }
@@ -66,7 +61,7 @@ resource "aws_globalaccelerator_endpoint_group" "https" {
     for_each = local.endpoints
 
     content {
-      endpoint_id = value.id
+      endpoint_id = endpoint_configuration.value
     }
   }
 }
@@ -92,7 +87,7 @@ resource "aws_globalaccelerator_endpoint_group" "uplink" {
     for_each = local.endpoints
 
     content {
-      endpoint_id = value.id
+      endpoint_id = endpoint_configuration.value
     }
   }
 }
@@ -118,7 +113,7 @@ resource "aws_globalaccelerator_endpoint_group" "lxd" {
     for_each = local.endpoints
 
     content {
-      endpoint_id = value.id
+      endpoint_id = endpoint_configuration.value
     }
   }
 }
