@@ -4,7 +4,7 @@ data "aws_ip_ranges" "this" {
 }
 
 resource "aws_vpc_security_group_ingress_rule" "nodes_http_v4" {
-  for_each = var.balancer.enabled ? [] : data.aws_ip_ranges.this.cidr_blocks
+  for_each = var.balancer.enabled ? [] : toset(data.aws_ip_ranges.this.cidr_blocks)
 
   security_group_id = var.nodes_security_group_id
   description       = "Enable http traffic from global accelerator ipv4"
@@ -21,7 +21,7 @@ resource "aws_vpc_security_group_ingress_rule" "nodes_http_v4" {
 }
 
 resource "aws_vpc_security_group_ingress_rule" "nodes_http_v6" {
-  for_each = var.balancer.enabled ? [] : data.aws_ip_ranges.this.ipv6_cidr_blocks
+  for_each = var.balancer.enabled ? [] : toset(data.aws_ip_ranges.this.ipv6_cidr_blocks)
 
   security_group_id = var.nodes_security_group_id
   description       = "Enable http traffic from global accelerator ipv6"
@@ -38,7 +38,7 @@ resource "aws_vpc_security_group_ingress_rule" "nodes_http_v6" {
 }
 
 resource "aws_vpc_security_group_ingress_rule" "nodes_https_v4" {
-  for_each = var.balancer.enabled ? [] : data.aws_ip_ranges.this.cidr_blocks
+  for_each = var.balancer.enabled ? [] : toset(data.aws_ip_ranges.this.cidr_blocks)
 
   security_group_id = var.nodes_security_group_id
   description       = "Enable https traffic from global accelerator ipv4"
@@ -55,7 +55,7 @@ resource "aws_vpc_security_group_ingress_rule" "nodes_https_v4" {
 }
 
 resource "aws_vpc_security_group_ingress_rule" "nodes_https_v6" {
-  for_each = var.balancer.enabled ? [] : data.aws_ip_ranges.this.ipv6_cidr_blocks
+  for_each = var.balancer.enabled ? [] : toset(data.aws_ip_ranges.this.ipv6_cidr_blocks)
 
   security_group_id = var.nodes_security_group_id
   description       = "Enable https traffic from global accelerator ipv6"
@@ -72,7 +72,7 @@ resource "aws_vpc_security_group_ingress_rule" "nodes_https_v6" {
 }
 
 resource "aws_vpc_security_group_ingress_rule" "nodes_uplink_ipv4" {
-  for_each = var.balancer.enabled ? [] : data.aws_ip_ranges.this.cidr_blocks
+  for_each = var.balancer.enabled ? [] : toset(data.aws_ip_ranges.this.cidr_blocks)
 
   security_group_id = var.nodes_security_group_id
   description       = "Enable uplink traffic from global accelerator ipv4"
@@ -89,7 +89,7 @@ resource "aws_vpc_security_group_ingress_rule" "nodes_uplink_ipv4" {
 }
 
 resource "aws_vpc_security_group_ingress_rule" "nodes_uplink_ipv6" {
-  for_each = var.balancer.enabled ? [] : data.aws_ip_ranges.this.ipv6_cidr_blocks
+  for_each = var.balancer.enabled ? [] : toset(data.aws_ip_ranges.this.ipv6_cidr_blocks)
 
   security_group_id = var.nodes_security_group_id
   description       = "Enable uplink traffic from global accelerator ipv6"
@@ -106,7 +106,7 @@ resource "aws_vpc_security_group_ingress_rule" "nodes_uplink_ipv6" {
 }
 
 resource "aws_vpc_security_group_ingress_rule" "nodes_lxd_ipv4" {
-  for_each = var.balancer.enabled ? [] : data.aws_ip_ranges.this.cidr_blocks
+  for_each = var.balancer.enabled ? [] : toset(data.aws_ip_ranges.this.cidr_blocks)
 
   security_group_id = var.nodes_security_group_id
   description       = "Enable lxd traffic from global accelerator ipv4"
@@ -123,7 +123,7 @@ resource "aws_vpc_security_group_ingress_rule" "nodes_lxd_ipv4" {
 }
 
 resource "aws_vpc_security_group_ingress_rule" "nodes_lxd_ipv6" {
-  for_each = var.balancer.enabled ? [] : data.aws_ip_ranges.this.ipv6_cidr_blocks
+  for_each = var.balancer.enabled ? [] : toset(data.aws_ip_ranges.this.ipv6_cidr_blocks)
 
   security_group_id = var.nodes_security_group_id
   description       = "Enable lxd traffic from global accelerator ipv6"
