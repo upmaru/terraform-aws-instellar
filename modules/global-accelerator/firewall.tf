@@ -76,7 +76,7 @@ resource "aws_vpc_security_group_ingress_rule" "nodes_uplink_ipv4" {
 
   security_group_id = var.nodes_security_group_id
   description       = "Enable uplink traffic from global accelerator ipv4"
-  cidr_ipv6         = each.value
+  cidr_ipv4         = each.value
 
   from_port   = 49152
   to_port     = 49152
@@ -110,7 +110,7 @@ resource "aws_vpc_security_group_ingress_rule" "nodes_lxd_ipv4" {
 
   security_group_id = var.nodes_security_group_id
   description       = "Enable lxd traffic from global accelerator ipv4"
-  cidr_ipv6         = each.value
+  cidr_ipv4         = each.value
 
   from_port   = 8443
   to_port     = 8443
