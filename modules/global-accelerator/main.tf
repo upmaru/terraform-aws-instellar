@@ -23,8 +23,6 @@ resource "aws_globalaccelerator_listener" "http" {
 }
 
 resource "aws_globalaccelerator_endpoint_group" "http" {
-  count = var.balancer.enabled ? 1 : 0
-
   listener_arn                  = aws_globalaccelerator_listener.http.id
   endpoint_group_region         = var.region
   health_check_interval_seconds = 10
