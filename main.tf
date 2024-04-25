@@ -93,7 +93,7 @@ module "global_accelerator" {
     id      = var.balancer ? module.balancer[0].arn : null
   }
 
-  node_ids = concat(aws_instance.nodes.*.id, [aws_instance.bootstrap_node.id])
+  node_ids = concat([for key, node in aws_instance.nodes : node.id], [aws_instance.bootstrap_node.id])
 }
 
 resource "aws_iam_instance_profile" "nodes" {
