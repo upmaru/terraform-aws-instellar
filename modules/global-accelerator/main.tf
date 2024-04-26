@@ -33,7 +33,8 @@ resource "aws_globalaccelerator_endpoint_group" "http" {
     for_each = local.endpoints
 
     content {
-      endpoint_id = endpoint_configuration.value
+      endpoint_id                    = endpoint_configuration.value
+      client_ip_preservation_enabled = true
     }
   }
 }
@@ -59,7 +60,8 @@ resource "aws_globalaccelerator_endpoint_group" "https" {
     for_each = local.endpoints
 
     content {
-      endpoint_id = endpoint_configuration.value
+      endpoint_id                    = endpoint_configuration.value
+      client_ip_preservation_enabled = true
     }
   }
 }
@@ -85,7 +87,8 @@ resource "aws_globalaccelerator_endpoint_group" "uplink" {
     for_each = local.endpoints
 
     content {
-      endpoint_id = endpoint_configuration.value
+      endpoint_id                    = endpoint_configuration.value
+      client_ip_preservation_enabled = true
     }
   }
 }
@@ -111,7 +114,8 @@ resource "aws_globalaccelerator_endpoint_group" "lxd" {
     for_each = local.endpoints
 
     content {
-      endpoint_id = endpoint_configuration.value
+      endpoint_id                    = endpoint_configuration.value
+      client_ip_preservation_enabled = true
     }
   }
 }
