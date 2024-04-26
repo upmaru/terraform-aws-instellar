@@ -48,8 +48,7 @@ resource "aws_subnet" "this" {
   cidr_block        = element(var.public_subnet_cidrs, count.index)
   availability_zone = element(local.availability_zones, count.index)
 
-  map_public_ip_on_launch         = true
-  assign_ipv6_address_on_creation = true
+  map_public_ip_on_launch = true
 
   tags = {
     Name      = "${var.identifier}-public-${count.index + 1}"

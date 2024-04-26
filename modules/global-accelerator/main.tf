@@ -4,7 +4,7 @@ locals {
 
 resource "aws_globalaccelerator_accelerator" "this" {
   name            = var.identifier
-  ip_address_type = "DUAL_STACK"
+  ip_address_type = "IPV4"
   enabled         = true
 
   tags = {
