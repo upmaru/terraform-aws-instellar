@@ -47,7 +47,7 @@ module "balancer" {
   count = var.balancer ? 1 : 0
 
   source  = "upmaru/instellar/aws//modules/balancer"
-  version = "~> 0.8"
+  version = "~> 0.9"
 
   ssh                       = var.balancer_ssh
   bastion_security_group_id = aws_security_group.bastion_firewall.id
@@ -81,7 +81,8 @@ module "balancer" {
 module "global_accelerator" {
   count = var.global_accelerator ? 1 : 0
 
-  source = "./modules/global-accelerator"
+  source  = "upmaru/instellar/aws//modules/global-accelerator"
+  version = "~> 0.9"
 
   blueprint               = var.blueprint
   identifier              = var.identifier
