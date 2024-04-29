@@ -26,5 +26,11 @@ variable "nodes_security_group_id" {
 }
 
 variable "node_ids" {
-  type = list(string)
+  description = "Node IDs"
+  type        = list(string)
+}
+
+variable "vpc_id" {
+  description = "VPC ID"
+  type        = string
 }
