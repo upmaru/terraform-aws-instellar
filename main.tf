@@ -88,6 +88,7 @@ module "global_accelerator" {
   blueprint               = var.blueprint
   identifier              = var.identifier
   region                  = var.region
+  vpc_id                  = var.vpc_id
   nodes_security_group_id = aws_security_group.nodes_firewall.id
 
   balancer = {
