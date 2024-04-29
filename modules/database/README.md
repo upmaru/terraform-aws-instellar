@@ -42,6 +42,7 @@
 | <a name="input_blueprint"></a> [blueprint](#input\_blueprint) | Blueprint name | `string` | n/a | yes |
 | <a name="input_ca_cert_identifier"></a> [ca\_cert\_identifier](#input\_ca\_cert\_identifier) | CA Cert identifier | `string` | `"rds-ca-rsa2048-g1"` | no |
 | <a name="input_db_name"></a> [db\_name](#input\_db\_name) | Database name to create | `string` | `"instellar"` | no |
+| <a name="input_db_password_revision"></a> [db\_password\_revision](#input\_db\_password\_revision) | Database password revision | `number` | `1` | no |
 | <a name="input_db_size"></a> [db\_size](#input\_db\_size) | Database instance size | `string` | n/a | yes |
 | <a name="input_db_username"></a> [db\_username](#input\_db\_username) | Database username | `string` | `"instellar"` | no |
 | <a name="input_deletion_protection"></a> [deletion\_protection](#input\_deletion\_protection) | Database deletion protection | `bool` | `true` | no |

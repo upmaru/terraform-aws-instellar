@@ -9,6 +9,11 @@ variable "blueprint" {
   type        = string
 }
 
+variable "region" {
+  description = "AWS region"
+  type        = string
+}
+
 variable "identifier" {
   description = "Name of your cluster"
   type        = string
@@ -16,6 +21,11 @@ variable "identifier" {
 
 variable "balancer" {
   description = "Enable Load Balancer"
+  default     = false
+}
+
+variable "global_accelerator" {
+  description = "Enable Global Accelerator"
   default     = false
 }
 

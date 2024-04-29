@@ -78,6 +78,25 @@ module "balancer" {
   ]
 }
 
+module "global_accelerator" {
+  count = var.global_accelerator ? 1 : 0
+
+  source = "./modules/global-accelerator"
+
+  blueprint               = var.blueprint
+  identifier              = var.identifier
+  region                  = var.region
+  vpc_id                  = var.vpc_id
+  nodes_security_group_id = aws_security_group.nodes_firewall.id
+
+  balancer = {
+    enabled = var.balancer
+    id      = var.balancer ? module.balancer[0].arn : null
+  }
+
+  node_ids = concat([for key, node in aws_instance.nodes : node.id], [aws_instance.bootstrap_node.id])
+}
+
 resource "aws_iam_instance_profile" "nodes" {
   name = "${var.identifier}-nodes-profile"
   role = aws_iam_role.nodes.name

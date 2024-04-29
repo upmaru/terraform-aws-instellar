@@ -38,6 +38,7 @@ These functionality come together to enable the user to fully manage LXD cluster
 | Name | Source | Version |
 |------|--------|---------|
 | <a name="module_balancer"></a> [balancer](#module\_balancer) | upmaru/instellar/aws//modules/balancer | ~> 0.8 |
+| <a name="module_global_accelerator"></a> [global\_accelerator](#module\_global\_accelerator) | ./modules/global-accelerator | n/a |
 
 ## Resources
 
@@ -92,6 +93,7 @@ These functionality come together to enable the user to fully manage LXD cluster
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
+| <a name="input_ami_architecture"></a> [ami\_architecture](#input\_ami\_architecture) | The architecture of the AMI | `string` | `"amd64"` | no |
 | <a name="input_balancer"></a> [balancer](#input\_balancer) | Enable Load Balancer | `bool` | `false` | no |
 | <a name="input_balancer_deletion_protection"></a> [balancer\_deletion\_protection](#input\_balancer\_deletion\_protection) | Enable balancer deletion protection | `bool` | `true` | no |
 | <a name="input_balancer_ssh"></a> [balancer\_ssh](#input\_balancer\_ssh) | Enable SSH port on balancer | `bool` | `true` | no |
@@ -99,6 +101,7 @@ These functionality come together to enable the user to fully manage LXD cluster
 | <a name="input_bastion_ssh"></a> [bastion\_ssh](#input\_bastion\_ssh) | Enable SSH port | `bool` | `true` | no |
 | <a name="input_blueprint"></a> [blueprint](#input\_blueprint) | Identifier of the blueprint | `string` | n/a | yes |
 | <a name="input_cluster_topology"></a> [cluster\_topology](#input\_cluster\_topology) | How many nodes do you want in your cluster? | <pre>list(object({<br>    id   = number<br>    name = string<br>    size = optional(string, "t3.medium")<br>  }))</pre> | `[]` | no |
+| <a name="input_global_accelerator"></a> [global\_accelerator](#input\_global\_accelerator) | Enable Global Accelerator | `bool` | `false` | no |
 | <a name="input_identifier"></a> [identifier](#input\_identifier) | Name of your cluster | `string` | n/a | yes |
 | <a name="input_network_dependencies"></a> [network\_dependencies](#input\_network\_dependencies) | value | `list` | `[]` | no |
 | <a name="input_node_detail_revision"></a> [node\_detail\_revision](#input\_node\_detail\_revision) | The revision of the node detail | `number` | `1` | no |
@@ -107,6 +110,7 @@ These functionality come together to enable the user to fully manage LXD cluster
 | <a name="input_protect_leader"></a> [protect\_leader](#input\_protect\_leader) | Protect the database leader node | `bool` | `true` | no |
 | <a name="input_public_subnet_ids"></a> [public\_subnet\_ids](#input\_public\_subnet\_ids) | Public subnet ids to pass in if block type is compute | `list(string)` | n/a | yes |
 | <a name="input_publicly_accessible"></a> [publicly\_accessible](#input\_publicly\_accessible) | Make the cluster publically accessible? If you use a load balancer this can be false. | `bool` | `true` | no |
+| <a name="input_region"></a> [region](#input\_region) | AWS region | `string` | n/a | yes |
 | <a name="input_ssh_keys"></a> [ssh\_keys](#input\_ssh\_keys) | List of ssh key names | `list(string)` | `[]` | no |
 | <a name="input_ssm"></a> [ssm](#input\_ssm) | Enable SSM | `bool` | `false` | no |
 | <a name="input_storage_size"></a> [storage\_size](#input\_storage\_size) | How much storage on your nodes? | `number` | `40` | no |
@@ -119,6 +123,7 @@ These functionality come together to enable the user to fully manage LXD cluster
 | Name | Description |
 |------|-------------|
 | <a name="output_balancer"></a> [balancer](#output\_balancer) | Load balancer details |
+| <a name="output_bastion_access"></a> [bastion\_access](#output\_bastion\_access) | Bastion access output for passing into other modules |
 | <a name="output_bastion_security_group_id"></a> [bastion\_security\_group\_id](#output\_bastion\_security\_group\_id) | Bastion security group id |
 | <a name="output_bootstrap_node"></a> [bootstrap\_node](#output\_bootstrap\_node) | Bootstrap node details |
 | <a name="output_cluster_address"></a> [cluster\_address](#output\_cluster\_address) | Bootstrap node public ip |
