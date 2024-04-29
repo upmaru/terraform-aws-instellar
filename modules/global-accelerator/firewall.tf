@@ -1,5 +1,5 @@
 data "aws_ip_ranges" "this" {
-  regions  = [var.region]
+  regions  = ["global"]
   services = ["globalaccelerator"]
 }
 
