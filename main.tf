@@ -81,8 +81,8 @@ module "balancer" {
 module "global_accelerator" {
   count = var.global_accelerator ? 1 : 0
 
-  source  = "./modules/global-accelerator"
-  # version = "~> 0.9"
+  source  = "upmaru/instellar/aws//modules/global-accelerator"
+  version = "~> 0.9"
 
   blueprint               = var.blueprint
   identifier              = var.identifier
