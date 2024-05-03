@@ -20,9 +20,9 @@ output "arn" {
 output "dependencies" {
   description = "Dependencies of load balancer"
   value = flatten([
-    aws_lb_target_group_attachment.http.*.id,
-    aws_lb_target_group_attachment.https.*.id,
-    aws_lb_target_group_attachment.lxd.*.id,
-    aws_lb_target_group_attachment.uplink.*.id
+    [for key, a in aws_lb_target_group_attachment.http : a.id],
+    [for key, a in aws_lb_target_group_attachment.https : a.id],
+    [for key, a in aws_lb_target_group_attachment.lxd : a.id],
+    [for key, a in aws_lb_target_group_attachment.uplink : a.id]
   ])
 }

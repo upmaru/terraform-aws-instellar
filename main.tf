@@ -46,7 +46,7 @@ data "cloudinit_config" "node" {
 module "balancer" {
   count = var.balancer ? 1 : 0
 
-  source  = "./modules/balancer"
+  source = "./modules/balancer"
   # version = "~> 0.9"
 
   ssh                       = var.balancer_ssh
@@ -81,7 +81,7 @@ module "balancer" {
 module "global_accelerator" {
   count = var.global_accelerator ? 1 : 0
 
-  source  = "./modules/global-accelerator"
+  source = "./modules/global-accelerator"
   # version = "~> 0.9"
 
   blueprint               = var.blueprint
