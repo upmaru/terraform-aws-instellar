@@ -19,10 +19,10 @@ output "arn" {
 
 output "dependencies" {
   description = "Dependencies of load balancer"
-  value = flatten([
-    [for key, a in aws_lb_target_group_attachment.http : a.id],
-    [for key, a in aws_lb_target_group_attachment.https : a.id],
-    [for key, a in aws_lb_target_group_attachment.lxd : a.id],
-    [for key, a in aws_lb_target_group_attachment.uplink : a.id]
-  ])
+  value = [
+    aws_vpc_security_group_ingress_rule.nodes_http.security_group_rule_id,
+    aws_vpc_security_group_ingress_rule.nodes_https.security_group_rule_id,
+    aws_vpc_security_group_ingress_rule.nodes_lxd.security_group_rule_id,
+    aws_vpc_security_group_ingress_rule.nodes_uplink.security_group_rule_id
+  ]
 }
