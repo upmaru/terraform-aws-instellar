@@ -10,9 +10,9 @@ output "name" {
 output "dependencies" {
   description = "Dependencies of Global Accelerator"
   value = [
-    aws_globalaccelerator_endpoint_group.http.id,
-    aws_globalaccelerator_endpoint_group.https.id,
-    aws_globalaccelerator_endpoint_group.uplink.id,
-    aws_globalaccelerator_endpoint_group.lxd.id
+    aws_globalaccelerator_endpoint_group.http,
+    aws_globalaccelerator_endpoint_group.https,
+    aws_globalaccelerator_endpoint_group.uplink,
+    aws_globalaccelerator_endpoint_group.lxd
   ]
 }
