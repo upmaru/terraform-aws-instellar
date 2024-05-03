@@ -30,6 +30,7 @@ resource "aws_lb_target_group" "ssh" {
     enabled  = true
     protocol = "TCP"
     port     = 22
+    interval = 10
   }
 
   tags = {
@@ -67,6 +68,7 @@ resource "aws_lb_target_group" "http" {
     enabled  = true
     protocol = "TCP"
     port     = 80
+    interval = 10
   }
 
   tags = {
@@ -105,6 +107,7 @@ resource "aws_lb_target_group" "https" {
     enabled  = true
     protocol = "TCP"
     port     = 443
+    interval = 10
   }
 
   tags = {
@@ -143,6 +146,7 @@ resource "aws_lb_target_group" "lxd" {
     enabled  = true
     protocol = "TCP"
     port     = 8443
+    interval = 10
   }
 
   tags = {
@@ -181,6 +185,7 @@ resource "aws_lb_target_group" "uplink" {
     enabled  = true
     protocol = "TCP"
     port     = 49152
+    interval = 10
   }
 
   tags = {

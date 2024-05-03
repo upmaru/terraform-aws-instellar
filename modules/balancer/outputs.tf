@@ -20,9 +20,9 @@ output "arn" {
 output "dependencies" {
   description = "Dependencies of load balancer"
   value = [
-    aws_vpc_security_group_ingress_rule.nodes_http.security_group_rule_id,
-    aws_vpc_security_group_ingress_rule.nodes_https.security_group_rule_id,
-    aws_vpc_security_group_ingress_rule.nodes_lxd.security_group_rule_id,
-    aws_vpc_security_group_ingress_rule.nodes_uplink.security_group_rule_id
+    aws_lb_listener.http.id,
+    aws_lb_listener.https.id,
+    aws_lb_listener.lxd.id,
+    aws_lb_listener.uplink.id
   ]
 }
