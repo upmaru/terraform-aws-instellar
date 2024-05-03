@@ -77,6 +77,7 @@ No modules.
 |------|-------------|
 | <a name="output_address"></a> [address](#output\_address) | Address name from the load balancer |
 | <a name="output_arn"></a> [arn](#output\_arn) | The ARN of the load balancer |
+| <a name="output_dependencies"></a> [dependencies](#output\_dependencies) | Dependencies of load balancer |
 | <a name="output_name"></a> [name](#output\_name) | n/a |
 | <a name="output_ssh_port"></a> [ssh\_port](#output\_ssh\_port) | The bastion ssh port |
 <!-- END_TF_DOCS -->

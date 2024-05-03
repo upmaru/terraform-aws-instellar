@@ -52,5 +52,6 @@ No modules.
 | Name | Description |
 |------|-------------|
 | <a name="output_address"></a> [address](#output\_address) | Address of the Global Accelerator |
+| <a name="output_dependencies"></a> [dependencies](#output\_dependencies) | Dependencies of Global Accelerator |
 | <a name="output_name"></a> [name](#output\_name) | n/a |
 <!-- END_TF_DOCS -->

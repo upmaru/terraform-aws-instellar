@@ -59,9 +59,10 @@ output "nodes_iam_role" {
 output "balancer" {
   description = "Load balancer details"
   value = {
-    enabled = var.balancer || var.global_accelerator
-    name    = var.global_accelerator ? module.global_accelerator[0].name : (var.balancer ? module.balancer[0].name : null)
-    address = var.global_accelerator ? module.global_accelerator[0].address : (var.balancer ? module.balancer[0].address : null)
+    enabled      = var.balancer || var.global_accelerator
+    name         = var.global_accelerator ? module.global_accelerator[0].name : (var.balancer ? module.balancer[0].name : null)
+    address      = var.global_accelerator ? module.global_accelerator[0].address : (var.balancer ? module.balancer[0].address : null)
+    dependencies = var.global_accelerator ? module.global_accelerator[0].dependencies : (var.balancer ? module.balancer[0].dependencies : [])
   }
 }
 
