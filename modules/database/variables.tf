@@ -107,6 +107,16 @@ variable "nodes_iam_roles" {
   )
 }
 
+variable "backup_window" {
+  description = "Database backup window, do not overlap with maintenance_window"
+  default     = "09:46-10:16"
+}
+
+variable "maintenance_window" {
+  description = "Database maintenance window"
+  default     = "Sun:00:00-Sun:03:00"
+}
+
 variable "subnet_ids" {
   description = "Database subnet ids"
   type        = list(string)
