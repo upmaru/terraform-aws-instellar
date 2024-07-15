@@ -44,7 +44,10 @@ resource "aws_db_instance" "this" {
 
   storage_encrypted       = true
   backup_retention_period = var.backup_retention_period
+  backup_window           = var.backup_window
   multi_az                = var.multi_az
+
+  maintenance_window = var.maintenance_window
 
   final_snapshot_identifier = "${var.identifier}-snapshot"
 

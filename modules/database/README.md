@@ -39,6 +39,7 @@
 | <a name="input_apply_immediately"></a> [apply\_immediately](#input\_apply\_immediately) | Apply changes immediately | `bool` | `false` | no |
 | <a name="input_availability_zone"></a> [availability\_zone](#input\_availability\_zone) | Database availability zone | `string` | `null` | no |
 | <a name="input_backup_retention_period"></a> [backup\_retention\_period](#input\_backup\_retention\_period) | Backup retention days | `number` | `5` | no |
+| <a name="input_backup_window"></a> [backup\_window](#input\_backup\_window) | Database backup window, do not overlap with maintenance\_window | `string` | `"09:46-10:16"` | no |
 | <a name="input_blueprint"></a> [blueprint](#input\_blueprint) | Blueprint name | `string` | n/a | yes |
 | <a name="input_ca_cert_identifier"></a> [ca\_cert\_identifier](#input\_ca\_cert\_identifier) | CA Cert identifier | `string` | `"rds-ca-rsa2048-g1"` | no |
 | <a name="input_db_name"></a> [db\_name](#input\_db\_name) | Database name to create | `string` | `"instellar"` | no |
@@ -50,6 +51,7 @@
 | <a name="input_engine"></a> [engine](#input\_engine) | Database engine | `string` | n/a | yes |
 | <a name="input_engine_version"></a> [engine\_version](#input\_engine\_version) | Database engine version | `string` | n/a | yes |
 | <a name="input_identifier"></a> [identifier](#input\_identifier) | Database instance name | `string` | n/a | yes |
+| <a name="input_maintenance_window"></a> [maintenance\_window](#input\_maintenance\_window) | Database maintenance window | `string` | `"Sun:00:00-Sun:03:00"` | no |
 | <a name="input_manage_credential_with_secret"></a> [manage\_credential\_with\_secret](#input\_manage\_credential\_with\_secret) | Manage credentials with secret | `bool` | `false` | no |
 | <a name="input_manage_master_user_password"></a> [manage\_master\_user\_password](#input\_manage\_master\_user\_password) | Manage master user password | `bool` | `false` | no |
 | <a name="input_max_storage_size"></a> [max\_storage\_size](#input\_max\_storage\_size) | Database max storage size | `number` | `100` | no |
